@@ -1,0 +1,612 @@
+
+
+Procedure OnUnitTrainedCoalVillage(aUnit : Integer);
+var aPos : TKMPoint;
+begin	
+	If VillageQuestGiver[1].QEventType = 1 then 
+		If MinersToTrain <> 0 then 
+			If States.UnitType(aUnit) = 2 then 
+			begin
+				aPos:=States.UnitPosition(aUnit);
+				Actions.UnitOrderWalk(Actions.GiveUnit(13,2,aPos.X,aPos.Y+2,4),234,226);
+				A.UnitKill(aUnit,true);
+				MinersToTrain := MinersToTrain-1;
+			end;
+end;
+
+Procedure OnHouseBuiltCornVillage(aHouse:Integer);
+begin
+	CornVillageHousesBuilt := CornVillageHousesBuilt + 1;
+	Actions.GiveUnit(13,States.HouseTypeToOccupantType(States.HouseType(aHouse)),States.HousePositionX(aHouse),States.HousePositionY(aHouse)+2,4);
+	If CornVillageHousesBuilt = 4 then 
+		QuestTasks[2][0] := true;	
+	A.ShowMsG(0,'Built : ' + States.HouseTypeName(States.HouseType(aHouse)) );
+end;
+
+Procedure OnTickFishVillage;
+begin
+	If States.GameTime = VillageQuestGiver[0].QTime + 10 then
+		Actions.ShowMSG(0,'Oh! Brave Adventurer! |I always wanted more fishermans huts in our village but I need many ingredients to build them. Could you go to the corn and wood village for needed wares. I will reward you greatly.');
+	If States.GameTime = VillageQuestGiver[0].QTime + 50 then 
+		StartCinematic(1,0);
+	//first quest
+	If States.GameTime > VillageQuestGiver[0].QTime + 200 then 
+		If States.GameTime mod 100 = 0 then 
+		begin
+			If VillageQuestGiver[0].QEventType = 1 then 
+			begin
+				If States.UnitPosition(Hero) = VillageQuestGiver[0].QPos then 
+				begin
+					If States.GameTime > MessageDelay then 
+						If not QuestTasks[0][0] and not QuestTasks[0][1] then
+						begin
+							Actions.ShowMSG(0,'Oh Adventurer! You came hero but you did not bring wares to build the fisherman huts. Please go get them from another villages.');
+							MessageDelay := States.GameTime + 1200;
+						end;
+						
+					If QuestTasks[0][0] and QuestTasks[0][1] then
+					begin	
+						VillageQuestGiver[0].QEventType := 2;
+						VillageQuestGiver[0].QEndTime := States.GameTime+6000;
+						QuestNow.QVOnQuest := false;
+						HousesToBuild[6] := HousesToBuild[6]+2;
+						A.GiveWares(0,7,23);
+						Actions.ShowMSG(0,'Oh Adventurer! Thank you for bringing me this wood and corn. I assure you we will help you soon.||Reward : Fish delivery + some gold.');
+						VillageQuestGiver[0].DTrue := true;
+					end;
+					
+				end;
+				If not QuestTasks[0][0] then
+					If States.UnitPosition(Hero) = VillageQuestGiver[3].QPos then 
+					begin
+						QuestTasks[0][0] := true;					
+						Actions.ShowMSG(0,'I see my brother - Utis, bring you here to collect resorces. Here you go Sir.');
+					end;
+				
+				If not QuestTasks[0][1] then	
+					If States.UnitPosition(Hero) = VillageQuestGiver[2].QPos then 
+					begin
+						QuestTasks[0][1] := true;					
+						Actions.ShowMSG(0,'What do you want??? || Ahh you are the one who was going to arrive for wares that fishermans needs. Here is the corn you need.');
+					end;
+			end;
+		end;
+	
+	
+	//Building Houses
+	If VillageQuestGiver[0].QEventType = 2 then 
+		If States.GameTime = VillageQuestGiver[0].QEndTime + 1200 then
+			GiveHouseMultipleTimes(13,6, true,true,[Point(160,234),Point(150,234),Point(134,230)]);
+end;
+
+Procedure OnTickCoalVillage;
+var aUnit, aX,aY, I : Integer;
+begin
+	If VillageQuestGiver[1].QEventType = 1 then 
+		If States.GameTime = VillageQuestGiver[1].QTime + 10 then
+		begin
+			Actions.ShowMSG(0,'Hello Sir! As you can see we have some mines here but not enough miners to work in them. Could you please send us some?');
+			MinersToTrain := 12;
+			MinersKilled := 12;
+		end;
+		
+	If States.GameTime = VillageQuestGiver[1].QTime + 50 then 
+		StartCinematic(1,0);
+	//first quest
+	
+	If VillageQuestGiver[1].QEventType = 1 then 
+		If States.GameTime > VillageQuestGiver[1].QTime + 200 then 
+			If States.GameTime mod 100 = 0 then 
+			begin
+				If States.UnitPosition(Hero) = VillageQuestGiver[1].QPos then 
+				begin
+					If States.GameTime > MessageDelay then 
+						If not QuestTasks[1][0] then
+						begin
+							Actions.ShowMSG(0,'Sorry, but you are alone...');
+							MessageDelay := States.GameTime + 1200;
+						end;
+					If QuestTasks[1][0] then
+					begin
+						HousesToBuild[6] := HousesToBuild[6]+3;
+						Actions.ShowMSG(0,'Thanks man. Now I can give more coal to my friends on the north.||Player 5 and 6 have coal delivery now.');
+						VillageQuestGiver[1].QEventType := 2;
+						VillageQuestGiver[1].QEndTime := States.GameTime+1000;
+						A.PlanAddHouse(5,15,209,104);
+						A.PlanAddHouse(5,15,224,102);
+						A.PlanConnectRoad(5,224,103,224,106,false);
+						QuestNow.QVOnQuest := false;
+					end;
+				end;
+				for aX := 0 to 2 do
+					for aY := 0 to 2 do
+					begin
+						aUnit := States.UnitAt(234-1+aX,226-1+aY);
+						If States.UnitOwner(aUnit) = 13 then
+							If States.UnitType(aUnit) = 2 then
+							begin
+								Actions.UnitKill(aUnit,true);
+								MinersKilled := MinersKilled-1;
+							end;
+					end;
+				If MinersKilled = 0 then 
+					QuestTasks[1][0] := true;
+			end;
+		
+	If States.GameTime mod 6000 = 0 then 
+		If QuestTasks[1][0] and (VillageQuestGiver[1].QEventType >= 2) then
+		begin	
+			Actions.GiveWares(4,7,10);
+			Actions.GiveWares(4,5,30);
+			Actions.GiveWares(5,5,30);
+		end;
+
+	//vagabonds
+	If VillageQuestGiver[1].QEventType = 3 then 
+	begin
+		If States.GameTime = VillageQuestGiver[1].QTime + 10 then 	
+			A.ShowMSG(0,'Some people are attacking us. Can you stop them when they arrive?');
+			
+		If States.GameTime = VillageQuestGiver[1].QTime + 100 then 
+		begin
+			QuestInteger[0] := A.GiveGroup(11,27,255,132,4,1,1);
+			QuestInteger[1] := A.GiveGroup(11,27,254,132,4,1,1);
+			QuestInteger[2] := A.GiveGroup(11,27,253,132,4,1,1);
+			QuestInteger[3] := A.GiveGroup(11,27,252,132,4,1,1);
+			A.GroupOrderWalk(QuestInteger[0],233,227,2);
+			A.GroupOrderWalk(QuestInteger[1],230,223,2);
+			A.GroupOrderWalk(QuestInteger[2],236,217,0);
+			A.GroupOrderWalk(QuestInteger[3],245,211,0);
+		end;
+		
+		If States.GameTime = VillageQuestGiver[1].QTime + 1200 then 
+			If States.GroupAt(233,227) = QuestInteger[0] then 
+			begin
+				for I := 0 to 3 do
+					A.GroupKillAll(QuestInteger[I],true);
+				VillageQuestGiver[1].QEventType := 2;
+				VillageQuestGiver[1].QEndTime := States.GameTime+1200;
+				A.ShowMSG(0, 'You have faild');
+				QuestNow.QVOnQuest := false;
+			end;
+		
+		If not QuestTasks[1][1] then
+		If States.GameTime > VillageQuestGiver[1].QTime + 100 then 
+			If States.GameTime < VillageQuestGiver[1].QTime + 1200 then 
+				If States.GroupDead(QuestInteger[0]) and 
+				 States.GroupDead(QuestInteger[1]) and 
+				 States.GroupDead(QuestInteger[2]) and 
+				 States.GroupDead(QuestInteger[3]) then 
+				begin						
+					VillageQuestGiver[1].QEndTime := States.GameTime+1200;
+					A.ShowMSG(0, 'Complete');
+					QuestTasks[1][1] := true;
+				end;
+			
+		If QuestTasks[1][1] then
+			If States.UnitPosition(Hero) = VillageQuestGiver[1].QPos then 
+			begin
+				A.GiveWares(0, 5, 200);
+				HousesToBuild[6] := HousesToBuild[6]+2;
+				Actions.ShowMSG(0,'Thanks man.||200 coal');
+				VillageQuestGiver[1].QEventType := 4;
+				VillageQuestGiver[1].QEndTime := States.GameTime+1000;
+				QuestNow.QVOnQuest := false;
+			end;
+	end;
+end;
+
+Procedure OnTickCornVillage;
+begin
+	If VillageQuestGiver[2].QEventType = 1 then 
+	begin
+		If States.GameTime = VillageQuestGiver[2].QTime + 10 then
+			Actions.ShowMSG(0,'Hmm. You do not look like a laborer but maybe atleast you will help us. We have farms but no buildings to use a corn. Will you help build them?');
+
+		If States.GameTime = VillageQuestGiver[2].QTime + 50 then 
+		begin
+			StartCinematic(1,0);		
+			A.GiveHouseSite(13,7,117,118,true);
+			A.GiveHouseSite(13,16,118,127,true);
+			A.GiveHouseSite(13,22,130,125,true);
+			A.GiveHouseSite(13,24,121,118,true);
+		end;
+		//first quest
+		If States.GameTime > VillageQuestGiver[2].QTime + 200 then 
+			If States.GameTime mod 100 = 0 then 
+			begin
+				If VillageQuestGiver[2].QEventType = 1 then 
+				begin
+					If States.UnitPosition(Hero) = VillageQuestGiver[2].QPos then 
+					begin
+						If States.GameTime > MessageDelay then 
+							If not QuestTasks[2][0] then
+							begin
+								Actions.ShowMSG(0,'I thought you will build them');
+								MessageDelay := States.GameTime + 1200;
+							end;
+						If QuestTasks[2][0] then
+						begin
+							Actions.GiveWares(0,9,55);
+							HousesToBuild[6] := HousesToBuild[6]+4;
+							Actions.ShowMSG(0,'Thanks sir. I really appreciate it. I will give you 55 corn as a reward.');
+							VillageQuestGiver[2].QEventType := 2;
+							VillageQuestGiver[2].QEndTime := States.GameTime+1000;
+							QuestNow.QVOnQuest := false;
+						end;
+					end;
+				end;
+			end;
+	end;
+	//give corn fields
+	If VillageQuestGiver[2].QEventType = 3 then 
+	begin
+		If States.GameTime = VillageQuestGiver[2].QTime + 10 then 
+			Actions.ShowMSG(0,'Will you help me again. I`m old enough and I have no strength to make new fields. Can you make some for me?');
+		
+		If States.GameTime = VillageQuestGiver[2].QTime + 50 then 
+			StartCinematic(1,0);	
+			
+		If States.GameTime mod 100 = 0 then 
+			If States.UnitPosition(Hero) = VillageQuestGiver[2].QPos then 
+			begin
+		
+				If States.GameTime > MessageDelay then 
+					If not QuestTasks[2][1] then
+					begin
+						Actions.ShowMSG(0,'Please, make some fields for me');
+						MessageDelay := States.GameTime + 1200;
+					end;
+					
+				If QuestTasks[2][1] = true then 
+				begin
+					Actions.GiveWares(0,9,31);
+					Actions.GiveWares(0,7,12);
+					HousesToBuild[6] := HousesToBuild[6]+3;
+					Actions.ShowMSG(0,'Reward : 31 corn + 12 gold');
+					VillageQuestGiver[2].QEventType := 4;
+					VillageQuestGiver[2].QEndTime := States.GameTime+6000;
+					QuestNow.QVOnQuest := false;
+				end;
+			end;
+	end;
+end;
+
+Procedure OnTickWoodVillage;
+var HPos : TKMPoint;
+begin
+	If States.GameTime = VillageQuestGiver[3].QTime + 10 then
+		Actions.ShowMSG(0,'Hello there General! I am bowing before your majesty. In our forest are many trees but some of them are already rotten. We have no time to cut them because we must send wood to my brother - Utis the fisherman. Can you cut so we can replant trees? ');
+	If States.GameTime = VillageQuestGiver[3].QTime + 50 then 
+		StartCinematic(1,0);
+		
+	//first quest
+	If States.GameTime > VillageQuestGiver[3].QTime + 200 then 
+		If States.GameTime mod 100 = 0 then 
+		begin
+			If VillageQuestGiver[3].QEventType = 1 then 
+			begin
+				If States.UnitPosition(Hero) = VillageQuestGiver[3].QPos then 
+				begin
+					If States.GameTime > MessageDelay then 
+						If not QuestTasks[3][0] then
+						begin
+							Actions.ShowMSG(0,'Hmm.. You did not cut them yet.');
+							MessageDelay := States.GameTime + 1200;
+						end;
+					If QuestTasks[3][0] then
+					begin
+						HousesToBuild[6] := HousesToBuild[6]+4;
+						Actions.ShowMSG(0,'Thanks sir. I really appreciate it.');
+						VillageQuestGiver[3].QEventType := 2;
+						VillageQuestGiver[3].QEndTime := States.GameTime;
+						QuestNow.QVOnQuest := false;
+					end;
+				end;
+			end;
+		end;
+	If QuestNow.QVOnQuest and not QuestTasks[3][0] then 
+	begin
+		If States.GameTime > TreesToTime then 
+			If States.GameTime mod 100 = 0 then 
+			begin
+				HPos := States.UnitPosition(Hero);
+				If VillageQuestGiver[3].QEventType = 1 then 
+					If U.InAreaI(HPos.X,HPos.Y,10,65,44,120) then 
+						If U.InRangeI(States.MapTileObject(HPos.X,HPos.Y),190,194) then 
+						begin
+							A.ShowMSG(0,'Chopping a rotten tree.')
+							TreesToTime := States.GameTime + 200;
+						end;
+				
+			end;
+		If States.GameTime = TreesToTime then 		
+		begin
+			HPos := States.UnitPosition(Hero);
+			If VillageQuestGiver[3].QEventType = 1 then 
+				If U.InAreaI(HPos.X,HPos.Y,10,65,44,120) then 
+					If U.InRangeI(States.MapTileObject(HPos.X,HPos.Y),190,194) then 
+					begin
+						A.ShowMSG(0,'Tree chopped.')
+						TreesToChop := TreesToChop + 1;
+						Actions.MapTileObjectSet(HPos.X,HPos.Y,255);
+						If TreesToChop = 5 then 
+							QuestTasks[3][0] := true;
+					end;
+		end;
+	end;
+end;
+Procedure OnTickPlayer7;
+begin
+		
+	//first quest
+	If States.GameTime > VillageQuestGiver[4].QTime + 200 then 
+	begin
+		If States.GameTime mod 100 = 0 then 
+		begin
+			If VillageQuestGiver[4].QEventType = 1 then 
+			begin
+				If PosInRadius(States.UnitPosition(Hero), VillageQuestGiver[4].QPos, 2) then	
+				begin
+					If States.GameTime > MessageDelay then 
+						If not QuestTasks[4][0] then
+						begin
+							Actions.ShowMSG(0,'<$123>');
+							MessageDelay := States.GameTime + 1200;
+						end;
+					If QuestTasks[4][0] then
+					begin
+						A.GiveWares(6,1,20);
+						A.GiveWares(6,2,15);
+						A.GiveWares(9,2,23);
+						A.GiveWares(9,8,21);
+						A.GiveWares(9,10,21);
+						HousesToBuild[6] := HousesToBuild[6]+7;
+						Actions.ShowMSG(0,'<$122>');
+						VillageQuestGiver[4].QEventType := 2;
+						VillageQuestGiver[4].QEndTime := States.GameTime+18000;
+					end;
+				end;
+			end;
+		end;
+		If not QuestTasks[4][0] then
+			If States.GameTime mod 100 = 0 then 
+				If PosInRadius(States.UnitPosition(Hero), U.KMPoint(197,251), 1) then	
+				begin
+					QuestTasks[4][0] := true;
+					A.ShowMSG(0,'<$124>')
+				end;
+				//If States.UnitPosition(Hero) = U.KMPoint(197,251) then 
+	end;
+	
+	//second quest
+	If VillageQuestGiver[4].QEventType = 2 then 
+		If States.GameTime > VillageQuestGiver[4].QEndTime  then 
+		begin
+			If States.GameTime = VillageQuestGiver[4].QEndTime + 100 then 
+			begin
+				Actions.ShowMSG(0,'Can you put some plan roads to prove your loyalty');
+				MessageDelay := States.GameTime + 3600;
+			end;
+			If States.GameTime mod 100 = 0 then 
+			begin
+				If States.GameTime > MessageDelay then 
+					If not QuestTasks[4][1] then
+					begin
+						Actions.ShowMSG(0,'You did not built a roads');
+						MessageDelay := States.GameTime + 3600;
+					end;
+				If QuestTasks[4][1] then
+				begin
+					HousesToBuild[6] := HousesToBuild[6]+5;
+					A.GiveWares(0,1,23);
+					A.GiveWares(0,2,18);
+					A.GiveWares(0,7,10);
+					Actions.ShowMSG(0,'Very good');
+					VillageQuestGiver[4].QEventType := 3;
+					VillageQuestGiver[4].QEndTime := States.GameTime+18000;
+				end;
+			end;
+		end;
+			
+	//third quest
+	If VillageQuestGiver[4].QEventType = 3 then 
+		If States.GameTime > VillageQuestGiver[4].QEndTime  then 
+		begin
+			If States.GameTime = VillageQuestGiver[4].QEndTime + 100 then 
+			begin
+				Actions.ShowMSG(0,'Can you come to my village. I have important things to say.');
+				MessageDelay := States.GameTime + 3600;
+			end;
+			If States.GameTime mod 100 = 0 then 
+			begin
+				If States.GameTime > MessageDelay then 
+					If not QuestTasks[4][1] then
+					begin
+						Actions.ShowMSG(0,'Please friend.');
+						MessageDelay := States.GameTime + 1200;
+					end;
+				If (States.UnitPosition(Hero) = U.KMPoint(190,205)) 	or
+					(States.UnitPosition(Hero) = U.KMPoint(182,206)) 	then
+						QuestTasks[4][2] := true;
+					
+				If QuestTasks[4][2] then
+				begin
+					HousesToBuild[6] := HousesToBuild[6]+3;
+					GiveSpecialItem;
+					Actions.ShowMSG(0,'I found this during the city`s expansion. I don`t know what is it for so I give it to you. Maybe you`ll figure it out.');
+					VillageQuestGiver[4].QEventType := 4;
+					VillageQuestGiver[4].QEndTime := States.GameTime + 6000;
+				end;
+			end;
+		end;
+end;
+
+Procedure OnTickVillages;
+var I, aHouseID, LEA : Integer;
+	aHouses : array of integer;
+	aSecPos,aToPos,aPos : TKMPoint;
+begin
+	OnTickFishVillage;
+	OnTickCoalVillage;
+	OnTickCornVillage;
+	OnTickWoodVillage;
+	OnTickPlayer7;
+	
+	If States.GameTime mod 600 = 0 then 
+		for I := 0 to 5 do 
+			If VillageQuestGiver[I].QGiver > 0 then 
+				Actions.UnitOrderWalk(VillageQuestGiver[I].QGiver,VillageQuestGiver[I].QPos.X,VillageQuestGiver[I].QPos.Y-2);
+	
+	If States.GameTime mod 10000 = 0 then 
+		for I := 0 to 5 do 
+			If VillageQuestGiver[I].DTrue then 
+			begin	
+				aSecPos := VillageQuestGiver[I].QPos;
+				aToPos := U.KMPoint(51,208);
+				VillageQuestGiver[I].DMan := Actions.GiveGroup(FromIToPL(I),27,aSecPos.X,aSecPos.Y+2,4,1,1)
+				Actions.GroupOrderWalk(VillageQuestGiver[I].DMan,aToPos.X,aToPos.Y+1,4);
+			end;
+			
+	If States.GameTime mod 20 = 0 then 
+		for I := 0 to 5 do 
+			If VillageQuestGiver[I].DTrue then 
+				If VillageQuestGiver[I].DMan > 0 then 
+					If PosInRadius(States.UnitPosition(S.GroupMember(VillageQuestGiver[I].DMan,0)), U.KMPoint(51,208), 2) then 
+					begin	
+						GiveResourcesFromVillage(I);
+						aSecPos := VillageQuestGiver[I].QPos;
+						Actions.GroupOrderWalk(VillageQuestGiver[I].DMan,aSecPos.X,aSecPos.Y,4);
+					end;
+					
+	If States.GameTime mod 20 = 0 then 
+		for I := 0 to 5 do 
+			If VillageQuestGiver[I].DTrue then 
+				If VillageQuestGiver[I].DMan > 0 then 
+				begin
+					aPos := States.UnitPosition(S.GroupMember(VillageQuestGiver[I].DMan,0))
+					aToPos := VillageQuestGiver[I].QPos;
+					If PosInRadius(aPos, aToPos, 1) then 
+					begin	
+						Actions.GroupKillAll(VillageQuestGiver[I].DMan,true);
+						VillageQuestGiver[I].DMan := 0;
+					end;	
+				end;	
+	
+			
+	//visiting villager
+	If not QuestNow.QVOnQuest then 
+	begin
+		If States.GameTime mod 50 = 0 then 
+			for I := 0 to 5 do
+				If I <> 4 then
+					If (VillageQuestGiver[I].QEndTime = 9999999) or (States.GameTime >VillageQuestGiver[I].QEndTime) then 
+						If States.UnitPosition(Hero) = VillageQuestGiver[I].QPos then 
+						begin		
+							VillageQuestGiver[I].QTime := States.GameTime;
+							VillageQuestGiver[I].QEventType := VillageQuestGiver[I].QEventType+1;
+							QuestNow.QVOnQuest := true;
+							StartCinematic(0,0);
+							MessageDelay := States.GameTime + 1200;
+							QuestNow.QVVillageType := I;
+							//A.ShowMSG(0,'');
+						end;
+	end else
+	begin
+		If States.GameTime > MessageDelay2 then 
+			If States.GameTime mod 50 = 0 then 
+				for I := 0 to 5 do
+					If (I <> 4) and (I <> QuestNow.QVVillageType) then
+						If (VillageQuestGiver[I].QEndTime = 9999999) or (States.GameTime >VillageQuestGiver[I].QEndTime) then 
+							If States.UnitPosition(Hero) = VillageQuestGiver[I].QPos then 
+							begin
+								A.ShowMSG(0, '<$'+IntToStr(106+I) + '>');
+								MessageDelay2 := States.GameTime + 600;
+							end;
+
+	end;	
+
+	If QuestNow.QVOnQuest then 
+		If States.GameTime mod 5 = 0 then 
+			If VillageQuestGiver[2].QEventType = 1 then 
+				If States.HouseAt(States.UnitPositionX(Hero),States.UnitPositionY(Hero)-1) > 0 then 
+				begin
+					aHouseID := States.HouseAt(States.UnitPositionX(Hero),States.UnitPositionY(Hero)-1);
+					If S.HouseBuildingProgress(aHouseID) < S.HouseTypeMaxHealth(States.HouseType(aHouseID)) then 
+						Actions.HouseAddBuildingProgress(aHouseID);
+				end;
+				
+	If VillageQuestGiver[3].QEndTime <> 9999999 then 
+		If VillageQuestGiver[3].QEventType = 2 then 
+		If States.GameTime < VillageQuestGiver[3].QEndTime + 2400 then 
+			If States.GameTime mod 20 = 0 then 
+				begin
+					aHouses := States.PlayerGetAllHouses(0);
+					for LEA := 0 to high(aHouses) do	
+						If States.HouseSiteIsDigged(aHouses[LEA]) and not (S.HouseIsComplete(aHouses[LEA])) then 
+						begin
+							A.HouseAddBuildingProgress(aHouses[LEA]);
+							A.HouseAddBuildingProgress(aHouses[LEA]);
+							A.HouseAddBuildingProgress(aHouses[LEA]);
+							A.HouseAddBuildingProgress(aHouses[LEA]);
+						end;
+				end;
+		
+	If States.GameTime = 10 then 
+	begin
+		VillageQuestGiver[0].QGiver := 	A.GiveUnit(13,8,148,240,4);//fisherman
+		VillageQuestGiver[1].QGiver :=	A.GiveUnit(13,2,241,225,4);//coal
+		VillageQuestGiver[2].QGiver := 	A.GiveUnit(13,4,125,121,4);//corn
+		VillageQuestGiver[3].QGiver := 	A.GiveUnit(13,1,57,107,4);//woodcutter
+		VillageQuestGiver[5].QGiver := 	A.GiveUnit(13,13,53,127,4);//barracks
+
+		for I := 0 to 5 do
+		begin
+			VillageQuestGiver[I].QPos := U.KMPoint(States.UnitPositionX(VillageQuestGiver[I].QGiver),States.UnitPositionY(VillageQuestGiver[I].QGiver)+2); 
+		end;
+		VillageQuestGiver[4].QPos := U.KMPoint(190,205);
+	end;
+	
+	
+end;
+
+Procedure OnMissionStartVillages;
+var I : Integer;
+begin			
+	for I := 0 to 5 do
+	begin
+		VillageQuestGiver[I].QEndTime := 9999999;
+		VillageQuestGiver[I].QTime := 9999999;
+	end;
+	VillageQuestGiver[0].DTrue := true;
+end;
+
+
+
+{
+Village quest legend
+
+///fisherman
+VillageQuestGiver[0].QEventType = 1 - quest to go to other villages
+
+
+///coal
+VillageQuestGiver[1].QEventType = 1 - quest to train a miners
+
+///corn
+VillageQuestGiver[2].QEventType = 1 - quest to build some buildings
+VillageQuestGiver[2].QEventType = 3 - quest to build some fields
+
+
+///wood
+VillageQuestGiver[3].QEventType = 1 - quest to cut some trees
+
+///player 7
+VillageQuestGiver[4].QEventType = 1 - quest to cut some trees
+VillageQuestGiver[4].QEventType = 2 - put some road plans
+
+///barracks
+VillageQuestGiver[5].QEventType = 1 -
+
+
+}

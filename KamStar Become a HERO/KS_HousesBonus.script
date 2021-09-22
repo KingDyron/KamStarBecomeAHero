@@ -1,0 +1,500 @@
+
+Procedure UnlockHouse(aType :array of integer);
+var LEA : Integer;
+begin
+	for LEA := 0 to length(aType)-1 do	
+	begin
+		Actions.HouseAllow(0,aType[LEA],true);
+		Actions.HouseUnlock(0,aType[LEA]);
+	end;
+end;
+
+Procedure WoodcutterBonus(Radius : Integer; aPos : TKMPoint);
+var aX,aY : Integer;
+begin
+	//A.ShowMSG(0,'');
+	for aX := aPos.X - Radius to aPos.X + Radius do
+		for aY := aPos.Y - Radius to aPos.Y + Radius do
+			If U.InRangeI(States.MapTileObject(aX,aY),88,170) then
+				Actions.MapTileObjectSet(aX,aY,GetNextTree(States.MapTileObject(aX,aY)));
+		
+end;
+Procedure OnIronMineBuilt;
+var aX,aY : Integer;
+begin
+	for aX := 36 to 69 do
+		for aY := 165 to 177 do
+			If States.MapTileHasTerrainKind(aX,aY,tkSwamp) then 
+				Actions.MapTileSet(aX,aY,0,States.KamRandomI(3));
+		
+end;
+Procedure OnCoalMineBuilt;
+begin
+	Actions.PlanAddHouse(4,1,224,71);
+	Actions.PlanConnectRoad(4,224,72,210,66,false);
+	
+	Actions.PlanAddHouse(4,1,197,60);
+	Actions.PlanConnectRoad(4,197,61,210,66,false);
+	
+	Actions.PlanAddHouse(4,2,210,41);
+	Actions.PlanConnectRoad(4,210,42,210,66,false);
+	
+	Actions.PlanAddHouse(4,10,207,52);
+	Actions.PlanConnectRoad(4,207,53,210,66,false);
+
+end;
+
+
+procedure SetBonusNearHouse(aIndex:Integer);
+var aType, I, K : Integer;
+	aPos : TKMPoint;
+begin
+	
+	If MultiMessages.aIndex <= high(MultiMessages.aShowArray) then 
+		Exit;
+	aType := HousesFirstBuilt[aIndex].aType;
+	aPos :=  HousesFirstBuilt[aIndex].Pos;
+	HousesFirstBuilt[aIndex].Once := true;
+	
+	case aIndex of 
+		0 : case aType of
+				27 :;//
+				13 :begin //
+						HeroSpecialHPPoints := HeroSpecialHPPoints + 40;
+						SetInventoryStats(-1);
+					end;
+			end;
+		1 : case aType of
+				6 : Actions.GiveWares(0,7,20);//fish
+				14 : GiveItemFromID(15);//querry
+				9 : GiveMultipleItems([14,48]);//wood
+			end;
+		2 : case aType of
+				17 : ;//
+				0 :	;
+			end;
+		3 : case aType of
+				8 : begin///
+						Actions.GroupOrderWalk(Actions.GiveGroup(0,25,24,186,3,12,4),57,198,1);
+						GiveItemFromID(16);
+					end;//
+				28 :A.GiveWares(0, 8, 67);///
+				21 :If HousesFirstBuilt[1].aType = 14 then ///
+						WallBuildingTime2 := States.GameTime
+					else
+						GiveMultipleItems([40,17,18,19,20,36,37,38,39]);//
+						
+				19 :GiveMultipleItems([17,18,19,20]);	///
+			end;
+		4 : case aType of
+				4 :A.GroupOrderWalk(A.GiveGroup(0,26,163,101,5,10,5),70,183,5);//
+				5 :A.GiveWares(0,7,13);//
+			end;
+		5 : case aType of
+				29 :;//
+				18 :GiveMultipleItems([21,22,23]);//
+			end;
+		6 : case aType of
+				24 : HeroNotHungry := true;//
+			end;
+		7 : case aType of
+				16 : A.GiveWares(0,14,27);//
+				7 :	A.UnitHungerSet(Hero, 27000);//
+				20 :GiveMultipleItems([24,25,26,27,28]);//
+				12 :GiveMultipleItems([29,30]);//
+			end;
+		8 : case aType of
+				3 :A.GiveWares(0, 1, 134);//
+				25 :begin
+						for I := 0 to 4 do	
+						begin
+							for K := 0 to 3 do 
+								A.MapTileHeightSet(82+K, 104+I,20);
+							A.MapTileSet(81,104+I,206,1);
+							A.MapTileSet(82,104+I,32,1);
+							A.MapTileSet(83,104+I,32,1);
+							A.MapTileSet(84,104+I,32,1);
+							A.MapTileSet(85,104+I,206,3);
+						end;
+					end;
+				22 :;
+			end;
+		9 : case aType of
+				1 :;
+				15 :;
+			end;
+		10 : case aType of
+				2 :	GiveMultipleItems([31,32,33,34]);
+				10 :GiveMultipleItems([35,36,37,38,39]);
+			end;
+
+
+	end;
+	case aType of 
+		2 : SetNewMultiMessages([86]);
+		3 : SetNewMultiMessages([84]);
+		4 : SetNewMultiMessages([69,70,71]);
+		5 : SetNewMultiMessages([67,68]);
+		6 : SetNewMultiMessages([35]);
+		7 : SetNewMultiMessages([82]);
+		8 : SetNewMultiMessages([32,33,34]);
+		9 : SetNewMultiMessages([49,58,59]);
+		10 : SetNewMultiMessages([87]);
+		12 : SetNewMultiMessages([28,29,30,31]);
+		13 : SetNewMultiMessages([46]);
+		14 : SetNewMultiMessages([48]);
+		16 : SetNewMultiMessages([81]);
+		17 : SetNewMultiMessages([44,45]);
+		18 : SetNewMultiMessages([72]);
+		19 : SetNewMultiMessages([65,66]);
+		20 : SetNewMultiMessages([83]);
+		21 :If HousesFirstBuilt[1].aType = 14 then 
+				SetNewMultiMessages([38,39])
+			else
+				SetNewMultiMessages([41,42,43]);
+		24 : SetNewMultiMessages([16]);
+		25 : SetNewMultiMessages([85]);
+		27 : SetNewMultiMessages([47]);
+		28 : SetNewMultiMessages([60,61,62,63,64]);
+		29 : If States.HouseResourceAmount(MainStoreHouse[0],7) < 50 then 
+			begin
+				HousesFirstBuilt[aIndex].Once := false;				
+				SetNewMultiMessages([73,74,75,76,77,78])
+			end	else 
+			If States.HouseResourceAmount(MainStoreHouse[0],7) >= 50 then
+			begin
+				A.HouseTakeWaresFrom(MainStoreHouse[0],7, 50);
+				GiveSpecialItem;
+				SetNewMultiMessages([73,74,75,76,77,79]);
+			end;
+	end;
+end;
+
+
+procedure SetBonus(aIndex:Integer);
+var aType, I : Integer;
+	aPos : TKMPoint;
+begin
+	aType := HousesFirstBuilt[aIndex].aType;
+	aPos :=  HousesFirstBuilt[aIndex].Pos;
+	case aIndex of
+		0 : case aType of
+				27 :begin
+						Actions.PlayerWin([0],true);
+						HousesToBuild[6] := HousesToBuild[6]+0
+					end;
+				13 :begin
+						HousesToBuild[6] := HousesToBuild[6]+3
+					end;
+			end;
+		1 : case aType of
+				6 :begin
+						UnlimitedFishes := true;
+						HousesToBuild[6] := HousesToBuild[6]+2
+					end;
+				14 :begin
+						WallBuildingTime1 := States.GameTime
+						HousesToBuild[6] := HousesToBuild[6]+4
+					end;
+				9 :begin
+						HousesToBuild[6] := HousesToBuild[6]+10
+					end;
+			end;
+		2 : case aType of
+				17 :begin
+						Actions.GroupOrderWalk(Actions.GiveGroup(0,25,50,242,0,9,3),57,198,1);
+						HousesToBuild[6] := HousesToBuild[6]+5
+					end;
+				0 :	begin
+						UpgradeArmy(0);
+						HousesToBuild[6] := HousesToBuild[6]+2
+					end;
+			end;
+		3 : case aType of
+				8 :begin
+						for I := 4 to 6 do
+						begin
+							Actions.GiveWares(I,8,200);
+							Actions.GiveWares(I,10,200);
+							Actions.GiveWares(I,13,200);
+							Actions.GiveWares(I,27,200);
+							//Actions.ShowMSG(0,'Thank you for giving me this food, it is very handy');
+						end;
+						HousesToBuild[6] := HousesToBuild[6]+8
+					end;
+				28 :begin
+						Actions.HouseTakeWaresFrom(MainStoreHouse[0],7,30);
+						HousesToBuild[6] := HousesToBuild[6]+2
+					end;
+				21 :begin
+						UpgradeArmy(0);
+						HousesToBuild[6] := HousesToBuild[6]+3
+					end;
+				19 :begin
+						Actions.GroupOrderAttackHouse(Actions.GiveGroup(1,14,aPos.X+4,aPos.Y,2,5,2),States.HouseAt(aPos.X,aPos.Y));
+						HousesToBuild[6] := HousesToBuild[6]+1
+					end;
+			end;
+		4 : case aType of
+				4 :begin
+						OnIronMineBuilt;
+						UnlockHouse([2,10]);
+						HousesToBuild[6] := HousesToBuild[6]+6
+					end;
+				5 :begin
+						GoldDoubleProduction:=True;
+						HousesToBuild[6] := HousesToBuild[6]+10;
+					end;
+			end;
+		5 : case aType of
+				29 :begin 
+						for I := 16 to 26 do 
+							If States.StatHouseTypeCount(0,21)>0 then 
+								Actions.GiveWeapons(0,I,8)
+							else
+								Actions.GiveWares(0,I,8);
+						HousesToBuild[6] := HousesToBuild[6]+2
+						UpgradeArmy(5);
+					end;
+				18 :begin
+						Actions.GiveGroup(0,23,aPos.X,aPos.Y+4,4,12,4)
+						HousesToBuild[6] := HousesToBuild[6]+4
+						UpgradeArmy(4);
+					end;
+			end;
+		6 : case aType of
+				24 :begin
+						for I := 0 to 29 do
+							If not U.ArrayHasElementI(I, [18,29]) then
+								UnlockHouse([I]);
+								
+						HousesToBuild[6] := HousesToBuild[6]+3
+					end;
+			end;
+		7 : case aType of
+				16 :begin	
+						Actions.HouseTakeWaresFrom(MainStoreHouse[0],9,10);
+						HousesToBuild[6] := HousesToBuild[6]+3
+					end;
+				7 :begin	
+						PlayerFeed(0);
+						HousesToBuild[6] := HousesToBuild[6]+2
+					end;
+				20 :begin
+						UpgradeArmy(0);
+						UpgradeArmy(0);
+						UpgradeArmy(6);
+						UpgradeArmy(6);
+						HousesToBuild[6] := HousesToBuild[6]+5
+					end;
+				12 :begin 
+						CavarlyGroup:=Actions.GiveGroup(17,22,162,125,6,12,4);
+						Actions.GroupOrderWalk(CavarlyGroup,47,206,5);
+						HousesToBuild[6] := HousesToBuild[6]+12
+					end;
+			end;
+		8 : case aType of
+				3 :begin	
+						OnCoalMineBuilt;
+						HousesToBuild[6] := HousesToBuild[6]+7
+					end;
+				25 :begin	
+					for I := 4 to 6 do
+						begin
+							Actions.GiveWares(I,7,100);
+							Actions.GiveWares(I,5,100);
+							Actions.ShowMSG(0,'Thank you for giving me this coal and gold, it is very handy');
+						end;
+						HousesToBuild[6] := HousesToBuild[6]+1
+					end;
+				22 :begin	
+						FreeUnitsToEquip := 10;
+						HousesToBuild[6] := HousesToBuild[6]+7;
+					end;
+			end;
+		9 : case aType of
+				1 :	begin	
+						Actions.GiveGroup(5,17,45,243,2,9,3);
+						Actions.GiveGroup(5,17,55,243,2,9,3);
+						Actions.GiveGroup(5,17,45,234,2,9,3);
+						Actions.GiveGroup(5,17,55,234,2,9,3);
+						HousesToBuild[6] := HousesToBuild[6]+9
+					end;
+				15 :begin	
+						//WarriorsOff := true;
+						HousesToBuild[6] := HousesToBuild[6]+5
+					end;
+			end;
+		10 : case aType of
+				2 :	begin
+						GiveHouseMultipleTimes(1,17, true,true,[Point(88,65),Point(100,65),Point(108,55),Point(114,49),Point(122,51),Point(131,52),Point(133,42)]);
+						GiveHouseMultipleTimes(8,17, true,true,[Point(191,22),Point(197,33),Point(196,12),Point(9,52),Point(18,60),Point(36,66),Point(69,71)]);
+						HousesToBuild[6] := HousesToBuild[6]+14
+					end;
+				10 :begin
+						BiggerEnemyAttacks := 4;
+						HousesToBuild[6] := HousesToBuild[6]+7
+					end;
+			end;
+	end;
+	Actions.ShowMSG(0,GetHouseMSG(aType));
+end;
+
+Procedure SetBuiltHousesData(aIndex,aType:Integer; HPos : TKMPoint);
+begin
+	HousesFirstBuilt[aIndex].ID := States.HouseAt(HPos.X,HPos.Y);
+	HousesFirstBuilt[aIndex].aType := aType;
+	HousesFirstBuilt[aIndex].Pos := HPos;
+	HousesFirstBuilt[aIndex].aTime := U.FloorTo(States.GameTime,100);
+	//Actions.ShowMSg(0,S.HouseTypeName(aType));
+end;
+
+
+//house unlocking and setting Firsthousedata
+Procedure OnHouseBuilt(aHouse:Integer);
+var aOwner, aType, I : Integer;
+	HousePos : TKMPoint;
+	aIndex,aLength:Integer;
+begin
+	aOwner := States.HouseOwner(aHouse);
+	If aOwner = 13 then 
+		OnHouseBuiltCornVillage(aHouse);
+		
+	if aOwner = 0 then
+	begin
+		aType := States.HouseType(aHouse)
+		HousePos := U.KMPoint(States.HousePositionX(aHouse),States.HousePositionY(aHouse));
+		/////////////////////////////////////////////////////////////////
+		/////////////////////////////////////////////////////////////////
+		/////////////////////////////////////////////////////////////////
+		//House unlocking
+		If (aType = 13)then
+			UnlockHouse([14,6,9]);
+			
+
+		If (aType = 14)then 
+			UnlockHouse([17]);
+		If (aType = 9)then 
+			UnlockHouse([0]);
+		If (aType = 0)then 
+			UnlockHouse([8,28,21,19]);
+		If (aType = 8)then 
+			UnlockHouse([22,16]);
+		If (aType = 22)then 
+			UnlockHouse([7]);
+		If (aType = 16)then 
+			UnlockHouse([24,25]);
+		If (aType = 5)then 
+			UnlockHouse([15,11]);
+			
+		If (aType = 5)then 
+			UnlockHouse([15,18]);
+		If (aType = 1)then 
+			UnlockHouse([2,10]);
+			
+		If (aType = 4)then 
+			UnlockHouse([29,11,1]);
+		If (aType = 25)then 
+			UnlockHouse([20]);
+		If (aType = 20)then 
+			UnlockHouse([12]);
+			
+		If (aType = 19)then 
+			UnlockHouse([20]);
+		If (aType = 21)then 
+			UnlockHouse([12]);
+		
+		If (aType = 19) or (aType = 21) then 
+			UnlockHouse([3,5]);
+		If (aType = 28) or (aType = 7) then 
+			UnlockHouse([3,4]);
+		/////////////////////////////////////////////////////////////////
+		/////////////////////////////////////////////////////////////////
+		/////////////////////////////////////////////////////////////////
+		// first choice
+		If ((aType = 13) or (aType = 27)) and (HousesFirstBuilt[0].aType = -1) then 
+		begin
+			If aType = 27 then
+				for I := 0 to 27 do
+					Actions.HouseTakeWaresFrom(MainStoreHouse[0],I,States.HouseResourceAmount(MainStoreHouse[0],I));
+			SetBuiltHousesData(0,aType,HousePos);
+		end;
+		//Second Choice
+		If ((aType = 14) or (aType = 6) or (aType = 9)) and (HousesFirstBuilt[1].aType = -1) then 
+		begin
+			SetBuiltHousesData(1,aType,HousePos);
+		end;
+		//third choice
+		If ((aType = 0) or (aType = 17)) and (HousesFirstBuilt[2].aType = -1) then 
+		begin
+			SetBuiltHousesData(2,aType,HousePos);
+		end;
+		//fourth choice/////////////
+		If ((aType = 8) or (aType = 28) or (aType = 19) or (aType = 21)) and (HousesFirstBuilt[3].aType = -1) then 
+		begin
+			SetBuiltHousesData(3,aType,HousePos);
+		end;
+		//fifth choice/////////////
+		If ((aType = 16) or (aType = 7) or (aType = 20) or (aType = 12)) and (HousesFirstBuilt[7].aType = -1) then 
+		begin
+			SetBuiltHousesData(7,aType,HousePos);
+		end;
+		If (U.ArrayHasElementI(aType,[22,25,3])) and (HousesFirstBuilt[8].aType = -1) then 
+		begin
+			SetBuiltHousesData(8,aType,HousePos);
+		end;
+		If (aType = 24) and (HousesFirstBuilt[6].aType = -1) and (HousesFirstBuilt[4].aType = -1) then 
+		begin
+			SetBuiltHousesData(6,aType,HousePos);
+		end;
+		If ((aType = 19) or (aType = 21)) and (HousesFirstBuilt[3].aType = -1) then 
+		begin
+			SetBuiltHousesData(3,aType,HousePos);
+		end;
+		////////////////////////////
+		//sixth choice
+		If ((aType = 5) or (aType = 4)) and (HousesFirstBuilt[4].aType = -1) then 
+		begin
+			SetBuiltHousesData(4,aType,HousePos);
+		end;
+		
+		
+		//seventh choice
+		If ((aType = 29)or (aType = 18)) and (HousesFirstBuilt[5].aType = -1) then 
+		begin
+			SetBuiltHousesData(5,aType,HousePos);
+		end;
+		
+		
+		If (aType = 3) and (HousesFirstBuilt[4].aType = -1) and (HousesFirstBuilt[6].aType = -1) then 
+		begin
+			SetBuiltHousesData(6,aType,HousePos);
+		end;
+		If ((aType = 1) or (aType = 15)) and (HousesFirstBuilt[9].aType = -1) then 
+		begin
+			SetBuiltHousesData(9,aType,HousePos);
+		end;
+		
+		If ((aType = 2) or (aType = 10)) and (HousesFirstBuilt[10].aType = -1) then 
+		begin
+			SetBuiltHousesData(10,aType,HousePos);
+		end;
+		/////////////////////////////////////////////////////////////////	
+		/////////////////////////////////////////////////////////////////	
+		/////////////////////////////////////////////////////////////////	
+		If (aType = 21) or (aType = 11) then 
+		begin
+			SetLength(Stores,length(Stores)+1);
+			aIndex:=length(Stores)-1;
+			Stores[aIndex]:=aHouse;
+		end;
+	end;
+	
+	If aOwner = 6 then 
+		case States.HouseType(aHouse) of 
+			3 : SetPlayerMines(6);
+			4 : SetPlayerMines(6);
+			5 : SetPlayerMines(6);
+		end;
+end;
+

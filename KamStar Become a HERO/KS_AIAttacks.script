@@ -1,0 +1,220 @@
+
+{$EVENT evtMissionStart:AIAOnMissionStart}
+{$EVENT evtTick:AIAOnTick}
+const
+	MINA_PLAYERS = 1;
+	MAXA_PLAYERS = 1;
+
+var AttackedEnemy :array[MINA_PLAYERS..MAXA_PLAYERS] of array of Integer;
+	NextEnemy : Integer;
+	AttackMode: array[MINA_PLAYERS..MAXA_PLAYERS] of Integer;
+	//AttackTime : Integer;
+	
+type TTKDefType = record
+	Pos : TKMPoint; 
+	aGType,
+	aDir,
+	aRadius:Integer;	
+end;
+
+type TTKPlayerStats = record
+	PerEnemyLength : array of Integer;
+	DefPos, AttPos : array of TTKDefType;
+	MaxDefenses:Integer;
+end;
+
+var PlStatsDefs : array[MINA_PLAYERS..MAXA_PLAYERS] of TTKPlayerStats;
+
+Procedure RemoveAttackingDefenses(Player,mode:Integer);
+var I, j :Integer;
+begin
+	j:= PlStatsDefs[Player].PerEnemyLength[NextEnemy];
+	If mode = 1 then
+		for I := j-1-(PlStatsDefs[Player].MaxDefenses-1) to j-1 do
+			Actions.AIDefencePositionRemove(Player,
+				PlStatsDefs[Player].AttPos[I].Pos.X,
+				PlStatsDefs[Player].AttPos[I].Pos.Y
+			);
+	If mode = 0 then
+		for I := 0 to length(PlStatsDefs[Player].DefPos)-1 do
+			Actions.AIDefencePositionRemove(Player,
+				PlStatsDefs[Player].DefPos[I].Pos.X,
+				PlStatsDefs[Player].DefPos[I].Pos.Y
+			);
+	case mode of
+		0: 	begin
+				Actions.AIStartPosition(1,45,208)
+			end;
+		1: Actions.AIAttackRemoveAll(Player);
+	end;
+end;
+
+Procedure AddAttackingDefenses(Player,mode:Integer);
+var I, j :Integer;
+begin
+	j:= PlStatsDefs[Player].PerEnemyLength[NextEnemy];
+	If mode = 0 then
+		for I := j-1-(PlStatsDefs[Player].MaxDefenses-1) to j-1 do
+			Actions.AIDefencePositionAdd(Player,
+				PlStatsDefs[Player].AttPos[I].Pos.X,
+				PlStatsDefs[Player].AttPos[I].Pos.Y,
+				PlStatsDefs[Player].AttPos[I].aDir,
+				PlStatsDefs[Player].AttPos[I].aGType,
+				PlStatsDefs[Player].AttPos[I].aRadius,	
+				1
+			);
+	If mode = 1 then
+		for I := 0 to length(PlStatsDefs[Player].DefPos)-1 do
+			Actions.AIDefencePositionAdd(Player,
+				PlStatsDefs[Player].DefPos[I].Pos.X,
+				PlStatsDefs[Player].DefPos[I].Pos.Y,
+				PlStatsDefs[Player].DefPos[I].aDir,
+				PlStatsDefs[Player].DefPos[I].aGType,
+				PlStatsDefs[Player].DefPos[I].aRadius,	
+				1
+			);
+end;
+
+Procedure AddDefensesPositionToRemove(Player,aX,aY, aType,aDir,aRadius:Integer);
+var j:Integer;
+begin
+	SetLength(PlStatsDefs[Player].DefPos,length(PlStatsDefs[Player].DefPos)+1);
+	j:= length(PlStatsDefs[Player].DefPos)-1;
+	PlStatsDefs[Player].DefPos[j].Pos := U.KMPoint(aX,aY);
+	PlStatsDefs[Player].DefPos[j].aGType := aType;
+	PlStatsDefs[Player].DefPos[j].aDir := aDir;
+	PlStatsDefs[Player].DefPos[j].aRadius := aRadius;
+end;
+Procedure AddDefensesPositionToAdd(Player,aX,aY, aType,aDir,aRadius:Integer);
+var j:Integer;
+begin
+	SetLength(PlStatsDefs[Player].AttPos,length(PlStatsDefs[Player].AttPos)+1);
+	j:= length(PlStatsDefs[Player].AttPos)-1;
+	PlStatsDefs[Player].AttPos[j].Pos := U.KMPoint(aX,aY);
+	PlStatsDefs[Player].AttPos[j].aGType := aType;
+	PlStatsDefs[Player].AttPos[j].aDir := aDir;
+	PlStatsDefs[Player].AttPos[j].aRadius := aRadius;
+end;
+Procedure AddDefenseLength(Player:Integer);
+var j:Integer;
+begin
+	j:= length(PlStatsDefs[Player].AttPos);
+	SetLength(PlStatsDefs[Player].PerEnemyLength,length(PlStatsDefs[Player].PerEnemyLength)+1);
+	PlStatsDefs[Player].PerEnemyLength[length(PlStatsDefs[Player].PerEnemyLength)-1] :=j;
+end;
+
+
+Procedure FirstDefensesToRemove(Player, FromID, ToID, aDir : Integer);
+var DCount, LEA :Integer;
+	aGType: Byte;
+	aRadius: Word;
+	aDefType: Byte;
+	aPos : TKMPoint;
+begin
+	DCount := States.StatAIDefencePositionsCount(Player);
+	for LEA := FromID to ToID do
+	begin
+		S.AIDefencePositionGet(Player,LEA,aPos.X,aPos.Y,aGType,aRadius,aDefType);
+		//A.AIDefencePositionRemove(Player,aPos.X,aPos.Y);
+		AddDefensesPositionToRemove(Player,aPos.X,aPos.Y,aGType,aDir,10);
+	end;
+end;
+
+Procedure SecondDefensesToRemove(Player, FromID, ToID, aDir : Integer);
+var DCount, LEA :Integer;
+	aGType: Byte;
+	aRadius: Word;
+	aDefType: Byte;
+	aPos : TKMPoint;
+begin
+	DCount := States.StatAIDefencePositionsCount(Player);
+	for LEA := ToID downto FromID do
+	begin
+		S.AIDefencePositionGet(Player,LEA,aPos.X,aPos.Y,aGType,aRadius,aDefType);
+		A.AIDefencePositionRemove(Player,aPos.X,aPos.Y);
+		AddDefensesPositionToAdd(Player,aPos.X,aPos.Y,aGType,aDir,10);
+	end;
+end;
+
+Procedure AddGroupsToPosition(Player, FromID, ToID,aCount : Integer);
+var DCount, LEA, aType :Integer;
+	aGType: Byte;
+	aRadius: Word;
+	aDefType: Byte;
+	aPos : TKMPoint;
+begin
+	DCount := States.StatAIDefencePositionsCount(Player);
+	for LEA := ToID downto FromID do
+	begin
+		S.AIDefencePositionGet(Player,LEA,aPos.X,aPos.Y,aGType,aRadius,aDefType);
+		case aGType of
+			0 : atype := 26;
+			1 : atype := 20;
+			2 : atype := 18;
+			3 : atype := 22;
+		end;
+		Actions.GiveGroup(Player,aType,aPos.X,aPos.Y,0,aCount,5);
+	end;
+end;
+
+
+Procedure AIAOnTick;
+begin{
+	If States.GameTime mod 20 = 0 then
+	begin
+		If States.PlayerDefeated(AttackedEnemy[5][NextEnemy]) then
+			If length(AttackedEnemy[5])-1 > NextEnemy then
+				NextEnemy := NextEnemy+1;
+		If AttackMode[5] = 1 then 
+			If States.StatArmyCount(5) < 95 then 
+			begin
+				RemoveAttackingDefenses(5,AttackMode[5]); 
+				AddAttackingDefenses(5,AttackMode[5]); 
+				AttackMode[5] := 0
+			end;
+		If AttackMode[5] = 0 then 
+			If States.StatArmyCount(5) >= 95 then 
+			begin
+				AddAttackingDefenses(5,AttackMode[5]); 
+				RemoveAttackingDefenses(5,AttackMode[5]); 
+				AttackMode[5] := 1
+			end;
+	
+	
+	end;}
+	
+	
+	If States.GameTime = PlayersAttacked[0].AttackedTime then
+	begin
+		AddGroupsToPosition(1,23,40,20);
+		AddAttackingDefenses(1,AttackMode[1]); 
+		RemoveAttackingDefenses(1,AttackMode[1]); 
+		AttackMode[1] := 1;				
+		Actions.AIAttackAdd(1,true,6000,5,1,1,1,1,true,attClosestUnit,U.KMPoint(10,10));
+
+	end;	
+	
+end;
+
+
+Procedure AIAOnMissionStart;
+begin
+	NextEnemy := 0;
+	AttackedEnemy[1] := [0,4];
+	PlStatsDefs[1].MaxDefenses := 16;
+	//AddDefensesPositionToAdd(1,90,134,0,0,10);
+	//AddDefensesPositionToAdd(1,134,94,1,0,10);
+	//AddDefensesPositionToAdd(1,62,100,2,0,10);
+	SecondDefensesToRemove(1,40,56,5);
+	AddDefenseLength(1);
+	FirstDefensesToRemove(1,23,40,2);
+	//Actions.AIAttackRemoveAll(1);
+	
+	{
+	//attack on the player by player 2
+	AddGroupsToPosition(1,23,40);
+	AddAttackingDefenses(1,AttackMode[1]); 
+	RemoveAttackingDefenses(1,AttackMode[1]); 
+	AttackMode[1] := 1
+	}
+end;

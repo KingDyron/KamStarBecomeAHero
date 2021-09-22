@@ -1,0 +1,55 @@
+
+//Ataki gracza 2 :
+
+//Zwiêkszona iloœc wojsk po wybudowaniu kuŸni zbroi
+
+
+//Pojawienie siê kolejnych wie¿ po wybudowaniu kuŸni broni
+
+
+//uzupe³nianie wie¿ czarnego
+
+
+
+//ataki graczy na innych graczy przy odpowiednich sojuszach
+
+//wiadomoœci po przybyciu pod budynek
+
+
+jak jest aktywny inny quest wyœlij wiadomoœæ ¿e jest aktywny quest//
+dodaæ opisy przy podejœciu do zadania, jak to zadanie wykonaæ
+
+dodam wiadomoœæ od doradcy, ¿eby zaatakowaæ garnizon
+
+wzglêdem poziomu trudnoœci czas oczekiwania na emisariuszy/etc jest mniejszy
+
+Pokazaæ wiadomoœæ ile pól/dróg zosta³o do postawienia przy questach
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////WIOSKI - ZADANIA//////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+//wioska rybacka
+ - zrobiæ quest w ktorym rybak mówi, ¿e gdzieœ znajduj¹ siê pradawne bronie, ale jest to tylko legenda - póŸno
+
+
+//wioska wêgla
+ - quest we wiosce wêgla o zbójcach - napad na wioskê//
+
+
+
+//wioska drwala
+ - póŸno - quest który ka¿e znaleŸæ ciêzko do œciêcia drzewo - a on z niego zrobi szybki podwójny topór.
+
+
+//wioska gospodarstw
+ - postawienie kolejnych pól//
+
+
+//wioska koszar
+
+
+//gracz 7
+ - póŸno - znajduje artefakt, którego nie wie jak u¿yæ

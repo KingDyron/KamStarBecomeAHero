@@ -1,0 +1,80 @@
+//right hand					
+'Hand' 								
+'Hand axe' 							
+'Iron axe' 							
+'Sword Xiphos' 						
+'Long Sword' 						
+'Double Axe' 							
+'Valtarian Sword' 				
+'The Ancient Sword' 				
+'The Sword of the God' 
+'Woodcutter`s Axe'		
+'Pickaxe'		
+		//Pike
+'Lance' 							
+'Pike' 								
+		//Range
+'Long Bow' 							
+'Crossbow' 							
+'The Ancient Bow' 					
+'The Ancient Crossbow' 					
+'Valtarian Crossbow' 			
+
+//left hand
+'Hand'
+'Wooden Shield' 						
+'Iron Shield' 							
+'Long Shield' 							
+'The Ancient Shield' 					
+'The Shield of the God'					
+'Valtarian Shield'  	
+'Stick'			
+'Sword Xiphos'
+
+//head
+'Wooden Helmet' 					
+'Iron Helmet' 						
+'The Ancient Helmet' 				
+'The Helmet of the God' 					
+'Valtarian Helmet' 			
+
+//chestplate
+'Wooden Chestplate' 				
+'Leather Armor' 					
+'Iron Armor' 						
+'The Ancient Chestplate' 			
+'The Gods Chestplate' 					
+'Valtarian Chestplate' 				
+
+//legs
+'Wooden Leggings' 					
+'Leather Leggings' 					
+'Iron Leggings' 				
+'The Ancient Leggings' 				
+'The Leggings of the God'				
+'Valtarian Leggings'  			
+//feet
+'Wooden Boots' 						
+'Leather Boots' 					
+'Iron Boots' 
+'The Ancient Boots'
+'The Boots of the God'				
+'Valtarian Boots' 
+//sakwa
+''
+//horse
+'Old horse'
+'Mustang'
+'[$FFFF00]Royal Horse [$FFFFFF]'
+
+
+
+
+//special items
+'Ion Spear'
+'Ion Shell'
+'Scanning Glasses'
+'Power Chest Belt'
+'Multi Slots'
+'Boots of the Multigravitation'
+'The Vial of Regeneration'

@@ -1,0 +1,533 @@
+
+
+function GetUnitNextLevel(aType : Integer) : Integer;
+begin
+	case aType of
+		14 : Result := 15;
+		15 : Result := 16;
+		16 : Result := 23;
+		17 : Result := 18;
+		19 : Result := 20;
+		21 : Result := 22;
+		23 : Result := 26;
+		24 : Result := 19;
+		25 : Result := 17;
+		27 : Result := 21;
+	end;
+end;
+
+
+function HeroInVillage(HeroPos : TKMPoint) : Integer;
+var I, K : Integer;
+begin
+	Result := -1;
+	for I := 0 to 5 do	
+		If not VillageVisited[I] then 
+			for K := 0 to high(VillageQuestGiver[I].QPontsToReveal) do
+				If States.FogRevealed(0,VillageQuestGiver[I].QPontsToReveal[K].X,VillageQuestGiver[I].QPontsToReveal[K].Y) then 
+					Result := I;
+			
+	If Result <> -1 then 	
+	begin
+		VillageVisited[Result] := true;
+	end;
+end;
+
+
+function HeroNearbyEmissary(HeroPos : TKMPoint; Emissary : Integer) : Boolean;
+var aPos : TKMPoint;
+begin
+	Result := false;
+	aPos := U.KMPoint(255,255);
+	case Emissary of
+		1 : If not States.GroupDead(Emissary1) then aPos := States.UnitPosition(States.GroupMember(Emissary1,0));
+		4 : If not States.GroupDead(Emissary4) then	aPos := States.UnitPosition(States.GroupMember(Emissary4,0));
+		else Exit;
+	end;
+	If HeroPos = U.KMPoint(aPos.X,aPos.Y+2) then
+	begin
+		Result := True;
+		EmissaryStats[Emissary] := eTalkStart;
+	end;
+end;
+
+
+function GetArmyCountMultiPL(Players :array of Integer) : Integer;
+var I : Integer;
+begin
+	for I := low(Players) to high(Players) do
+		Result := Result + S.StatArmyCount(Players[I]);
+end;
+
+function GetUnitCosts(aType :Integer) :array of Integer;
+begin
+	case aType of
+		14 : Result := [20];
+		15 : Result := [20,16,18];
+		16 : Result := [21,19,17];
+		17 : Result := [18,24];
+		18 : Result := [19,25];
+		19 : Result := [18,22];
+		20 : Result := [19,23];
+		21 : Result := [20,16,18,26];
+		22 : Result := [26,21,19,17];
+		
+		23,26 : Result := [8];
+		24 : Result := [2];
+		25 : Result := [3];
+		27 : Result := [5];
+	end;
+end;
+function GetHouseMSG(aType :Integer) :Ansistring;
+begin
+	case aType of
+		0 : Result := '<$6>';
+		1 : Result := '<$23>';
+		2 : Result := '<$25>';
+		3 : Result := '<$15>';
+		4 : Result := '<$11>';
+		5 : Result := '<$12>';
+		6 : Result := '<$4>';
+		7 : Result := '<$19>';
+		8 : Result := '<$7>';
+		9 : Result := '<$3>';
+		10 : Result := '<$26>';
+		12 : Result := '<$27>';
+		13 : Result := '<$0>';
+		14 : Result := '<$2>';
+		15 : Result := '<$24>';
+		16 : Result := '<$18>';
+		17 : Result := '<$5>';
+		18 : Result := '<$14>';
+		19 : Result := '<$10>';
+		20 : Result := '<$20>'; 
+		21 : Result := '<$8>';
+		22 : Result := '<$22>';
+		24 : Result := '<$80>';
+		25 : Result := '<$17>';
+		27 : Result := '<$1>';
+		28 : Result := '<$9>';
+		29 : Result := '<$13>';
+	end;
+end;
+function GetNextTree(aTreeID :Integer) :Integer;
+begin
+	case aTreeID of
+		88 : Result := aTreeID+1;
+		89 : Result := aTreeID+1;
+		
+		92 : Result := aTreeID+1;
+		93 : Result := aTreeID+1;
+		94 : Result := aTreeID+1;
+		
+		97 : Result := aTreeID+1;
+		98 : Result := aTreeID+1;
+		99 : Result := aTreeID+1;
+		
+		102 : Result := aTreeID+1;
+		103 : Result := aTreeID+1;
+		104 : Result := aTreeID+1;
+		
+		107 : Result := aTreeID+1;
+		108 : Result := aTreeID+1;
+		109 : Result := aTreeID+1;
+		
+		112 : Result := aTreeID+1;
+		113 : Result := aTreeID+1;
+		
+		116 : Result := aTreeID+1;
+		117 : Result := aTreeID+1;
+		118 : Result := aTreeID+1;
+		
+		121 : Result := aTreeID+1;
+		122 : Result := aTreeID+1;
+		123 : Result := aTreeID+1;
+		
+		149 : Result := aTreeID+1;
+		150 : Result := aTreeID+1;
+		153 : Result := aTreeID+1;
+		154 : Result := aTreeID+1;
+		157 : Result := aTreeID+1;
+		158 : Result := aTreeID+1;
+		159 : Result := aTreeID+1;
+		162 : Result := aTreeID+1;
+		163 : Result := aTreeID+1;
+		164 : Result := aTreeID+1;
+		
+		167 : Result := aTreeID+1;
+		168 : Result := aTreeID+1;
+		169 : Result := aTreeID+1;
+		else Result := aTreeID;
+	end;
+end;
+
+Procedure RemoveAttackToMultiPL(Players :array of Integer);
+var I : Integer;
+begin
+	for I := low(Players) to high(Players) do
+		Actions.AIAttackRemoveAll(Players[I]);
+end;
+
+Procedure StartCinematic(Mode, aDir : Integer);
+begin
+	If Mode = 0 then 
+	begin
+		Actions.CinematicStart(0);
+		Actions.CinematicPanTo(0,States.UnitPositionX(Hero),States.UnitPositionY(Hero),0);
+		Actions.GameSpeed(1);
+		//Actions.GameSpeedChangeAllowed(false);
+	end else
+	begin
+		Actions.CinematicEnd(0);
+		Actions.GameSpeed(1);
+		//Actions.GameSpeedChangeAllowed(true);
+	end;
+	Actions.UnitDirectionSet(Hero,aDir);
+end;
+
+
+
+Procedure ShowHeroStats;
+var I, K : Integer;
+	aPos,aPos2 : TKMPoint;
+begin
+	aPos := States.UnitPosition(Hero);
+	aPos2 := VillageQuestGiver[5].QPos;
+	//Actions.UnitHungerSet(Hero,27000)
+	If length(HeroInventory[7]) = 0 then 
+		Exit;
+	Actions.OverlayTextSet(-1,'');
+	If U.ArrayHasElementI(ShowStatsOrPlayers[0], [0,1]) then 
+		begin
+		If  Health>0 then 
+		begin
+			Actions.OverlayTextAppend(-1,'<$94> [$00FF00]' +IntToStr(Health)+'[$FFFFFF] / [$0000FF]'+IntToStr(HPmax)+'[$FFFFFF]');
+			Actions.OverlayTextAppend(-1,'|<$92> [$00FF00]' +IntToStr(Attack)+'[$FFFFFF]');
+			Actions.OverlayTextAppend(-1,'|<$93> [$00FF00]' +IntToStr(Defense)+'[$FFFFFF]');
+			//Actions.OverlayTextAppend(-1,'|Position : ' +IntToStr(aPos2.X)+' : '+IntToStr(aPos2.Y) + '[$FFFFFF]');
+			Actions.OverlayTextAppend(-1,'|<$91>[$00FF00]' + IntToStr(Haste)+'[$FFFFFF]');	
+			Actions.OverlayTextAppend(-1,'[$00FF00]||Hero Inventory : [$FFFFFF]');
+			
+			for I := low(HeroInventory)to high(HeroInventory) do
+			begin
+				K := HeroInventoryString[I]
+				Actions.OverlayTextAppend(-1,'<$'+IntToStr(50+I)+'>' + HeroInventory[I][K].Name);
+			end;
+		end;
+		
+		If (States.UnitDead(Hero))then	
+			Actions.OverlayTextAppend(-1,'|Your Hero is [$0000FF]DEAD');
+			
+		If MinersKilled > 0 then 
+			Actions.OverlayTextAppend(-1,'|Miners delivered : ' + IntToStr(12-MinersKilled));
+	end else
+	begin	
+		Actions.OverlayTextAppend(-1,'||<$95>');
+		for I := 1 to 6 do			
+			If States.PlayerAllianceCheck(0,I) then 
+				Actions.OverlayTextAppend(-1,'|[$' + States.PlayerColorText(I)+']<$'+IntToStr(96+I)+'>[$ffffff]');
+				
+		Actions.OverlayTextAppend(-1,'||<$96>');
+		for I := 1 to 6 do		
+			If not States.PlayerAllianceCheck(0,I) and not States.PlayerAllianceCheck(I,0) then 
+				Actions.OverlayTextAppend(-1,'|[$' + States.PlayerColorText(I)+']<$'+IntToStr(96+I)+'>[$ffffff]');
+			
+		Actions.OverlayTextAppend(-1,'|<$103>');	
+		for I := 1 to 6 do			
+			If not States.PlayerAllianceCheck(0,I) and States.PlayerAllianceCheck(I,0) then 
+				Actions.OverlayTextAppend(-1,'|[$' + States.PlayerColorText(I)+']<$'+IntToStr(96+I)+'>[$ffffff]');
+		
+		If States.GameTime mod 50 = 0 then 
+		begin	
+			for I := 1 to 6 do	
+				If States.PlayerAllianceCheck(0,I) then 
+				begin
+					aResourceString := '';
+					If States.HouseResourceAmount(MainStoreHouse[I], 1) < 20 then 
+						aResourceString := aResourceString + '|  ' + States.WareTypeName(1);
+					If States.HouseResourceAmount(MainStoreHouse[I], 2) < 10 then 
+						aResourceString := aResourceString + '|  ' + States.WareTypeName(2);
+					If States.HouseResourceAmount(MainStoreHouse[I], 7) < 20 then 
+						aResourceString := aResourceString + '|  ' + States.WareTypeName(7);
+					
+					If (States.HouseResourceAmount(MainStoreHouse[I], 8) + 
+						States.HouseResourceAmount(MainStoreHouse[I], 10) + 
+						States.HouseResourceAmount(MainStoreHouse[I], 13) + 
+						States.HouseResourceAmount(MainStoreHouse[I], 27) < 50) then 
+						aResourceString := aResourceString + '|  <$105>';
+					If aResourceString <> '' then 
+						aResourceString := '|[$' + States.PlayerColorText(I)+']<$'+IntToStr(96+I)+'>[$ffffff] :' + aResourceString;
+				end;
+		end;
+	end;
+	If aResourceString <> '' then 
+	begin
+		Actions.OverlayTextAppend(-1,'|<$104>');
+		Actions.OverlayTextAppend(-1,aResourceString);
+	end;	
+end;
+
+Function Point(X,Y:Integer) : TKMPoint;
+begin
+	Result := U.KMPoint(X,Y);
+end;
+
+Procedure GiveHouseMultipleTimes(aPlayer,aType:Integer; WithUnits, WithRoad:Boolean; aPoses:array of TKMPoint);
+var I : Integer;
+	aPos : TKMPoint;
+begin
+	aPos := States.HousePosition(MainStoreHouse[aPlayer]);
+	for I := low(aPoses) to high(aPoses) do 
+	begin
+		
+		A.GiveHouse(aPlayer,aType,aPoses[I].X,aPoses[I].Y);
+		If WithUnits then
+			A.GiveUnit(aPlayer,0,aPoses[I].X,aPoses[I].Y+1,4);	
+		If WithUnits then	
+			A.GiveUnit(aPlayer,S.HouseTypeToOccupantType(aType),aPoses[I].X,aPoses[I].Y+1,4);
+		If WithRoad then	
+			A.PlanConnectRoad(aPlayer,aPoses[I].X,aPoses[I].Y+1,aPos.X,aPos.Y+1,true);
+	end;
+end;
+
+function FromIToPL(I:Integer):Integer;
+begin
+	case I of 
+		0:Result := 13;
+		1:Result := 14;
+		2:Result := 12;
+		3:Result := 12;
+	end;
+end;
+
+procedure GiveResourcesFromVillage(aPlayer:Integer);
+begin
+	case aPlayer of
+		0 : A.GiveWares(0,27,10);
+		1 : A.GiveWares(0,5,10);
+		2 : A.GiveWares(0,7,10);
+		3 : A.GiveWares(0,0,10);
+	end;
+end;
+
+
+
+function ArrayElementIndex(aElement : String; aArray : array of String) : Integer;
+var I : Integer;
+begin
+	Result := -1;
+	for I := low(aArray) to high(aArray) do
+		If aElement = aArray[I] then
+			Result := I;
+end;
+
+function ArrayElementIndexI(aElement : integer; aArray : array of Integer) : Integer;
+var I : Integer;
+begin
+	Result := -1;
+	for I := low(aArray) to high(aArray) do
+		If aElement = aArray[I] then
+			Result := I;
+end;
+
+function ItemsArrayElementIndex(aElement : String; aArray : array of KS_Item) : Integer;
+var I : Integer;
+begin
+	Result := -1;	
+	for I := low(aArray) to high(aArray) do
+		If aElement = aArray[I].Name then
+			Result := I;
+end;
+
+function SetKS_Item(Name : String;	Attack,	Defense, Health, aTypeTo, Haste, ID : Integer) : KS_Item;
+begin
+	Result.Name := Name;
+	Result.Attack := Attack;
+	Result.Defense := Defense;
+	Result.Health := Health;
+	Result.aTypeTo := aTypeTo;
+	Result.Haste := Haste;
+end;
+
+Procedure KillAllGroups(aPlayer:Integer);
+var LEA : Integer;
+	AllGroups : array of Integer;
+begin
+	AllGroups := States.PlayerGetAllGroups(aPlayer);
+	for LEA := 0 to length(AllGroups)-1 do
+		A.GroupKillAll(AllGroups[LEA],true);
+end;
+
+Procedure SetWin(aWinType : KS_WinType);
+begin
+	Win.WinTime := States.GameTime;
+	Win.WinType := aWinType;
+end;
+
+function PointArrayRemoveIndex(aArray : array of TKMPoint; aIndexes :array of Integer) : array of TKMPoint;
+var I, K : integer;
+	newArray : array of TKMPoint;
+begin
+	for I := 0 to high(aArray) do
+		If not U.ArrayHasElementI(I, aIndexes) then 
+		begin
+			K := length(newArray)
+			SetLength(newArray, K+1);
+			newArray[K] := aArray[I];
+		end;
+	Result := newArray;
+end;
+
+Function GetMessageNumber(aPlayer : Integer) : Ansistring;
+var I, aIndex : Integer;
+begin
+	//A.ShowMsg(-1,'');
+	Result := '';
+	for I := 0 to 3 do	
+		if PlayersFirstDefeated[I] = aPlayer then 
+			aIndex := I;
+	
+	case aIndex of 
+		0 : case PlayersFirstDefeated[aIndex] of 
+				6: Result := '<$338>';
+				5: Result := '<$347>';
+				4: Result := '<$354>';
+				1: Result := 'well well';
+			end;
+		
+		1 : case PlayersFirstDefeated[0] of 
+				6:	case PlayersFirstDefeated[1] of 
+						4: Result := '<$340>';
+						5: Result := '<$339>';
+						1: Result := 'well well';
+					end;
+				5:	case PlayersFirstDefeated[1] of 
+						1: Result := 'well well';
+						4: Result := '<$348>';
+						6: Result := '<$351>';
+					end;
+				4:	case PlayersFirstDefeated[1] of 
+						1: Result := 'well well';
+						5: Result := '<$353>';
+						6: Result := '<$358>';
+					end;
+			end;
+		
+		2 : case PlayersFirstDefeated[0] of 
+				6:	case PlayersFirstDefeated[1] of 
+						4:	case PlayersFirstDefeated[2] of 
+								1: Result := 'well well';
+								5: Result := '<$345>';
+							end;
+						5:	case PlayersFirstDefeated[2] of 
+								1: Result := 'well well';
+								4: Result := '<$355>';
+							end;
+					end;
+				5:	case PlayersFirstDefeated[1] of 
+						4:	case PlayersFirstDefeated[2] of 
+								1: Result := 'well well';
+								6: Result := '<$349>';
+							end;
+						6:	case PlayersFirstDefeated[2] of 
+								1: Result := 'well well';
+								4: Result := '<$352>';
+							end;
+					end;
+				4:	case PlayersFirstDefeated[1] of 
+						5:	case PlayersFirstDefeated[2] of 
+								1: Result := 'well well';
+								6: Result := '<$382>';
+							end;
+						6:	case PlayersFirstDefeated[2] of 
+								1: Result := 'well well';
+								5: Result := '<$359>';
+							end;
+					end;
+					
+
+			end;
+	end;
+	
+end;
+
+Procedure SetMultipleAlliances(aPlayers, aPlayers2 : array of Integer; aTrue : Boolean);
+var I , K : Integer;
+begin
+	for I := 1 to high(aPlayers) do
+			A.FogCoverAll(I);
+	for K := 1 to high(aPlayers2) do
+			A.FogCoverAll(K);
+		
+	for I := 0 to high(aPlayers) do
+		for K := 0 to high(aPlayers2) do
+			A.PlayerAllianceChange(aPlayers[I],aPlayers2[K],true,aTrue);
+end;
+
+procedure SetNewMultiMessages(aArrayI : array of Integer);
+begin
+	If MultiMessages.aIndex > high(MultiMessages.aShowArray) then 
+	begin
+		MultiMessages.aIndex := 0;
+		MultiMessages.aShowArray := aArrayI;
+	end;
+end;
+
+procedure ShowMultiMessages(aIndex : integer; aArrayI : array of Integer);
+begin
+	A.ShowMSG(0, '<$' + IntToStr(aArrayI[aIndex]) + '>');
+	MultiMessages.aIndex := aIndex + 1;
+end;
+
+
+Procedure GiveRandomFromRuins;
+var Random, I, II : Integer;
+	FinString : Ansistring;
+begin
+	FinString := '<$89>';
+	Random := States.KaMRandomI(100);
+	I := States.KaMRandomI(5)+1;
+	II := States.KaMRandomI(5)+1;
+	case Random of
+		0..25 : begin
+					FinString := FinString +'|' + States.WareTypeName(1) + ' : ' + IntToStr(I)
+					FinString := FinString +'|' + States.WareTypeName(2) + ' : ' + IntToStr(II)
+					A.GiveWares(0, 1, I);
+					A.GiveWares(0, 2, II);
+				end;
+		26..50 : begin
+					FinString := FinString +'|' + States.WareTypeName(0) + ' : ' + IntToStr(I)
+					FinString := FinString +'|' + States.WareTypeName(5) + ' : ' + IntToStr(II)
+					A.GiveWares(0, 0, I);
+					A.GiveWares(0, 5, II);
+				end;
+		51..55 : begin
+					FinString := FinString +'|' + States.WareTypeName(1) + ' : ' + IntToStr(I)
+					FinString := FinString +'|' + States.WareTypeName(24) + ' : ' + IntToStr(II)
+					A.GiveWares(0, 1, I);
+					A.GiveWares(0, 24, II);
+				end;
+		56..85 : begin
+					FinString := FinString +'|' + States.WareTypeName(1) + ' : ' + IntToStr(I)
+					A.GiveWares(0, 1, I);
+				end;
+		86..100 : begin
+					FinString := FinString +'|' + States.WareTypeName(0) + ' : ' + IntToStr(I)
+					FinString := FinString +'|' + States.WareTypeName(1) + ' : ' + IntToStr(I)
+					FinString := FinString +'|' + States.WareTypeName(2) + ' : ' + IntToStr(II)
+					A.GiveWares(0, 0, I);
+					A.GiveWares(0, 1, I);
+					A.GiveWares(0, 2, II);
+				end;
+	end;
+	A.ShowMSG(0, FinString);
+end;
+
+
+Function PosInRadius(aPos, aPoint : TKMPoint; aRadius : Integer) : boolean;
+begin
+	Result := false;
+	If U.InAreaI(aPos.X,aPos.Y,aPoint.X - aRadius,aPoint.Y - aRadius,aPoint.X + aRadius,aPoint.Y + aRadius) then
+		Result := true;
+
+end;

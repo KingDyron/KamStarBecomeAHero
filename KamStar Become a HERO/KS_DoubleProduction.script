@@ -1,0 +1,58 @@
+{.$EVENT evtTick:ProductionOnTick}
+{$EVENT evtMissionStart:ProductionOnMissionStart}
+
+var	H:Integer;
+	Produced,ProducedH : array[0..27] of Integer;
+	ResourceCount : array of Integer;
+	
+
+Procedure OnHouseWareCountChanged(aHouse,aWare,aCNT,aChangeCnt:Integer);
+var Player:Integer;
+begin
+	Player:=States.HouseOwner(aHouse);	
+	If Player = 0 then
+		If (States.HouseType(aHouse) = 5) and (GoldDoubleProduction = true) then 
+			If aHouse = HousesFirstBuilt[4].ID then
+			case aWare of 
+				4:	If (States.HouseResourceAmount(aHouse,aWare )<6) and (States.StatResourceProducedCount(Player,aWare) >= Produced[aWare]) then begin
+						Produced[aWare]:= States.StatResourceProducedCount(Player,aWare)+((ResourceCount[aWare])*2);
+						Actions.HouseAddWaresTo(aHouse,aWare,ResourceCount[aWare]);
+					end;
+			end;
+end;
+Procedure ProductionOnMissionStart;
+var III:Integer;
+begin
+	H:=0
+	ResourceCount := [
+	1,//Tree trunk0
+	3,//stone1
+	2,//timber2
+	1,//iron ore3
+	1,//gold ore4
+	1,//coal5
+	1,//iron6
+	2,//gold7
+	2,//wine8
+	1,//corn9
+	2,//loaves10
+	1,//flour11
+	2,//leather12
+	3,//sausages13
+	1,//pig14
+	1,//skin15
+	1,//Wshield16
+	1,//Lshield17
+	1,//Leather Armor18
+	1,//iron armament19
+	1,//hand axe20
+	1,//long sword21
+	1,//lance22
+	1,//pike23
+	1,//long bow24
+	1,//crossbow25
+	1,//horse26
+	2]//fish27
+	for III:= 0 to 27 do
+		ProducedH[III] :=States.StatResourceProducedCount(0,III)+ResourceCount[III];
+end;

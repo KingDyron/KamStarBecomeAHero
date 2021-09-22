@@ -1,0 +1,1127 @@
+﻿
+{$EVENT evtTick:EmisOnTick}
+{$EVENT evtUnitDied:EmisOnUnitDied}
+{$EVENT evtBeacon:EmisOnBeacon}
+var LastHeroPos : TKMPoint;
+	Serves : array[0..5] of Integer;
+	QCompleteInt : integer;
+	aOnce : Integer;
+	NewEscortGroup : integer;
+Procedure CivilWar(random : Integer);
+var aHouses : array of Integer;
+	LEA : Integer;
+	aRType : Integer;
+	aPos : TKMPoint;
+begin
+	aHouses := States.PlayerGetAllUnits(0);
+	for LEA := 0 to length(aHouses) -1 do
+		If States.UnitType(aHouses[LEA]) <= 13 then 
+		If States.KaMRandomI(100) > 100-random then 
+		begin
+			aPos := States.UnitPosition(aHouses[LEA]);
+			A.UnitKill(aHouses[LEA],true);
+			aRType := States.KaMRandomI(100);
+			case aRType of
+				0..33 : A.GiveGroup(16,14,aPos.X,aPos.Y,0,1,1);
+				34..66 : A.GiveGroup(16,25,aPos.X,aPos.Y,0,1,1);
+				67..100 : A.GiveGroup(16,24,aPos.X,aPos.Y,0,1,1);
+			end;
+		end;
+end;
+
+Procedure EmisOnUnitDied(aUnit,aKiller:Integer);
+begin	
+	//If aKiller >= 0 then 
+	begin
+		//emissary1 after kill
+		If aUnit = States.GroupMember(Emissary1,0) then	
+			If (EmissaryStats[1]=eTalkEnd) or (EmissaryStats[1]=eArrived) then 
+			begin
+				Actions.ShowMSG(0,'<$204>');
+				Actions.PlayerAllianceChange(0, 1,true, false)
+				EmissaryStats[1] := eNotAllied;
+				AttacksTime[2] := States.GameTime + 1200;
+			end;
+		//emissary4 after kill
+		If aUnit = States.GroupMember(Emissary4,0) then	
+			If ((EmissaryStats[4]=eTalkEnd) or (EmissaryStats[4]=eArrived)) and (EmissaryStats[1]=eNotArrived) and (EmissaryStats[6]=eNotArrived) then 
+			begin
+				EmissaryStats[4] := eKilled;
+				Actions.ShowMSG(0,'<$208>');
+				Actions.PlayerAllianceChange(0, 4,true, false)
+				Actions.PlayerAllianceChange(4, 1,true, true)
+			end;
+			
+			
+		//three
+		if (EmissaryStats[1]=eAllied) then 
+		begin
+			If (aUnit = States.GroupMember(Emissary4,0)) then	
+				If (EmissaryStats[4]=eArrived) then 
+				begin
+					EmissaryStats[4] := eKilled;
+				end;
+			If (aUnit = States.GroupMember(Emissary5,0)) then	
+				If (EmissaryStats[5]=eArrived) then 
+				begin
+					EmissaryStats[5] := eKilled;
+				end;
+			If (aUnit = States.GroupMember(Emissary6,0)) then	
+				If (EmissaryStats[6]=eArrived) then 
+				begin
+					EmissaryStats[6] := eKilled;
+				end;
+		end;
+		If QuestNow.QType = qServes then
+			If aKiller > 0 then 
+				if U.ArrayHasElementI(aUnit, Serves) then 
+				begin	
+					KillAllGroups(15);	
+					QuestNow.QType := qFFA1;
+					QuestNow.QMade[1] := false;
+					A.ShowMSG(0,'You have faild. I am disapointed');
+					A.PlayerAllianceChange(0,6,true,false);
+					A.PlayerAllianceChange(0,4,true,false);
+					QuestNow.QMadeTime[1] := States.GameTime;
+				end;
+	end;
+end;
+
+Procedure EmisOnBeacon(aPlayer, X,Y : Integer);
+begin
+	If EmissaryStats[1] = eTalkEnd then 
+		If U.KMPoint(X,Y) = States.UnitPosition(States.GroupMember(Emissary1,0)) then 
+		begin	
+			EmissaryStats[1] := eAccepted;
+			EmissaryTime[1] := States.GameTime ;
+		end else
+		If U.KMPoint(X,Y) = States.UnitPosition(Hero) then 
+		begin
+			EmissaryStats[1] := eDenied;
+			EmissaryTime[1] := States.GameTime ;	
+		end;
+		
+	If EmissaryStats[4] = eTalkEnd then 
+		If U.KMPoint(X,Y) = States.UnitPosition(States.GroupMember(Emissary4,0)) then 
+		begin	
+			EmissaryStats[4] := eAccepted;
+			EmissaryTime[4] := States.GameTime + 10 ;
+		end else
+		If U.KMPoint(X,Y) = States.UnitPosition(Hero) then 
+		begin
+			EmissaryStats[4] := eDenied;
+			EmissaryTime[4] := States.GameTime + 10;	
+		end;
+		
+	If EmissaryStats[0] = eTalkEnd then 
+		If (EmissaryStats[4] = eWaiting) and (EmissaryStats[5] = eWaiting) and (EmissaryStats[6] = eWaiting) then 
+			If (U.KMPoint(X,Y) = States.UnitPosition(States.GroupMember(Emissary4,0))) or  
+				(U.KMPoint(X,Y) = States.UnitPosition(States.GroupMember(Emissary5,0))) or 
+				(U.KMPoint(X,Y) = States.UnitPosition(States.GroupMember(Emissary6,0))) then 
+			begin	
+				EmissaryStats[4] := eAccepted;
+				EmissaryStats[5] := eAccepted;
+				EmissaryStats[6] := eAccepted;
+				EmissaryTime[0] := States.GameTime ;
+			end else
+			If U.KMPoint(X,Y) = States.UnitPosition(Hero) then 
+			begin
+				EmissaryStats[4] := eDenied;
+				EmissaryStats[5] := eDenied;
+				EmissaryStats[6] := eDenied;
+			end;
+	
+	If EmissaryStats[7] = eTalkEnd then 
+		If States.GroupAt(X,Y) = TheChoice[0] then 
+		begin
+			EmissaryStats[4] := ePicked;
+			EmissaryTime[7] := States.GameTime;
+			A.ShowMSG(0, '<$336>');
+			A.MapTileObjectSet(49,247,255);
+			EmissaryStats[7] := eAllied;
+			HousesToBuild[6] := HousesToBuild[6] + 15;
+		end else
+		If States.GroupAt(X,Y) = TheChoice[1] then 
+		begin
+			EmissaryStats[5] := ePicked;
+			EmissaryTime[7] := States.GameTime;		
+			A.ShowMSG(0, '<$334>');
+			A.MapTileObjectSet(49,247,255);
+			EmissaryStats[7] := eAllied;
+			HousesToBuild[6] := HousesToBuild[6] + 10;
+		end else
+		If States.GroupAt(X,Y) = TheChoice[2] then 
+		begin
+			EmissaryStats[6] := ePicked;
+			EmissaryTime[7] := States.GameTime;		
+			A.ShowMSG(0, '<$256>');
+			A.MapTileObjectSet(49,247,255);
+			EmissaryStats[7] := eAllied;
+			HousesToBuild[6] := HousesToBuild[6]+ 50;
+		end;
+end;
+
+Procedure EmisOnTick;
+var I,K : Integer;
+	aPos : TKMPoint;
+	QComplete : Boolean;
+begin	
+	aPos := States.UnitPosition(Hero);
+	//emissary 1 and 4
+	If States.GameTime = HousesFirstBuilt[5].aTime + 36000 then
+		If HousesFirstBuilt[5].aType = 29 then 
+		begin
+			Emissary4 := Actions.GiveGroup(13,21,154,65,4,1,1)
+			EmissaryStats[4] := eArrived;
+			for I := 1 to 6 do
+				If I <> 4 then 
+				begin
+					EmissaryStats[I] := eNotArrived;
+					EmissaryTime[I] := 9999998;
+				end;
+			EmissaryStats[1] := eNotArrived;
+			Actions.GroupBlockOrders(Emissary4,true)
+			Actions.FogRevealCircle(0,154,67,3)
+			Actions.ShowMSGGoTo(0,154,67,'<$220>');
+		end else 
+		begin
+			Emissary1 := Actions.GiveGroup(15,22,114,53,4,1,1);
+			EmissaryStats[1] := eArrived;
+			for I := 2 to 6 do
+			begin
+				EmissaryStats[I] := eNotArrived;
+				EmissaryTime[I] := 9999998;
+			end;
+			EmissaryStats[4] := eNotArrived;
+			Actions.GroupBlockOrders(Emissary1,true)
+			Actions.FogRevealCircle(0,114,55,3)
+			Actions.ShowMSGGoTo(0,114,53,'<$200>');
+		end;	
+		
+		
+	If (States.GameTime = HousesFirstBuilt[5].aTime + 48000) then
+		If HousesFirstBuilt[5].aType = 29 then 
+		begin
+			If (EmissaryStats[4]=eArrived) then EmissaryStats[4] := eDenied;
+		end else
+			If (EmissaryStats[1]=eArrived) then EmissaryStats[1] := eDenied;
+	
+
+    //change player alliance	
+	If EmissaryStats[0] = eNone then 
+		If EmissaryStats[6] = eNotArrived then 
+			If (EmissaryStats[4] = eDenied) or (EmissaryStats[4] = eKilled)  then 
+			begin
+				Actions.ShowMSG(0,'<$232>')
+				EmissaryStats[4] := eNotAllied;
+				Actions.PlayerAllianceChange(0, 4,true, false);
+				Actions.PlayerAllianceChange(0, 1,true, false);
+				Actions.PlayerAllianceChange(4, 1,true, true);
+				//AttacksTime[3] := States.GameTime + 100;
+				Actions.GroupKillAll(Emissary4,true)
+			end;
+
+	If EmissaryStats[0] = eNone then 
+		If (EmissaryStats[1] = eDenied) then 
+		begin
+			EmissaryStats[1] := eNotAllied;
+			Actions.ShowMSG(0,'<$204>')
+			Actions.PlayerAllianceChange(0, 1,true, false)
+			Actions.PlayerAllianceChange(0, 5,true, true)
+			Actions.GroupKillAll(Emissary1,true)
+			AttacksTime[0] := States.GameTime + 1200; //player 2 is attacking player 6
+		end;
+	
+	//check if emissary is nearby
+	if States.GameTime mod 50 = 0 then
+		for I := 1 to 6 do
+			If EmissaryTime[I] = 9999999 then 
+				If HeroNearbyEmissary(States.UnitPosition(Hero),I) then
+				begin
+					EmissaryTime[I] := States.GameTime;
+				end;
+	
+	//Emissary1 talk	
+	If EmissaryStats[1] = eTalkStart then 
+	begin
+		If States.GameTime = EmissaryTime[1]+10 then
+		begin
+			StartCinematic(0,0);
+			Actions.ShowMSG(0,'<$201>');
+		end;
+		If States.GameTime = EmissaryTime[1]+30 then
+		begin
+			Actions.ShowMSG(0,'<$202>');
+		end;
+		If States.GameTime = EmissaryTime[1]+80 then
+		begin
+			Actions.ShowMSG(0,'<$203>');
+			EmissaryStats[1] := eTalkEnd;
+			LastHeroPos := States.UnitPosition(Hero);
+			StartCinematic(1,0);
+		end;
+	end;
+	If EmissaryStats[1] = eTalkEnd then 
+		If States.UnitPosition(hero) <> LastHeroPos then 
+		begin
+			EmissaryStats[1] := eDenied;
+			EmissaryTime[1] := States.GameTime;		
+		end;
+		
+
+	
+	If EmissaryStats[1] = eAccepted then 
+	begin
+		If States.GameTime = EmissaryTime[1]+5 then
+		begin
+			Actions.ShowMSG(0,'<$208>')
+			A.AIAttackRemoveAll(7)
+			Actions.AIStartPosition(7,210,64)	
+			A.AIAttackAdd(7,true,0,1,0,0,0,0,true,attClosestBuildingFromStartPos,U.KMPoint(210,64));
+			Actions.PlayerAllianceChange(0, 1,true, true)
+			Actions.PlayerAllianceChange(0, 2,true, true)
+			Actions.PlayerAllianceChange(0, 3,true, true)
+			Actions.PlayerAllianceChange(0, 7,true, true)
+			Actions.PlayerAllianceChange(0, 8,true, true)
+			Actions.PlayerAllianceChange(0, 9,true, true)
+			Actions.PlayerAllianceChange(0, 10,true, true)
+			Actions.PlayerAllianceChange(0, 16,true, true)
+			Actions.PlayerAllianceChange(0, 4,true, false)
+			Actions.PlayerAllianceChange(0, 5,true, false)
+			Actions.PlayerAllianceChange(0, 6,true, false)
+			Actions.PlayerAllianceChange(1, 4,true, false)
+			Actions.PlayerAllianceChange(1, 5,true, false)
+			Actions.PlayerAllianceChange(1, 6,true, false)
+		end;
+		If States.GameTime = EmissaryTime[1]+50 then
+		begin
+			Actions.ShowMSG(0,'<$209>')
+			EmissaryStats[1] := eAllied;
+			EmissaryStats[0] := eNone;
+			EmissaryTime[0] := States.GameTime + 9000;
+		end;
+		If States.GameTime = EmissaryTime[1]+100 then
+			Actions.GroupKillAll(Emissary1,true);
+		If EmissaryStats[1] = eAllied then 
+		begin
+			If States.GameTime = EmissaryTime[0]+100 then
+			Actions.ShowMSG(0,'<$210>');
+			If States.GameTime = EmissaryTime[0]+150 then
+			Actions.ShowMSG(0,'<$211>');
+			If States.GameTime = EmissaryTime[0]+200 then
+			Actions.ShowMSG(0,'<$212>');
+		end;
+	end;
+	//////////////// emis 4 talk
+	If EmissaryStats[4] = eTalkStart then
+	begin
+		If States.GameTime = EmissaryTime[4]+10 then
+			StartCinematic(0,0);
+		If States.GameTime = EmissaryTime[4]+30 then
+			Actions.ShowMSG(0,'<$370>');
+		If States.GameTime = EmissaryTime[4]+80 then
+		begin
+			StartCinematic(1,0);
+			EmissaryStats[4] := eTalkEnd;
+			LastHeroPos := States.UnitPosition(Hero);
+		end;
+	end;
+	If EmissaryStats[4] = eTalkEnd then 
+		If States.UnitPosition(hero) <> LastHeroPos then 
+		begin
+			EmissaryStats[4] := eDenied;
+			EmissaryTime[4] := States.GameTime;		
+		end;
+
+	If EmissaryStats[4] = eAccepted then 
+		If States.GameTime = EmissaryTime[4]+10 then
+		begin
+			Actions.ShowMSG(0,'<$221>')
+			EmissaryStats[4] := eAllied;
+			EmissaryTime[4] := States.GameTime;
+			A.AISoldiersLimit(4,337);
+			A.AIStartPosition(4,139,66);
+			A.AIAttackRemoveAll(4);
+			Actions.AIAttackAdd(4,true,0,60,1,1,1,1,true,attClosestBuildingFromStartPos,U.KMPoint(213,106))
+			Actions.PlayerAllianceChange(0, 4,true, true)
+			Actions.PlayerAllianceChange(4, 6,true, true)
+			Actions.PlayerAllianceChange(4, 5,true, true)
+			Actions.PlayerAllianceChange(4, 1,true, false);
+			Actions.PlayerAllianceChange(4, 2,true, false);
+			Actions.PlayerAllianceChange(4, 3,true, false);
+			Actions.PlayerAllianceChange(4, 7,true, false);
+			Actions.PlayerAllianceChange(4, 8,true, false);
+			Actions.PlayerAllianceChange(4, 9,true, false);
+			Actions.PlayerAllianceChange(4, 10,true, false);
+			Actions.GroupKillAll(Emissary4,true);
+			QuestNow.aTime := States.GameTime + 3600;
+			QuestNow.QType := qServes;
+			
+		end;
+	///////////
+	If EmissaryStats[1] = eAllied then
+	begin
+		If (States.GameTime = EmissaryTime[0]) and (EmissaryStats[0] = eNone) then
+		begin
+			EmissaryStats[4] := eArrived;
+			EmissaryStats[5] := eArrived;
+			EmissaryStats[6] := eArrived;
+			A.ShowMSG(0,'<$215>');
+			Emissary4 := Actions.GiveGroup(4,21,147,138,4,1,1);
+			Emissary5 := Actions.GiveGroup(5,27,149,140,6,1,1);
+			Emissary6 := Actions.GiveGroup(6,20,147,142,0,1,1);
+			Actions.FogRevealCircle(0,148,139,5)		
+		end;
+			
+		If aPos = U.KMPoint(145,140) then 
+			If States.GameTime mod 50 = 0 then
+			begin
+				If (EmissaryStats[6] = eArrived) and (EmissaryStats[0] = eNone) then
+				begin	 						
+					A.ShowMSG(0,'<$213>');
+					EmissaryStats[0] := eTalkStart;
+					StartCinematic(0,2);
+					LastHeroPos := States.UnitPosition(Hero);
+					EmissaryTime[0] := States.GameTime;
+				end;
+		end;
+		
+		If (EmissaryStats[0] = eTalkStart) then 
+		begin
+			If (States.GameTime = EmissaryTime[0]+10) then
+				A.ShowMSG(0, '<$378>');
+				
+			If (States.GameTime = EmissaryTime[0]+30) then
+				A.ShowMSG(0, '<$361>');
+				
+			If (States.GameTime = EmissaryTime[0]+60) then
+				A.ShowMSG(0, '<$372>');
+			If (States.GameTime = EmissaryTime[0]+100) then
+				A.ShowMSG(0, '<$373>');
+			If (States.GameTime = EmissaryTime[0]+130) then
+				A.ShowMSG(0, '<$374>');
+			If (States.GameTime = EmissaryTime[0]+170) then
+				A.ShowMSG(0, '<$375>');
+			If (States.GameTime = EmissaryTime[0]+210) then
+				A.ShowMSG(0, '<$376>');
+			If (States.GameTime = EmissaryTime[0]+240) then
+				A.ShowMSG(0, '<$377>');
+				
+			If (States.GameTime = EmissaryTime[0]+150) then
+			begin	
+				A.ShowMSG(0, '<$362>');
+				EmissaryStats[0] := eTalkEnd;
+				EmissaryStats[4] := eWaiting;
+				EmissaryStats[5] := eWaiting;
+				EmissaryStats[6] := eWaiting;
+				StartCinematic(1,2);
+			end;
+		end;
+		
+		If (EmissaryStats[4] = eWaiting) and (EmissaryStats[5] = eWaiting) and (EmissaryStats[6] = eWaiting) then 
+			If States.UnitPosition(hero) <> LastHeroPos then 
+			begin
+				EmissaryStats[0] := eDenied;
+				EmissaryStats[4] := eDenied;
+				EmissaryStats[5] := eDenied;
+				EmissaryStats[6] := eDenied;	
+			end;
+		If (EmissaryStats[4] = eDenied) and (EmissaryStats[5] = eDenied) and (EmissaryStats[6] = eDenied) then 
+			begin
+				EmissaryStats[4] := eNotAllied;
+				EmissaryStats[5] := eNotAllied;
+				EmissaryStats[6] := eNotAllied;	
+				Actions.ShowMSG(0,'<$363>')			
+				EmissaryTime[0] := States.GameTime;		
+			end;
+		If (EmissaryStats[4] = eNotAllied) and (EmissaryStats[5] = eNotAllied) and (EmissaryStats[6] = eNotAllied) then 
+			begin
+				If States.GameTime = EmissaryTime[0] + 50 then 
+					Actions.ShowMSG(0,'<$364>');
+				If States.GameTime = EmissaryTime[0] + 100 then 
+					Actions.ShowMSG(0,'<$365>');
+				If States.GameTime = EmissaryTime[0] + 150 then 
+					Actions.ShowMSG(0,'<$366>');
+					
+			end;
+		
+		If (EmissaryStats[4] = eAccepted) and(EmissaryStats[5] = eAccepted) and(EmissaryStats[6] = eAccepted) then
+			If (States.GameTime = EmissaryTime[0]+10) then
+			begin
+				Actions.ShowMSG(0,'<$214>');
+				for I := 7 to 10 do 
+				begin
+					Actions.PlayerAllianceChange(4, I,true, false)
+					Actions.PlayerAllianceChange(5, I,true, false)
+					Actions.PlayerAllianceChange(6, I,true, false)
+				end;
+				for I := 1 to 3 do 
+				begin
+					Actions.PlayerAllianceChange(4, I,true, false)
+					Actions.PlayerAllianceChange(5, I,true, false)
+					Actions.PlayerAllianceChange(6, I,true, false)
+				end;
+				Actions.PlayerAllianceChange(0, 1,true, false);
+				Actions.PlayerAllianceChange(4, 0,true, false);
+				Actions.PlayerAllianceChange(5, 0,true, false);
+				Actions.PlayerAllianceChange(6, 0,true, false);
+				Actions.PlayerAllianceChange(4, 0,false, true);
+				Actions.PlayerAllianceChange(5, 0,false, true);
+				Actions.PlayerAllianceChange(6, 0,false, true);
+				EmissaryStats[0] := eAllied;
+				
+				EmissaryStats[4] := eAllied;
+				EmissaryStats[5] := eAllied;
+				EmissaryStats[6] := eAllied;
+				AttacksTime[0] := States.GameTime + 1200
+			end;
+	end;
+	If States.GameTime = AttacksTime[0] - 1130 then 
+		A.ShowMSG(0, '<$215>' );
+		
+	If States.GameTime = AttacksTime[0] - 900 then 
+		A.ShowMSG(0, '<$216>' );
+	If States.GameTime = AttacksTime[0] - 100 then 
+		A.ShowMSG(0, '<$217>' );
+		
+		
+	If States.GameTime = AttacksTime[3] - 234 then 
+		A.ShowMSG(0, '<$217>' );
+		
+	//Killing the emissaries
+	If (EmissaryStats[4] = eKilled) or (EmissaryStats[5] = eKilled) or (EmissaryStats[6] = eKilled) then 
+	begin
+		EmissaryStats[0] := eInDanger;
+		EmissaryStats[4] := eNotAllied;
+		EmissaryStats[5] := eNotAllied;
+		EmissaryStats[6] := eNotAllied;
+		Actions.GroupKillAll(Emissary4,false);
+		Actions.GroupKillAll(Emissary5,false);
+		Actions.GroupKillAll(Emissary6,false);
+		for I := 4 to 6 do
+			Actions.PlayerAllianceChange(0, I,true, false);	
+		for I := 4 to 6 do
+			for K := 4 to 6 do
+				Actions.PlayerAllianceChange(I, K,true, true);	
+		AttacksTime[4] := States.GameTime + 6000;
+		A.ShowMSG(0,'No alliance any more!!!' );
+	end;
+	
+	If (EmissaryStats[0] = eInDanger) then 
+		If (EmissaryStats[4] = eNotAllied) and (EmissaryStats[5] = eNotAllied) and (EmissaryStats[6] = eNotAllied) then 
+			If States.GameTime mod 50 = 0 then 
+				If U.InAreaI(States.UnitPositionX(Hero),States.UnitPositionY(Hero),58,64,90,76) then 
+				begin
+					EmissaryStats[1] := eHelping;
+					EmissaryTime[1] := States.GameTime + 300;
+					EmissaryStats[4] := eAttacking;
+					EmissaryStats[5] := eAttacking;
+					EmissaryStats[6] := eAttacking;
+					Actions.ShowMSG(0,'Please help me!!');
+					for I := 1 to 3 do 
+						Actions.PlayerAllianceChange(0,I,true,true);//new ally
+					for I := 7 to 10 do 
+						Actions.PlayerAllianceChange(0,I,true,true);//new ally
+					for I := 4 to 6 do 
+						Actions.PlayerAllianceChange(0,I,true,false);//new enemy
+						
+					for I := 4 to 6 do 
+						for K := 1 to 3 do 		
+							Actions.PlayerAllianceChange(K,I,true,false);//enemy to other enemies
+					for I := 4 to 6 do 
+						for K := 7 to 10 do 		
+							Actions.PlayerAllianceChange(K,I,true,false);//enemy to other enemies		
+				end;
+				
+	If EmissaryStats[1] = eHelping then
+		If States.GameTime = EmissaryTime[1] then 
+		begin
+			Actions.AIAttackAdd(0,true,0,1,1,1,1,1,true,attClosestUnit,U.KMPoint(213,106));
+			
+			AddGroupsToPosition(1,23,40,5);
+			AddAttackingDefenses(1,AttackMode[1]); 
+			RemoveAttackingDefenses(1,AttackMode[1]); 
+			AttackMode[1] := 1;
+			Actions.AIAttackAdd(1,true,6,5,1,1,1,1,true,attClosestUnit,U.KMPoint(10,10));
+		end;
+		
+	//Serves quest
+	If QuestNow.QType = qServes then
+	begin
+		If States.GameTime = QuestNow.aTime-1200 then 
+			A.ShowMSG(0,'Misja : Eskorta pomocnikow za 2 minuty');
+			
+		If States.GameTime = QuestNow.aTime then 
+		begin
+			A.ShowMSG(0,'Eskorta pomocnikow.');
+			for I := 0 to 5 do
+			begin
+				Serves[I] := A.GiveUnit(4,0,245,6,4);
+				A.UnitOrderWalk(Serves[I],183,172);
+			end;
+		end;
+		If States.GameTime = QuestNow.aTime + 300 then
+		begin
+			A.GroupOrderAttackUnit(A.GiveGroup(15,22,136,82,3,3,3),Serves[0]);
+			A.GroupOrderAttackUnit(A.GiveGroup(15,21,59,112,3,3,3),Serves[1]);
+		end;
+		If States.GameTime = QuestNow.aTime + 450 then
+		begin
+			A.GroupOrderAttackUnit(A.GiveGroup(15,27,79,101,3,3,3),Serves[2]);
+			A.GroupOrderAttackUnit(A.GiveGroup(15,22,125,94,3,3,3),Serves[3]);
+		end;
+		If States.GameTime = QuestNow.aTime + 1000 then
+		begin
+			A.GroupOrderAttackUnit(A.GiveGroup(15,27,121,163,3,1,3),Serves[0]);
+			A.GroupOrderAttackUnit(A.GiveGroup(15,27,121,163,3,1,3),Serves[1]);
+			A.GroupOrderAttackUnit(A.GiveGroup(15,27,121,163,3,1,3),Serves[2]);
+			A.GroupOrderAttackUnit(A.GiveGroup(15,27,121,163,3,1,3),Serves[3]);
+			A.GroupOrderAttackUnit(A.GiveGroup(15,27,121,163,3,1,3),Serves[4]);
+			A.GroupOrderAttackUnit(A.GiveGroup(15,27,121,163,3,1,3),Serves[5]);
+		end;
+		//If States.GameTime = QuestNow.aTime+ 50 then 
+		//	A.GroupOrderAttackUnit(A.GiveGroup(15,22,62,52,3,5,5),Serves[0]);
+			
+		If States.GameTime = QuestNow.aTime+3000 then 
+			KillAllGroups(15);
+			
+		If States.GameTime > QuestNow.aTime+1600 then 
+			If States.GameTime mod 10 = 0 then 
+			begin
+				QComplete := true;
+				for I := 0 to 5 do
+				If not S.UnitDead(Serves[I]) then 	
+				begin
+					A.UnitOrderWalk(Serves[I],183,172);
+					aPos := S.UnitPosition(Serves[I]);
+					If U.InAreaI(aPos.X,aPos.Y,183-2,172-2,183+2,172+2) then 
+					begin
+						A.UnitKill(Serves[I],true);
+						A.GiveUnit(6,0,183,172,4);
+						QCompleteInt := QCompleteInt + 1;
+					end;
+						
+				end;
+				If QCompleteInt <> 6 then 
+					QComplete := false;
+					
+				If QComplete then 
+				begin
+					KillAllGroups(15);
+					QuestNow.QType := qTheChoice;
+					QuestNow.QMade[1] := true;
+					QuestNow.QMadeTime[1] := States.GameTime;
+					A.ShowMSG(0,'good, faster unit production');
+					A.AIEquipRate(6,0,100);
+					A.AIEquipRate(6,1,100);
+					A.AIEquipRate(5,0,100);
+					A.AIEquipRate(5,1,100);
+				end;
+			end;
+			
+	end;
+	
+	If aOnce = 0 then
+		If QuestNow.QType = qFFA then
+		begin
+			for I := 1 to 10 do 
+				A.PlayerAllianceChange(I,0,true,false);
+			for I := 1 to 10 do 
+				for K := 1 to 10 do 
+					A.PlayerAllianceChange(I,K,true,true);
+		aOnce := 1;
+		end;
+	
+	If (States.GameTime = QuestNow.QMadeTime[3]+1000) or (QuestNow.QMade[1] and (States.GameTime = QuestNow.QMadeTime[1]+18000)) then 
+	begin
+		TheChoice[0] := A.GiveGroup(4,22,45,243,4,1,1);
+		TheChoice[1] := A.GiveGroup(5,20,43,244,3,1,1);
+		TheChoice[2] := A.GiveGroup(6,20,43,247,2,1,1);
+		TheChoice[3] := A.GiveUnit(0,13,46,243,4);
+		for I := 0 to 2 do
+			A.UnitHPSetInvulnerable(States.GroupMember(TheChoice[0],0),true);
+		A.UnitHPSetInvulnerable(TheChoice[3],true);
+		
+		A.ShowMSGGoTo(0,44,244,'<$248>');
+		A.ShowMSGGoTo(0,44,244,'<$380>');
+	end;
+	If EmissaryStats[7] = eNone then 
+		If QuestNow.QType = qTheChoice then 
+			If States.GameTime mod 50 = 0 then 
+				If States.UnitPosition(Hero) = U.KMPoint(45,246) then 
+				begin
+					EmissaryStats[7] := eTalkStart;
+					EmissaryTime[7] := States.GameTime;
+					StartCinematic(0,7);
+				end;
+				
+	If EmissaryStats[7] = eTalkStart then 
+	begin
+		If States.GameTime = EmissaryTime[7] + 10 then 
+			A.ShowMSG(0, '<$249>');
+		If States.GameTime = EmissaryTime[7] + 50 then 
+			A.ShowMSG(0, '<$250>');
+		If States.GameTime = EmissaryTime[7] + 150 then 
+			A.ShowMSG(0, '<$251>');
+		If States.GameTime = EmissaryTime[7] + 250 then 
+			A.ShowMSG(0, '<$252>');
+		If States.GameTime = EmissaryTime[7] + 350 then 
+			A.ShowMSG(0, '<$253>');
+		If States.GameTime = EmissaryTime[7] + 385 then 
+			A.ShowMSG(0, '<$254>');
+		If States.GameTime = EmissaryTime[7] + 420 then 
+			A.ShowMSG(0, '<$255>');
+		If States.GameTime = EmissaryTime[7] + 490 then 
+		begin
+			A.ShowMSG(0, '<$379>');
+			StartCinematic(1,7);
+			A.MapTileObjectSet(49,247,61);
+			EmissaryStats[7] := eTalkEnd;
+			EmissaryTime[7] := States.GameTime;
+		end;
+	end;	
+	If EmissaryStats[7] = eTalkEnd then 
+		If States.GameTime = EmissaryTime[7] + 3000 then
+		begin
+			EmissaryStats[7] := eAllied;
+			EmissaryStats[6] := ePicked;
+			EmissaryTime[7] := States.GameTime;		
+			A.ShowMSG(0, '<$256>');
+			A.MapTileObjectSet(49,247,255);
+			
+		end;
+	If QuestNow.QType = qTheChoice then 
+		if States.GameTime = EmissaryTime[7] + 300 then
+			if EmissaryStats[4] = ePicked then
+			begin
+				for I := 0 to 2 do
+					A.UnitHPSetInvulnerable(States.GroupMember(TheChoice[0],0),false);
+				A.UnitHPSetInvulnerable(TheChoice[3],false);
+				A.PlayerAllianceChange(0,4,true,true);
+				A.PlayerAllianceChange(1,4,true,false);
+				A.ShowMSG(0,'Halabardierzy')
+				A.GroupOrderWalk(A.GiveGroup(0,20,240,23,4,18,6), 87,155,5);
+				QuestNow.QType := qEscort;
+				
+				SetMultipleAlliances([0], [4,5,6], true);
+				SetMultipleAlliances([1,2,3,7,8,9,10], [4,5,6], false);
+				
+				A.GroupKillAll(TheChoice[0],true);
+				A.GroupKillAll(TheChoice[1],true);
+				A.GroupKillAll(TheChoice[2],true);
+				A.UnitKill(TheChoice[3],true);
+			end else
+			if EmissaryStats[5] = ePicked then
+			begin
+				for I := 0 to 2 do
+					A.UnitHPSetInvulnerable(States.GroupMember(TheChoice[0],0),false);
+				A.UnitHPSetInvulnerable(TheChoice[3],false);
+				A.GroupKillAll(TheChoice[0],true);
+				A.GroupKillAll(TheChoice[1],true);
+				A.GroupKillAll(TheChoice[2],true);
+				A.UnitKill(TheChoice[3],true);
+				
+				SetMultipleAlliances([0], [4,5,6], true);
+				SetMultipleAlliances([1,2,3,7,8,9,10], [4,5,6], false);
+				
+				QuestNow.QType := qLeftGarrison;
+				A.ShowMSG(0,'Miecznicy')	
+				A.GroupOrderWalk(A.GiveGroup(0,16,222,113,6,24,6), 85,155,5);	
+			end else
+			if EmissaryStats[6] = ePicked then
+			begin
+				for I := 0 to 2 do
+					A.UnitHPSetInvulnerable(States.GroupMember(TheChoice[0],0),false);
+				A.UnitHPSetInvulnerable(TheChoice[3],false);
+				A.GroupKillAll(TheChoice[0],true);
+				A.GroupKillAll(TheChoice[1],true);
+				A.GroupKillAll(TheChoice[2],true);
+				A.UnitKill(TheChoice[3],true);
+				
+				SetMultipleAlliances([0], [4,5,6], true);
+				SetMultipleAlliances([1,2,3,7,8,9,10], [4,5,6], false);
+				
+				A.PlayerAllianceChange(0,6,true,true);
+				A.PlayerAllianceChange(1,6,true,false);
+				QuestNow.QType := qCivilWar;	
+				A.ShowMSG(0,'Konna')	
+				A.GroupOrderWalk(A.GiveGroup(0,21,231,196,6,18,6), 85,202,6);
+				TheChoice[2] := A.GiveGroup(6,20,182,204,4,1,1);
+			end;
+		
+	If QuestNow.QType = qCivilWar then 
+	begin
+		
+		if States.GameTime = EmissaryTime[7] + 2950 then
+			A.ShowMSG(0,'<$257>');
+		if States.GameTime = EmissaryTime[7] + 3000 then	
+			CivilWar(50);
+		if States.GameTime = EmissaryTime[7] + 3100 then
+			A.ShowMSG(0,'<$258>');
+		if States.GameTime = EmissaryTime[7] + 3200 then
+			A.ShowMSG(0,'<$259>');
+			
+		if States.GameTime = EmissaryTime[7] + 3600 then
+			A.ShowMSG(0,'<$260>');
+		if States.GameTime = EmissaryTime[7] + 3700 then
+			A.ShowMSG(0,'<$261>');
+		if States.GameTime = EmissaryTime[7] + 3800 then
+			A.ShowMSG(0,'<$262>');
+			
+		if States.GameTime = EmissaryTime[7] + 4200 then
+			A.ShowMSG(0,'<$263>');
+		if States.GameTime = EmissaryTime[7] + 4250 then
+			A.ShowMSG(0,'<$264>');
+			
+		if States.GameTime = EmissaryTime[7] + 4300 then
+		begin
+			QuestNow.QMade[9] := true;
+			QuestNow.QMadeTime[9] := States.GameTime;
+			A.ShowMSGGoTo(0,224,110,'<$265>');
+			A.FogRevealCircle(0,224,110,4);
+			A.PlayerAllianceChange(0,5,true,true);	
+			TheChoice[1] := A.GiveGroup(5,20,224,110,4,1,1);			
+		end;
+	end;
+	If States.GameTime mod 1200 = 0 then 
+		for I := 0 to 2 do
+			If TheChoice[I] > 0 then	
+				If not States.GroupDead(TheChoice[I]) then
+					A.GroupHungerSet(TheChoice[I], 27000);
+	
+	If QuestNow.QType = qCivilWar then 
+		If QuestNow.QMade[9] then 
+			If States.GameTime > QuestNow.QMadeTime[9] + 600 then 
+				If States.GameTime mod 50 = 0 then 
+				Begin
+					If States.UnitPosition(Hero) = U.KMPoint(224,112) then 
+					begin
+						QuestNow.QMadeTime[9] := 99999999;
+						EmissaryTime[7] := States.GameTime;	
+						QuestNow.QType := qAraton;	
+						StartCinematic(0,0);
+						A.ShowMSG(0,'<$266>');
+					end;
+					If States.UnitPosition(Hero) = U.KMPoint(182,206) then 
+					begin
+						QuestNow.QMadeTime[9] := 99999999;
+						EmissaryTime[7] := States.GameTime;	
+						QuestNow.QType := qMilin;	
+						StartCinematic(0,0);
+						A.ShowMSG(0,'<$319>');
+					end;
+				end;
+				
+	If QuestNow.QType = qAraton then 
+	begin
+		If States.GameTime = EmissaryTime[7] + 30 then 
+			A.ShowMSG(0,'<$267>');
+		If States.GameTime = EmissaryTime[7] + 160 then 
+			A.ShowMSG(0,'<$268>');
+		If States.GameTime = EmissaryTime[7] + 200 then 
+			A.ShowMSG(0,'<$269>');
+		If States.GameTime = EmissaryTime[7] + 250 then 
+			A.ShowMSG(0,'<$270>');
+		If States.GameTime = EmissaryTime[7] + 250 then 
+		begin
+			A.PlayerAllianceChange(5,6, true ,false);
+			QuestNow.QType := qAttackOnMilin
+			StartCinematic(1,0);
+			QuestNow.QMadeTime[10] := States.GameTime + 6000;
+		end;
+	end;
+	If QuestNow.QType = qAttackOnMilin then 
+	begin
+		If States.GameTime = QuestNow.QMadeTime[10] then 
+			A.ShowMSG(0,'<$271>');
+		If States.GameTime = QuestNow.QMadeTime[10] + 100 then 
+			A.ShowMSG(0,'<$272>');
+		If States.GameTime = QuestNow.QMadeTime[10] + 200 then 
+			A.ShowMSG(0,'<$273>');
+		If States.GameTime = QuestNow.QMadeTime[10] + 250 then 
+		begin
+			AttacksTime[6] := States.GameTime + 300;
+			QuestNow.QType := qAttackOnMilin;
+		end;
+	end;
+	
+	
+	If QuestNow.QType = qMilin then 
+	begin
+		If States.GameTime = EmissaryTime[7] + 30 then 
+			A.ShowMSG(0,'<$320>');
+		If States.GameTime = EmissaryTime[7] + 90 then 
+			A.ShowMSG(0,'<$321>');
+		If States.GameTime = EmissaryTime[7] + 140 then 
+			A.ShowMSG(0,'<$322>');
+		If States.GameTime = EmissaryTime[7] + 190 then 
+			A.ShowMSG(0,'<$323>');
+		If States.GameTime = EmissaryTime[7] + 240 then 
+			A.ShowMSG(0,'<$324>');
+			
+		If States.GameTime = EmissaryTime[7] + 270 then 
+		begin
+			A.PlayerAllianceChange(0,5, true ,true);
+			A.PlayerAllianceChange(0,4, true ,true);
+			A.PlayerAllianceChange(0,6, true ,true);
+
+			A.PlayerAllianceChange(6,5, true ,true);
+			A.PlayerAllianceChange(6,4, true ,true);
+			A.PlayerAllianceChange(6,6, true ,true);
+
+			QuestNow.QType := qRightGarrison
+			StartCinematic(1,0);
+			AttacksTime[7] := States.GameTime + 9000;
+			QuestNow.QType := qFormation1;
+			QuestNow.QMadeTime[12] := States.GameTime+27000;
+		end;
+		
+	end;
+	If States.GameTime = AttacksTime[7]-300 then
+		A.ShowMSG(0,'<$325>');		
+		
+		
+	If QuestNow.QType = qEscort then 
+	begin
+		If States.GameTime = EmissaryTime[7] + 6000 then 
+		begin
+			A.ShowMSG(0, '<$337>');
+			NewEscortGroup := A.GiveGroup(4,26,222,18,4,36,6);
+			A.GroupOrderWalk(NewEscortGroup, 47,205,5);
+		end;
+		
+		If States.GameTime = EmissaryTime[7] + 6500 then 
+		begin
+			A.GroupOrderAttackUnit(A.GiveGroup(1,22,9,56,2,12,4), S.GroupMember(NewEscortGroup,0) );
+			A.GroupOrderAttackUnit(A.GiveGroup(1,22,67,67,2,12,4), S.GroupMember(NewEscortGroup,0));
+			A.GroupOrderAttackUnit(A.GiveGroup(1,22,116,8,2,12,4), S.GroupMember(NewEscortGroup,0));
+		end;
+		
+		If States.GameTime = EmissaryTime[7] + 7000 then 
+		begin
+			A.GroupOrderAttackUnit(A.GiveGroup(1,22,9,56,2,12,4), S.GroupMember(NewEscortGroup,0) );
+			A.GroupOrderAttackUnit(A.GiveGroup(1,22,67,67,2,12,4), S.GroupMember(NewEscortGroup,0) );
+			A.GroupOrderAttackUnit(A.GiveGroup(1,22,116,8,2,12,4), S.GroupMember(NewEscortGroup,0) );
+		end;
+		
+		If States.GameTime > EmissaryTime[7] + 6050 then 
+		begin
+			
+			If States.GameTime mod 20 = 0 then 
+				A.GroupOrderWalk(NewEscortGroup, 47,205,5);
+				
+			If States.GroupDead(NewEscortGroup) then 
+			begin
+				QuestNow.QType := qFormation1;
+				QuestNow.QMadeTime[12] := States.GameTime+9000;
+				A.ShowMSG(0,'Not complete');
+			end;
+			If States.UnitIdle(States.GroupMember(NewEscortGroup,0)) then 
+			begin
+				A.GiveGroup(0,26,47,205,5,States.GroupMemberCount(NewEscortGroup), 6);
+				A.GroupKillAll(NewEscortGroup , true);
+				NewEscortGroup := 0;
+				QuestNow.QType := qFormation1;
+				QuestNow.QMadeTime[12] := States.GameTime+9000;
+				A.ShowMSG(0,'Complete');
+			end;
+			
+		end;
+	end;
+	
+	If QuestNow.QType = qFormation1 then 
+	begin
+		If States.GameTime = QuestNow.QMadeTime[12] then 
+		begin
+			TheLast[0] := A.GiveGroup(4,22,161,105,6,1,1);
+			TheLast[1] := A.GiveGroup(5,20,159,103,4,1,1);
+			TheLast[2] := A.GiveGroup(6,20,159,107,0,1,1);
+			for I := 0 to 2 do
+				for K := 0 to 2 do
+				begin
+					A.MapTileObjectSet(160 + I,104 + K,61);
+					A.MapTileObjectSet(158 + I,102 + K,61);
+					A.MapTileObjectSet(158 + I,106 + K,61);
+				end;
+			A.ShowMSG(0,'<$296>');
+		end;
+		If EmissaryStats[8] = eNone then 
+			If States.GameTime > QuestNow.QMadeTime[12] + 100 then 
+				If States.UnitPosition(Hero) = U.KMPoint(157,105) then
+				begin
+					EmissaryTime[8] := States.GameTime;
+					EmissaryStats[8] := eTalkStart;
+					StartCinematic(0,2);
+				end;
+		If States.GameTime = EmissaryTime[8] + 20 then 
+			A.ShowMSG(0,'<$297>');
+		If States.GameTime = EmissaryTime[8] + 60 then 
+			A.ShowMSG(0,'<$298>');
+		If States.GameTime = EmissaryTime[8] + 100 then 
+			A.ShowMSG(0,'<$299>');
+		If States.GameTime = EmissaryTime[8] + 130 then 
+			A.ShowMSG(0,'<$300>');
+		If States.GameTime = EmissaryTime[8] + 180 then 
+			A.ShowMSG(0,'<$301>');
+		If States.GameTime = EmissaryTime[8] + 220 then 
+			A.ShowMSG(0,'<$302>');
+		If States.GameTime = EmissaryTime[8] + 260 then 
+			A.ShowMSG(0,'<$303>');
+			
+		If States.GameTime = EmissaryTime[8] + 340 then 
+		begin
+			for I := 0 to 2 do
+				A.GroupKillAll(TheLast[I],true);
+			AttacksTime[9] := States.GameTime + 300;
+			StartCinematic(1,2);
+			EmissaryStats[8] := eTalkEnd;
+			QuestNow.QType := qTheKing1;
+			QuestNow.QMadeTime[14] := States.GameTime + 3000;
+			for K := 4 to 6 do
+				for I := 17 to 26 do
+					A.GiveWeapons(K,I,1000);
+		end;
+			
+	end;
+	
+	If QuestNow.QType = qFormation2 then 
+	begin
+		If States.GameTime = QuestNow.QMadeTime[12] then 
+		begin
+			TheLast[0] := A.GiveGroup(4,22,161,105,6,1,1);
+			TheLast[1] := A.GiveGroup(5,20,159,103,4,1,1);
+			for I := 0 to 2 do
+				for K := 0 to 2 do
+				begin
+					A.MapTileObjectSet(160 + I,104 + K,61);
+					A.MapTileObjectSet(158 + I,102 + K,61);
+				end;
+			A.ShowMSG(0,'<$275>');
+		end;
+		If EmissaryStats[8] = eNone then
+			If States.UnitPosition(Hero) = U.KMPoint(157,105) then
+			begin
+				EmissaryTime[8] := States.GameTime;
+				EmissaryStats[8] := eTalkStart;
+				StartCinematic(0,2);
+			end;
+		If States.GameTime = EmissaryTime[8] + 20 then 
+			A.ShowMSG(0,'<$276>');
+		If States.GameTime = EmissaryTime[8] + 60 then 
+			A.ShowMSG(0,'<$278>');
+		If States.GameTime = EmissaryTime[8] + 100 then 
+			A.ShowMSG(0,'<$279>');
+		If States.GameTime = EmissaryTime[8] + 130 then 
+			A.ShowMSG(0,'<$380>');
+		If States.GameTime = EmissaryTime[8] + 180 then 
+			A.ShowMSG(0,'<$381>');
+			
+		If States.GameTime = EmissaryTime[8] + 260 then 
+		begin
+			for I := 0 to 2 do
+				A.GroupKillAll(TheLast[I],true);
+			AttacksTime[10] := States.GameTime + 300;
+			StartCinematic(1,2);
+			EmissaryStats[8] := eTalkEnd;
+			QuestNow.QType := qTheKing2;
+			QuestNow.QMadeTime[15] := States.GameTime + 3000;
+			for K := 4 to 6 do
+				for I := 17 to 26 do
+					A.GiveWeapons(K,I,1000);
+		end;
+			
+	end;
+	If QuestNow.QType = qTheKing2 then
+	begin
+		If States.GameTime = QuestNow.QMadeTime[15] then 
+		begin
+			AttacksTime[11] := States.GameTime + 30;
+			A.PlayOGGFadeMusic(0, '', 1);
+			SetMultipleAlliances([1,2,3,7,8,9,10],[17],false);
+			SetMultipleAlliances([0,4,5,6],[17],true);
+		end;
+		If States.GameTime = QuestNow.QMadeTime[15]+30 then 
+			A.GroupOrderWalk(A.GiveGroup(17,22,252,9,6,1,1),220,15,6);
+			
+		If States.GameTime = QuestNow.QMadeTime[15]+300 then 
+		begin
+			A.CinematicStart(0);
+			A.CinematicPanTo(0,220,12,0);
+			TheChoice[0] := A.GiveGroup(15,22,217,15,2,1,1);
+		end;
+		If States.GameTime = QuestNow.QMadeTime[15]+330 then 
+			A.ShowMSG(0,'<$283>');
+		If States.GameTime = QuestNow.QMadeTime[15]+380 then 
+			A.ShowMSG(0,'<$284>');
+		If States.GameTime = QuestNow.QMadeTime[15]+430 then 
+			A.ShowMSG(0,'<$285>');
+		If States.GameTime = QuestNow.QMadeTime[15]+480 then 
+			A.ShowMSG(0,'<$286>');
+		If States.GameTime = QuestNow.QMadeTime[15]+530 then 
+			A.ShowMSG(0,'<$287>');
+		If States.GameTime = QuestNow.QMadeTime[15]+580 then 
+			A.ShowMSG(0,'<$288>');
+		If States.GameTime = QuestNow.QMadeTime[15]+630 then 
+			A.ShowMSG(0,'<$289>');
+		If States.GameTime = QuestNow.QMadeTime[15]+680 then 
+			A.ShowMSG(0,'<$290>');
+		If States.GameTime = QuestNow.QMadeTime[15]+730 then 
+			A.ShowMSG(0,'<$291>');
+			
+		If States.GameTime = QuestNow.QMadeTime[15]+850 then 
+			A.GroupOrderWalk(TheChoice[0],97,18,0);
+		If States.GameTime = QuestNow.QMadeTime[15]+880 then 
+		begin
+			A.CinematicEnd(0);
+			Actions.AIAttackAdd(17,true,1,1,1,0,0,0,false,attClosestBuildingFromArmy,U.KMPoint(213,106))
+			Actions.AIAttackAdd(17,true,1,1,0,0,1,0,false,attClosestUnit,U.KMPoint(213,106))
+		end;		
+	end;
+	If QuestNow.QType = qTheKing1 then
+	begin
+		If States.GameTime = QuestNow.QMadeTime[14] then 
+		begin
+			AttacksTime[11] := States.GameTime + 230;
+			A.PlayOGGFadeMusic(0, '', 1);
+			SetMultipleAlliances([1,2,3,7,8,9,10],[17],false);
+			SetMultipleAlliances([0,4,5,6],[17],true);
+		end;
+		If States.GameTime = QuestNow.QMadeTime[14]+30 then 
+			A.GroupOrderWalk(A.GiveGroup(17,22,252,9,6,1,1),220,15,6);
+			
+		If States.GameTime = QuestNow.QMadeTime[14]+300 then 
+		begin
+			A.CinematicStart(0);
+			A.CinematicPanTo(0,220,12,0);
+			TheChoice[0] := A.GiveGroup(15,22,217,15,2,1,1);
+		end;
+		If States.GameTime = QuestNow.QMadeTime[14]+330 then 
+			A.ShowMSG(0,'<$283>');
+		If States.GameTime = QuestNow.QMadeTime[14]+380 then 
+			A.ShowMSG(0,'<$284>');
+		If States.GameTime = QuestNow.QMadeTime[14]+430 then 
+			A.ShowMSG(0,'<$285>');
+		If States.GameTime = QuestNow.QMadeTime[14]+480 then 
+			A.ShowMSG(0,'<$286>');
+		If States.GameTime = QuestNow.QMadeTime[14]+530 then 
+			A.ShowMSG(0,'<$287>');
+		If States.GameTime = QuestNow.QMadeTime[14]+580 then 
+			A.ShowMSG(0,'<$288>');
+		If States.GameTime = QuestNow.QMadeTime[14]+630 then 
+			A.ShowMSG(0,'<$289>');
+		If States.GameTime = QuestNow.QMadeTime[14]+680 then 
+			A.ShowMSG(0,'<$290>');
+		If States.GameTime = QuestNow.QMadeTime[14]+730 then 
+			A.ShowMSG(0,'<$291>');
+			
+		If States.GameTime = QuestNow.QMadeTime[14]+850 then 
+			A.GroupOrderWalk(TheChoice[0],97,18,0);
+		If States.GameTime = QuestNow.QMadeTime[14]+880 then 
+		begin
+			A.CinematicEnd(0);
+			Actions.AIAttackAdd(17,true,1,1,1,0,0,0,false,attClosestBuildingFromArmy,U.KMPoint(213,106))
+			Actions.AIAttackAdd(17,true,1,1,0,0,1,0,false,attClosestUnit,U.KMPoint(213,106))
+		end;		
+	end;
+end;
+

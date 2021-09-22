@@ -1,0 +1,44 @@
+
+{$COMMAND house_allow:AllowBuilding}
+{$COMMAND allow_all:AllowAll}
+{$COMMAND givewares:GiveWares}
+{$COMMAND immortal:SetImmortality}
+{$COMMAND house_bonus:AddHouses}
+{$COMMAND give_item:GiveItem}
+
+
+procedure AllowBuilding(aHandID : Integer; aType : Integer);
+begin
+	UnlockHouse([aType]);
+end;
+procedure AllowAll(aHandID : Integer);
+var I : Integer;
+begin
+	for I := 0 to 29 do
+		UnlockHouse([I]);
+end;
+
+procedure GiveWares(aHandID : Integer; aType,aCount : Integer);
+begin
+	A.GiveWares(aHandID,aType,aCount);
+end;
+
+
+Procedure SetImmortality(aHandID,aPlayer:Integer);
+var LEA : Integer;
+	AllGroups : array of Integer;
+begin
+	AllGroups := States.PlayerGetAllUnits(aPlayer);
+	for LEA := 0 to length(AllGroups)-1 do
+		A.UnitHPSetInvulnerable(AllGroups[LEA],true);
+end;
+
+Procedure AddHouses(aHandID,aCount:Integer);
+begin
+	HousesToBuild[6] := HousesToBuild[6]+aCount
+end;
+
+Procedure GiveItem(aHandID,aID:Integer);
+begin
+	GiveItemFromID(aID);
+end;

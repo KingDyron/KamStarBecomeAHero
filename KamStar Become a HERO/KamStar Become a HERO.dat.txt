@@ -1,0 +1,6 @@
+!SET_MAP "data\mission\smaps\KamStarStory.map"
+!SET_MAX_PLAYER 0
+
+//Animals
+
+//This mission was made with KaM Remake Map Editor version r6720 at 01.08.2021 11:49:05

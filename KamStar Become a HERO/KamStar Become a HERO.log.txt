@@ -1,0 +1,111 @@
+2021.09.22 18:55:59.758   Script compile hints:
+
+[Hint] Variable 'ACOUNT' never used
+in 'D:\Remake\KaM Remake Beta r13651\Maps\KamStar Become a HERO\KS_Attacks.script' at [253:3]
+
+[Hint] Variable 'I' never used
+in 'D:\Remake\KaM Remake Beta r13651\Maps\KamStar Become a HERO\KS_Attacks.script' at [255:3]
+
+[Hint] Variable 'AINDEX' never used
+in 'D:\Remake\KaM Remake Beta r13651\Maps\KamStar Become a HERO\KS_Hero.script' at [222:5]
+
+[Hint] Variable 'I' never used
+in 'D:\Remake\KaM Remake Beta r13651\Maps\KamStar Become a HERO\KamStar Become a HERO.script' at [209:5]
+
+[Hint] Variable 'ALENGTH' never used
+in 'D:\Remake\KaM Remake Beta r13651\Maps\KamStar Become a HERO\KamStar Become a HERO.script' at [212:2]
+
+[Hint] Variable 'ALENGTH' never used
+in 'D:\Remake\KaM Remake Beta r13651\Maps\KamStar Become a HERO\KS_HousesBonus.script' at [357:2]
+
+[Hint] Variable 'I' never used
+in 'D:\Remake\KaM Remake Beta r13651\Maps\KamStar Become a HERO\KamStar Become a HERO.script' at [1023:5]
+
+[Hint] Variable 'LEA' never used
+in 'D:\Remake\KaM Remake Beta r13651\Maps\KamStar Become a HERO\KamStar Become a HERO.script' at [1243:5]
+
+[Hint] Variable 'AHOUSES' never used
+in 'D:\Remake\KaM Remake Beta r13651\Maps\KamStar Become a HERO\KamStar Become a HERO.script' at [1244:2]
+
+[Hint] Variable 'AENEMYCOUNT' never used
+in 'D:\Remake\KaM Remake Beta r13651\Maps\KamStar Become a HERO\KamStar Become a HERO.script' at [100:2]
+
+[Hint] Variable 'NEXTTIME' never used
+in 'D:\Remake\KaM Remake Beta r13651\Maps\KamStar Become a HERO\KamStar Become a HERO.script' at [120:2]
+
+[Hint] Variable 'WARESGIVEN' never used
+in 'D:\Remake\KaM Remake Beta r13651\Maps\KamStar Become a HERO\KS_WaresGiving.script' at [11:5]
+
+2021.09.22 18:56:00.366   Invalid parameter(s) passed to States.AIDefencePositionGet: 1, 56
+2021.09.22 18:56:00.373   Invalid parameter(s) passed to Actions.AIDefencePositionRemove: 1, 0, 0
+2021.09.22 18:56:00.379   Invalid parameter(s) passed to States.AIDefencePositionGet: 1, 40
+2021.09.22 18:56:00.437   Invalid parameter(s) passed to States.UnitPositionY: 0
+2021.09.22 18:56:00.443   Invalid parameter(s) passed to States.UnitPositionX: 0
+2021.09.22 18:56:01.905   Invalid parameter(s) passed to States.GroupDead: 0
+2021.09.22 18:56:01.912   Invalid parameter(s) passed to States.GroupDead: 0
+2021.09.22 18:56:06.910   Invalid parameter(s) passed to States.GroupDead: 0
+2021.09.22 18:56:06.918   Invalid parameter(s) passed to States.GroupDead: 0
+2021.09.22 18:56:11.907   Invalid parameter(s) passed to States.GroupDead: 0
+2021.09.22 18:56:11.913   Invalid parameter(s) passed to States.GroupDead: 0
+2021.09.22 18:56:16.908   Invalid parameter(s) passed to States.GroupDead: 0
+2021.09.22 18:56:16.918   Invalid parameter(s) passed to States.GroupDead: 0
+2021.09.22 18:56:21.906   Invalid parameter(s) passed to States.GroupDead: 0
+2021.09.22 18:56:21.911   Invalid parameter(s) passed to States.GroupDead: 0
+2021.09.22 18:56:26.908   Invalid parameter(s) passed to States.GroupDead: 0
+2021.09.22 18:56:26.916   Invalid parameter(s) passed to States.GroupDead: 0
+2021.09.22 18:56:31.905   Invalid parameter(s) passed to States.GroupDead: 0
+2021.09.22 18:56:31.911   Invalid parameter(s) passed to States.GroupDead: 0
+2021.09.22 18:56:36.906   Invalid parameter(s) passed to States.GroupDead: 0
+2021.09.22 18:56:36.912   Invalid parameter(s) passed to States.GroupDead: 0
+2021.09.22 18:56:41.906   Invalid parameter(s) passed to States.GroupDead: 0
+2021.09.22 18:56:41.911   Invalid parameter(s) passed to States.GroupDead: 0
+2021.09.22 18:56:46.907   Invalid parameter(s) passed to States.GroupDead: 0
+2021.09.22 18:56:46.912   Invalid parameter(s) passed to States.GroupDead: 0
+2021.09.22 18:56:51.905   Invalid parameter(s) passed to States.GroupDead: 0
+2021.09.22 18:56:51.912   Invalid parameter(s) passed to States.GroupDead: 0
+2021.09.22 18:56:56.916   Invalid parameter(s) passed to States.GroupDead: 0
+2021.09.22 18:56:56.922   Invalid parameter(s) passed to States.GroupDead: 0
+2021.09.22 18:57:01.905   Invalid parameter(s) passed to States.GroupDead: 0
+2021.09.22 18:57:01.912   Invalid parameter(s) passed to States.GroupDead: 0
+2021.09.22 18:57:06.909   Invalid parameter(s) passed to States.GroupDead: 0
+2021.09.22 18:57:06.915   Invalid parameter(s) passed to States.GroupDead: 0
+2021.09.22 18:57:11.905   Invalid parameter(s) passed to States.GroupDead: 0
+2021.09.22 18:57:11.913   Invalid parameter(s) passed to States.GroupDead: 0
+2021.09.22 18:57:16.908   Invalid parameter(s) passed to States.GroupDead: 0
+2021.09.22 18:57:16.916   Invalid parameter(s) passed to States.GroupDead: 0
+2021.09.22 18:57:21.939   Invalid parameter(s) passed to States.GroupDead: 0
+2021.09.22 18:57:21.950   Invalid parameter(s) passed to States.GroupDead: 0
+2021.09.22 18:57:26.907   Invalid parameter(s) passed to States.GroupDead: 0
+2021.09.22 18:57:26.916   Invalid parameter(s) passed to States.GroupDead: 0
+2021.09.22 18:57:31.905   Invalid parameter(s) passed to States.GroupDead: 0
+2021.09.22 18:57:31.911   Invalid parameter(s) passed to States.GroupDead: 0
+2021.09.22 18:57:36.908   Invalid parameter(s) passed to States.GroupDead: 0
+2021.09.22 18:57:36.914   Invalid parameter(s) passed to States.GroupDead: 0
+2021.09.22 18:57:41.906   Invalid parameter(s) passed to States.GroupDead: 0
+2021.09.22 18:57:41.913   Invalid parameter(s) passed to States.GroupDead: 0
+2021.09.22 18:57:46.907   Invalid parameter(s) passed to States.GroupDead: 0
+2021.09.22 18:57:46.913   Invalid parameter(s) passed to States.GroupDead: 0
+2021.09.22 18:57:51.906   Invalid parameter(s) passed to States.GroupDead: 0
+2021.09.22 18:57:51.912   Invalid parameter(s) passed to States.GroupDead: 0
+2021.09.22 18:57:56.908   Invalid parameter(s) passed to States.GroupDead: 0
+2021.09.22 18:57:56.915   Invalid parameter(s) passed to States.GroupDead: 0
+2021.09.22 18:58:01.905   Invalid parameter(s) passed to States.GroupDead: 0
+2021.09.22 18:58:01.911   Invalid parameter(s) passed to States.GroupDead: 0
+2021.09.22 18:58:06.908   Invalid parameter(s) passed to States.GroupDead: 0
+2021.09.22 18:58:06.914   Invalid parameter(s) passed to States.GroupDead: 0
+2021.09.22 18:58:11.906   Invalid parameter(s) passed to States.GroupDead: 0
+2021.09.22 18:58:11.912   Invalid parameter(s) passed to States.GroupDead: 0
+2021.09.22 18:58:16.911   Invalid parameter(s) passed to States.GroupDead: 0
+2021.09.22 18:58:16.921   Invalid parameter(s) passed to States.GroupDead: 0
+2021.09.22 18:58:21.906   Invalid parameter(s) passed to States.GroupDead: 0
+2021.09.22 18:58:21.914   Invalid parameter(s) passed to States.GroupDead: 0
+2021.09.22 18:58:26.908   Invalid parameter(s) passed to States.GroupDead: 0
+2021.09.22 18:58:26.915   Invalid parameter(s) passed to States.GroupDead: 0
+2021.09.22 18:58:31.906   Invalid parameter(s) passed to States.GroupDead: 0
+2021.09.22 18:58:31.919   Invalid parameter(s) passed to States.GroupDead: 0
+2021.09.22 18:58:36.908   Invalid parameter(s) passed to States.GroupDead: 0
+2021.09.22 18:58:36.917   Invalid parameter(s) passed to States.GroupDead: 0
+2021.09.22 18:58:41.906   Invalid parameter(s) passed to States.GroupDead: 0
+2021.09.22 18:58:41.912   Invalid parameter(s) passed to States.GroupDead: 0
+2021.09.22 18:58:46.906   Invalid parameter(s) passed to States.GroupDead: 0
+2021.09.22 18:58:46.913   Invalid parameter(s) passed to States.GroupDead: 0

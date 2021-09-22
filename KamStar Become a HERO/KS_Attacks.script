@@ -1,0 +1,328 @@
+
+
+Procedure SetImmortality2(aPlayer:Integer);
+var LEA : Integer;
+	AllGroups : array of Integer;
+begin
+	AllGroups := States.PlayerGetAllUnits(aPlayer);
+	for LEA := 0 to length(AllGroups)-1 do
+		A.UnitHPSetInvulnerable(AllGroups[LEA],true);
+end;
+
+
+Procedure AllAttacks(AttackIndex : Integer);
+var I, DCount, LEA :Integer;
+	 aGType: Byte;
+	 aRadius: Word;
+	 aDefType: Byte;
+	 aPos : TKMPoint;
+begin
+
+	case AttackIndex of 
+		//attack after watchtower or sawmill
+		0 : Case HousesFirstBuilt[2].aType of 
+				0:	begin
+						Actions.GroupOrderAttackHouse(Actions.GiveGroup(1,25,150,64,2,15,5),MainStoreHouse[0])
+						Actions.GroupOrderAttackHouse(Actions.GiveGroup(1,14,150,64,2,10,5),MainStoreHouse[0])
+						Actions.GroupOrderAttackHouse(Actions.GiveGroup(1,27,150,64,2,10,5),MainStoreHouse[0])
+					end;
+				17:	begin
+						Actions.GroupOrderAttackHouse(Actions.GiveGroup(1,25,20,110,2,20,5),MainStoreHouse[0])
+						Actions.GroupOrderAttackHouse(Actions.GiveGroup(1,14,20,110,2,25,5),MainStoreHouse[0])
+						Actions.GroupOrderAttackHouse(Actions.GiveGroup(1,27,20,110,2,20,6),MainStoreHouse[0])
+					end;
+			end;
+		//attack after townhall
+		1 : Case HousesFirstBuilt[5].aType of 
+				29:	begin
+						Actions.GroupOrderAttackHouse(Actions.GiveGroup(1,18,147,104,2,20,5),MainStoreHouse[0])
+						Actions.GroupOrderAttackHouse(Actions.GiveGroup(1,15,147,104,2,20,3),MainStoreHouse[0])
+						Actions.GroupOrderAttackHouse(Actions.GiveGroup(1,19,147,104,2,15,3),MainStoreHouse[0])
+						Actions.GroupOrderAttackHouse(Actions.GiveGroup(1,24,147,104,2,16,4),MainStoreHouse[0])
+					end;
+				18:	begin
+						Actions.GroupOrderAttackHouse(Actions.GiveGroup(1,17,115,115,2,20,2),MainStoreHouse[0])
+						Actions.GroupOrderAttackHouse(Actions.GiveGroup(1,16,115,115,2,20,3),MainStoreHouse[0])
+						Actions.GroupOrderAttackHouse(Actions.GiveGroup(1,20,115,115,2,20,3),MainStoreHouse[0])
+						Actions.GroupOrderAttackHouse(Actions.GiveGroup(1,21,115,115,2,20,4),MainStoreHouse[0])
+					end;
+			end;
+		//attack on the player 6
+		2 :begin
+				Actions.GroupOrderAttackHouse(Actions.GiveGroup(1,22,117,53,3,24,2),MainStoreHouse[5])
+				Actions.GroupOrderAttackHouse(Actions.GiveGroup(1,26,106,66,3,24,3),MainStoreHouse[5])
+				Actions.GroupOrderAttackHouse(Actions.GiveGroup(1,18,133,56,4,24,3),MainStoreHouse[5])
+				Actions.GroupOrderAttackHouse(Actions.GiveGroup(1,20,81,76,2,24,4),MainStoreHouse[5])
+				Actions.AIStartPosition(1,219,106)
+				Actions.AIAttackAdd(1,true,0,1,1,1,1,1,true,attClosestBuildingFromStartPos,U.KMPoint(213,106))
+			end;
+		//attack on the hero by player 2
+		3 :begin
+				Actions.GroupOrderAttackHouse(Actions.GiveGroup(1,22,117,53,3,24,2),MainStoreHouse[0])
+				Actions.GroupOrderAttackHouse(Actions.GiveGroup(1,26,106,66,3,24,6),MainStoreHouse[0])
+				Actions.GroupOrderAttackHouse(Actions.GiveGroup(1,18,133,56,4,18,6),MainStoreHouse[0])
+				Actions.GroupOrderAttackHouse(Actions.GiveGroup(1,18,133,56,4,18,6),MainStoreHouse[0])
+				Actions.GroupOrderAttackHouse(Actions.GiveGroup(1,20,81,76,2,24,6),MainStoreHouse[0])
+				Actions.GroupOrderAttackHouse(Actions.GiveGroup(1,16,81,76,2,12,6),MainStoreHouse[0])
+				Actions.GroupOrderAttackHouse(Actions.GiveGroup(1,16,81,76,2,12,6),MainStoreHouse[0])
+				Actions.AIStartPosition(1,45,208)
+				Actions.AIAttackAdd(1,true,0,1,1,1,1,1,true,attClosestBuildingFromStartPos,U.KMPoint(213,106))
+			end;
+		//attack on the hero by player 2 and 5
+		4 :begin
+				//player 2
+				Actions.GroupOrderAttackHouse(Actions.GiveGroup(1,22,117,53,3,24,2),MainStoreHouse[0])
+				Actions.GroupOrderAttackHouse(Actions.GiveGroup(1,26,106,66,3,24,6),MainStoreHouse[0])
+				Actions.GroupOrderAttackHouse(Actions.GiveGroup(1,18,133,56,4,18,6),MainStoreHouse[0])
+				Actions.GroupOrderAttackHouse(Actions.GiveGroup(1,18,133,56,4,18,6),MainStoreHouse[0])
+				Actions.GroupOrderAttackHouse(Actions.GiveGroup(1,20,81,76,2,24,6),MainStoreHouse[0])
+				//player 5
+				Actions.GroupOrderAttackHouse(Actions.GiveGroup(4,21,232,19,2,24,6),MainStoreHouse[0])
+				Actions.GroupOrderAttackHouse(Actions.GiveGroup(4,19,232,19,2,24,6),MainStoreHouse[0])
+				Actions.GroupOrderAttackHouse(Actions.GiveGroup(4,19,189,65,2,24,6),MainStoreHouse[0])
+				Actions.GroupOrderAttackHouse(Actions.GiveGroup(4,17,180,62,2,24,6),MainStoreHouse[0])
+				Actions.GroupOrderAttackHouse(Actions.GiveGroup(4,15,232,19,2,24,6),MainStoreHouse[0])
+				Actions.AIStartPosition(1,45,208)
+				Actions.AIStartPosition(4,45,208)
+				Actions.AIAttackAdd(1,true,0,1,1,1,1,1,true,attClosestBuildingFromStartPos,U.KMPoint(213,106))
+				Actions.AIAttackAdd(4,true,0,1,1,1,1,1,true,attClosestBuildingFromStartPos,U.KMPoint(213,106))
+			end;
+			
+			
+		//attack on the hero by all players
+		5 :begin	
+				for I := 4 to 6 do
+				begin					
+					DCount:= States.StatAIDefencePositionsCount(I);
+					Actions.AIStartPosition(I,45,208)	
+					Actions.AIAttackAdd(I,true,1,1,1,1,1,1,true,attClosestBuildingFromStartPos,U.KMPoint(213,106))
+					for LEA := DCount Downto 1 do
+					begin
+						S.AIDefencePositionGet(I,LEA,aPos.X,aPos.Y,aGType,aRadius,aDefType);
+						A.AIDefencePositionRemove(I,aPos.X,aPos.Y);
+						A.AIDefencePositionAdd(I,aPos.X,aPos.Y,0,aGType,aRadius,1);
+					end;
+				end;
+				Actions.AIStartPosition(1,45,208)
+				Actions.AIStartPosition(4,45,208)
+			end;
+			
+			
+		//attack on the hero by player 18
+		6 :	begin				
+				for I := 0 to 3 do
+					Actions.PlayerAllianceChange(I,17,true,false);
+				for I := 7 to 10 do
+					Actions.PlayerAllianceChange(I,17,true,false);
+				DCount:= States.StatAIDefencePositionsCount(17);
+				Actions.AIAttackAdd(17,true,1,1,1,0,0,0,false,attClosestBuildingFromArmy,U.KMPoint(213,106))
+				Actions.AIAttackAdd(17,true,1,1,0,0,1,0,false,attClosestUnit,U.KMPoint(213,106))
+				for LEA := DCount Downto 1 do
+				begin
+					S.AIDefencePositionGet(17,LEA,aPos.X,aPos.Y,aGType,aRadius,aDefType);
+					A.GiveGroup(17,16,aPos.X,aPos.Y,0,10,5);
+					A.GiveGroup(17,16,aPos.X,aPos.Y,0,10,5);
+					A.GiveGroup(17,18,aPos.X,aPos.Y,0,10,5);
+					//A.AIDefencePositionRemove(17,aPos.X,aPos.Y);
+				end;
+			end;
+			
+		//attack on the player 7
+		7 :begin
+				Actions.GroupOrderAttackHouse(Actions.GiveGroup(1,22,16,88,3,24,2),MainStoreHouse[6])
+				Actions.GroupOrderAttackHouse(Actions.GiveGroup(1,22,16,88,3,24,2),MainStoreHouse[6])
+				Actions.GroupOrderAttackHouse(Actions.GiveGroup(1,26,16,93,3,24,3),MainStoreHouse[6])
+				Actions.GroupOrderAttackHouse(Actions.GiveGroup(1,26,16,93,3,24,3),MainStoreHouse[6])
+				Actions.GroupOrderAttackHouse(Actions.GiveGroup(1,18,20,90,4,24,3),MainStoreHouse[6])
+				Actions.GroupOrderAttackHouse(Actions.GiveGroup(1,18,20,90,4,24,3),MainStoreHouse[6])
+				Actions.GroupOrderAttackHouse(Actions.GiveGroup(1,20,25,88,2,24,4),MainStoreHouse[6])
+				Actions.GroupOrderAttackHouse(Actions.GiveGroup(1,20,25,88,2,24,4),MainStoreHouse[6])
+				Actions.AIStartPosition(1,190,202)
+				Actions.AIAttackAdd(1,true,0,1,1,1,1,1,true,attClosestBuildingFromStartPos,U.KMPoint(213,106))
+			end;
+			
+		//attack on the right garrison
+		8 :begin		
+				DCount:= States.StatAIDefencePositionsCount(6);
+				If States.StatHouseCount(6) < 110 then 
+				begin
+					for LEA := DCount Downto 1 do
+					begin
+						S.AIDefencePositionGet(6,LEA,aPos.X,aPos.Y,aGType,aRadius,aDefType);
+						If aDefType = 1 then 
+						case aGType of	
+							0 : A.GiveGroup(6,15 , aPos.X, aPos.Y,0,10,5);
+							1 : A.GiveGroup(6,19 , aPos.X, aPos.Y,0,10,5);
+							2 : A.GiveGroup(6,17 , aPos.X, aPos.Y,0,10,5);
+							3 : A.GiveGroup(6,21 , aPos.X, aPos.Y,0,10,5);					
+						end;
+					end;				
+				end else
+					for LEA := DCount Downto 1 do
+					begin
+						S.AIDefencePositionGet(6,LEA,aPos.X,aPos.Y,aGType,aRadius,aDefType);
+						If aDefType = 1 then 
+						case aGType of	
+							0 : A.GiveGroup(6,15 + States.KaMRandomI(2) , aPos.X, aPos.Y,0,10,5);
+							1 : A.GiveGroup(6,19 + States.KaMRandomI(2) , aPos.X, aPos.Y,0,10,5);
+							2 : A.GiveGroup(6,17 + States.KaMRandomI(2) , aPos.X, aPos.Y,0,10,5);
+							3 : A.GiveGroup(6,21 + States.KaMRandomI(2) , aPos.X, aPos.Y,0,10,5);					
+						end;
+					end;				
+				Actions.AIStartPosition(6,189,11)
+				Actions.AIAttackAdd(6,true,0,1,1,1,1,1,true,attClosestBuildingFromStartPos,U.KMPoint(213,106))
+			end;
+			
+		//attack on the left garrison
+		9 :begin		
+				A.GiveGroup(5,15 + States.KaMRandomI(2) ,18 ,113, 0,10,5);
+				A.GiveGroup(5,15 + States.KaMRandomI(2) ,24 ,113, 0,10,5);
+				A.GiveGroup(5,15 + States.KaMRandomI(2) ,27 ,113, 0,10,5);
+				A.GiveGroup(5,15 + States.KaMRandomI(2) ,31 ,113, 0,10,5);
+				
+				A.GiveGroup(5,26 ,18 ,116, 0,6,3);
+				A.GiveGroup(5,26 ,24 ,116, 0,6,3);
+				A.GiveGroup(5,26 ,27 ,116, 0,6,3);
+				A.GiveGroup(5,26 ,31 ,116, 0,6,3);
+				
+				A.GiveGroup(5,17 + States.KaMRandomI(2) ,18 ,118, 0,10,5);	
+				A.GiveGroup(5,17 + States.KaMRandomI(2) ,24 ,118, 0,10,5);	
+				A.GiveGroup(5,17 + States.KaMRandomI(2) ,27 ,118, 0,10,5);	
+				A.GiveGroup(5,17 + States.KaMRandomI(2) ,31 ,118, 0,10,5);	
+				
+				Actions.AIStartPosition(5,22,89);
+				Actions.AIAttackAdd(5,true,0,20,1,1,1,1,true,attClosestUnit,U.KMPoint(213,106))
+			end;
+		//attack on 1 by all players
+		10 :begin	
+				for I := 4 to 6 do
+				begin					
+					DCount:= States.StatAIDefencePositionsCount(I);
+					Actions.AIStartPosition(I,97,73)	
+					Actions.AIAttackAdd(I,true,1,1,1,1,1,1,true,attClosestBuildingFromStartPos,U.KMPoint(213,106))
+					for LEA := DCount Downto 1 do
+					begin
+						S.AIDefencePositionGet(I,LEA,aPos.X,aPos.Y,aGType,aRadius,aDefType);
+						A.AIDefencePositionRemove(I,aPos.X,aPos.Y);
+						A.AIDefencePositionAdd(I,aPos.X,aPos.Y,0,aGType,aRadius,1);
+					end;
+				end;
+				Actions.AIStartPosition(1,45,208)
+				Actions.AIStartPosition(4,45,208)
+			end;
+		//attack on 1 by 4 and 5
+		11 :begin	
+				for I := 4 to 5 do
+				begin					
+					DCount:= States.StatAIDefencePositionsCount(I);
+					Actions.AIStartPosition(I,97,73)	
+					Actions.AIAttackAdd(I,true,1,1,1,1,1,1,true,attClosestBuildingFromStartPos,U.KMPoint(213,106))
+					for LEA := DCount Downto 1 do
+					begin
+						S.AIDefencePositionGet(I,LEA,aPos.X,aPos.Y,aGType,aRadius,aDefType);
+						A.AIDefencePositionRemove(I,aPos.X,aPos.Y);
+						A.AIDefencePositionAdd(I,aPos.X,aPos.Y,0,aGType,aRadius,1);
+					end;
+				end;
+				Actions.AIStartPosition(1,45,208)
+				Actions.AIStartPosition(4,45,208)
+			end;
+			  
+		//attack  by player 18
+		12 :	begin				
+				DCount:= States.StatAIDefencePositionsCount(17);
+				for LEA := DCount Downto 5 do
+				begin
+					S.AIDefencePositionGet(17,LEA,aPos.X,aPos.Y,aGType,aRadius,aDefType);
+					A.GiveGroup(17,16,aPos.X,aPos.Y,0,10,5);
+					A.GiveGroup(17,16,aPos.X,aPos.Y,0,10,5);
+					A.GiveGroup(17,18,aPos.X,aPos.Y,0,10,5);
+				end;
+				SetImmortality2(17);
+			end;
+	end;
+
+end;
+
+Procedure NormalAttacks;
+var  DCount, LEA :Integer;
+	 aGType: Byte;
+	 aRadius: Word;
+	 aDefType: Byte;
+	 aPos : TKMPoint;
+	 aCount : integer;
+	 WarriorsCount : array[0..3] of Integer;
+	 I : Integer;
+begin
+	
+	WarriorsCount[0] := S.StatHouseMultipleTypesCount(0, [11,13,18,21,27,29,0]) div 2;//warriors
+	WarriorsCount[1] := S.StatHouseMultipleTypesCount(0, [8,24,5,19,20,6,17]) div 2;//antihorse
+	WarriorsCount[2] := S.StatHouseMultipleTypesCount(0, [22,3,7,15,14,9,1]) div 2;//ranged
+	WarriorsCount[3] := S.StatHouseMultipleTypesCount(0, [12,16,4,2,10,28,25]) div 2;//horse
+	for LEA := 0 to 3 do
+		begin
+			WarriorsCount[LEA] := WarriorsCount[LEA]+ BiggerEnemyAttacks;//extra count
+			If WarriorsCount[LEA] <=0 then 
+				WarriorsCount[LEA] := 1;
+		end;
+		
+	begin
+		DCount:= States.StatAIDefencePositionsCount(7);
+		for LEA := DCount Downto 1 do
+		begin
+			S.AIDefencePositionGet(7,LEA,aPos.X,aPos.Y,aGType,aRadius,aDefType);
+			If aDefType <> 0 then 
+				case aGType of 
+					0:	A.GiveGroup(7,26,aPos.X,aPos.Y,0,WarriorsCount[aGType],5);
+					1:	A.GiveGroup(7,20,aPos.X,aPos.Y,0,WarriorsCount[aGType],5);
+					2:	A.GiveGroup(7,18,aPos.X,aPos.Y,0,WarriorsCount[aGType],5);
+					3:	A.GiveGroup(7,22,aPos.X,aPos.Y,0,WarriorsCount[aGType],5);
+				end;
+		end;
+	end;
+end;
+
+Procedure FFAAttack(aPlayer : Integer);
+var  DCount, LEA :Integer;
+	 aGType: Byte;
+	 aRadius: Word;
+	 aDefType: Byte;
+	 aPos : TKMPoint;
+	 aCount, aColumn : integer;
+begin
+	
+	DCount:= States.StatAIDefencePositionsCount(aPlayer);
+	for LEA := DCount Downto 1 do
+	begin
+		S.AIDefencePositionGet(aPlayer,LEA,aPos.X,aPos.Y,aGType,aRadius,aDefType);
+		If aDefType <> 0 then 
+		begin
+			S.AIGroupsFormationGet(aPlayer,aGType,aCount,aColumn);
+			A.GiveGroup(aPlayer,aPlayersUType[aPlayer-1][aGType],aPos.X,aPos.Y,0,aCount,aColumn);
+		end;
+	end;
+	Actions.AIStartPosition(aPlayer,45,208)
+	Actions.AIAttackAdd(aPlayer,true,0,20,1,1,1,1,true,attClosestBuildingFromStartPos,U.KMPoint(213,106))
+end;
+
+procedure AttackAfterAttack(aPlayer : Integer);
+var I, DefensesCount: Integer;
+	aX: Integer;
+	aY: Integer;
+	aGType: Byte;
+	aRadius: Word;
+	aDefType: Byte;
+begin
+
+	case aPlayer of
+		5 : begin
+				DefensesCount := States.StatAIDefencePositionsCount(aPlayer);
+				for I := 0 to DefensesCount do
+				begin
+					States.AIDefencePositionGet(aPlayer,I,aX,aY,aGType,aRadius,aDefType);
+					If aDefType = 1 then
+						Actions.GiveGroup(aPlayer,14,aX,aY,0,12,4);
+				end;
+			end;
+	end;
+end;

@@ -1,0 +1,627 @@
+﻿//schoolhouse
+0:Doradca: Teraz musimy zapewnić naszym poddanym pożywienie oraz surowce do dalszej rozbudowy miasta.
+//tavern
+1:Doradca: Gratuluję mój panie. Początki bycia królem zapewne nie są łatwę, jednak budowanie tawerny przed uczelnią, to nie był dobry pomysł. Twoi poddani bezmyślnie sie upili i zrabowali wszystkie surowce ze spichrza. Świetnie, po prostu świetnie.|Gratulacje, tak szybkiego upadku jeszcze nie widziałem ;) (Zakończenie nr.1)
+//querry
+2:Doradca: Kamieniarze odkryli w kopalniach przygotowane już bloki kamienia. Nasi budowniczy wykorzystali ten fakt i rozpoczną budowę murów. Będziemy mogli lepiej się bronić przed najazdami wroga.
+//woodcutter
+3:Doradca: Ziemia będąca pod leśniczówką, okazała się bardzo żyzna. Drzewa tu rosną szybciej niż gdzie kolwiek.
+//fisherman
+4:Doradca: Nasz rybak odkrył w stawie bezdenną otchłań, z której wypływają cały czas ryby. To siędlisko może dać nam wiele korzyści żywieniowych. 
+
+//watch tower
+5:Doradca: Kilku naszych rekrutów zainteresowało się wieżą i pobrało lekcje rzucania kamieniami. Dzięki ich wytrwałości, zyskaliśmy procarzy. Zawsze to coś.
+//sawmill
+6:Doradca: Cieśla postanowił podzielić się swoimi umiejętnościami i wzmocnił pancerze wraz z uzbrojeniem naszych żołnierzy.
+
+//farm
+7:Doradca: Dzięki tej budowie, nasze miasto będzie w stanie zapewnić surowce do produkcji żywności nie tylko nam, ale i też sojusznikom. |Podzielmy sie odrobiną naszych dóbr z sąsiadami.
+//barracks
+8:Doradca: Tak jest, szkolenie przede wszystkim. Nasi obecni żołnierze również wzięli udział w szkoleniu i awansowali.|To dobry kierunek dla nas.
+//vineyard
+9:Doradca: Nasi chłopi pracujący w winnicy, upili się własnym wyrobem i splądrowali ze spichrza 20 sztuk złota, po czym uciekli. Wino, to nie był dobry pomysł.
+//weapon workshop
+10:Doradca: Nasi ludzie dobrali się do broni płatnerza i zbuntowali się przeciwko nam. Musimy ich zatrzymać i srogo ukarać.
+
+//iron mine
+11:Doradca: Przyśpieszmy trochę rozwój naszej wiedzy technologicznej. Nasi żołnierze potrzebują modernizacji. ||Odblokowano : kuźnie, targowisko.
+//gold mine
+12:Doradca: Nasi górnicy trafili na czystą rudę złota, która jest o wiele łatwiejsza przy wydobywaniu.
+
+//market
+13:Doradca: Targowisko dało nam dostęp do wszelkiego rodzaju surowców, jak i również do uzbrojenia. W tym miejscu zbierają się rozmaici kupcy.||Już widzę handlarza z uzbrojeniem. Przekonam go, aby za kilka sztuk złota, oddał to, co ma przy sobie.
+//townhall
+14:Doradca: Ratusz dał nam możliwość rekrutacji dzikich jednostek. Wyrekrutowaliśmy dwunastu drwali, aby mogli dać przykład potęgi siekania toporem.
+
+
+//coal mine
+15:Doradca: Skoro już znamy sekret stalowych broni, podzielmy się nim z naszymi sojusznikami.
+//Buthers
+16:Rzeźnik: Jestem rad, że tak dobre czasy nastały dla nas. Dobrze że to ty władasz tym miastem o panie.|Od dzisiaj nie musisz się martwić o głód, albowiem sam zadbam o to, abyś miał dostarczone mięso na czas.
+//tannery
+17:Doradca: Powinniśmy umocnić nasz sojusz, więc wysłałem złoto i węgiel dla naszych przyjaciół.
+
+//swine farm
+18:Doradca: Nasze chlewy potrzebują słomy, aby zwierzęta nie musiały spać na gołej ziemi. Musimy oddać 10 sztuk zboża.
+//bakery
+19:Piekarz: Chleb! Chleb dla wszystkich! Jedzcie do syta, wszyscy!
+//armory workshop
+20:Doradca: Skoro mamy warsztat pancerzy, dobrze by było, ulepszyć naszych żołnierzy tymi właśnie pancerzami.|Mam jeszcze lepszy pomysł, skoro nam tak dobrze idzie, obdarujmy młodego księcia. Zwiększona siła jego wojsk, na pewno nam pomoże.
+
+//mill
+22:Doradca: Cywile są zadowoleni twoim postępowaniem, więc zgodzili się na szkolnictwo za DARMO.
+
+//iron smithy
+23:Doradca: Skoro mamy już stal, przekażmy trochę słabszych jednostek baronowi Aratonowi. Może dzięki temu umocnimy naszą pozycję.
+//Metallurgist's
+24:Doradca: Wprowadziliśmy podadatek od każdego budynku w tym mieście.
+
+//Weapon Smithy
+25:Groton: Miałem nadzieję, że sobie darujesz, jednak twój upór jest niesamowicie wysoki. Jak sobie życzysz, nie będziesz miał łatwo.
+//Armor Smithy
+26:Doradca: Myślę że zbieranie armii idzie ci bardzo dobrze. Nie wiele czasu brakuje abyśmy umieli się obronić przed atakami Grotona. Postarałem się znaleźć najlepszego kowala jaki żyje. |Pomoże nam w szybszym zbrojeniu się jednostek.
+
+//Stables
+27:Doradca: Hmmm, Ciekawe posunięcie mój panie
+
+//Po dotarciu bohatera do stajni:
+28:Hodowca: Witaj mój panie, a czego to wam potrzeba?
+29:Bohater: Dajcie mi najlepszego konia jakiego posiadacie.
+30:Hodowca: Ale panie mój, tutaj wszystkie takie same są.
+31:Bohater: Muszę mieć najlepszego, od dzisiaj będzie rumakiem króla.
+
+//Po dotarciu bohatera do gospodarstwa:
+32:Chłop: Mój panie, mamy ogrom kamieni z naszych pól. Niewiemy doprawdy co z nimi zrobić.
+33:Bohater: Mam pewien pomysł. Moi rekruci chętnie wyszkola sie na procarzy i użyją tych kamieni przeciwko wrogowi.
+34:Chłop: Dziekuję mój panie.
+
+//Po dotarciu bohatera do chaty rybaka:
+35:Rybak: Mój panie, łowiąc ryby, zauważyłem leżące wśród piasku monety. Pozbierałem je wszystkie i widząc ciebie, postanowiłem je oddać, albowiem nie jest to moja ziemia, tylko twoja.
+
+//Po dotarciu bohatera do stawu:
+36:Rybak: Mój panie, w stawie pływa sporo ptactwa, które płoszy mi ryby. Proszę, weź tą łódkę i pozbądź się go na dobre.
+
+Kolejna wiadomość:
+37:Rybak: Dziękuję ci mój panie. Dzięki tobie staw jest wolny, a ty zyskałeś pożywienie dla swoich poddanych.
+
+//Po dotarciu bohatera do kamieniołomu po wybudowaniu warowni:
+38:Bohater: Moi strzelcy potrzebują dobrego miejsca do ostrzału wroga. Zamierzam wybudować plac, jednak potrzebuję kamienia.
+39:Doradca: Rozkażę kamieniarzom, aby przyśpieszyli produkcję. W krótce będziesz miał swój kamień.
+
+//Kolejna wiadomość po krótkim czasie.
+40:Budowniczy: Rozpoczęliśmy budowę placu, jeszcze trochę a bedzie gotowy.
+
+//Po wybudowaniu warowni, bez kamieniołomu:
+41:Bohater: Potrzebuję nowej zbroi. Ta co mam już się rozpada.
+42:Dowódca koszar: Tak jest mój Królu. Cały ekwipunek godny króla. Niech dobrze ci służą. Oferuję ci także najszybszego konia, którego mam. 
+43:Bohater: Dziękuję, bardzo to doceniam.
+
+//Po przybyciu do wieży obronnej
+44:Bohater: Musisz popracować nad celem. Nie patrz gdzie jest przeciwnik, lecz gdzie się znajdzie za kilka sekund.
+45:Strzelec: Dziękuję Panie za radę. Postaram się już nigdy nie chybić z tej katapulty.
+
+46:Udzielono ci lekcji przetrwania.
+47:Karczmarz: Straciłeś czas na to działanie.
+
+48:Kamieniarz: Nie wiem jak jeszcze mogę ci się odwdzięczyć Panie. Wiem... |Proszę. Weź go na pamiątkę.|Zrobiłem ten kilof bardzo dawno temu.
+
+49:Bohater: Patyk...
+
+//hero inventory
+50:[$00FFA1]||Prawa Ręka : [$FFFFFF]
+51:[$00FF00]|Lewa Ręka : [$FFFFFF]
+52:[$00FF00]|Hełm : [$FFFFFF]
+53:[$00FF00]|Napierśnik : [$FFFFFF]
+54:[$00FF00]|Nogawice : [$FFFFFF]
+55:[$00FF00]|Buty : [$FFFFFF]
+56:[$00FF00]||Sakwa : [$FFFFFF]
+57:[$00FF00]|Koń : [$FFFFFF]
+
+
+//Przybycie do drwala
+58:Drwal: Pełno ich tutaj. Nie ma kto ich zbierać, a jak zgniją to użyźniają ziemię. Możesz go zabrać jeśli chcesz.
+59:Bohater: A po co mi patyk...
+
+//przybycie do winnicy
+60:Bohater: Co wy wyprawiacie!?
+61:Pracownik 1: Eee... Nic..
+62:Pracownik 2: Upijamy swoje zwycięstwo.
+63:Pracownik 1: Cicho siedź... Trochę dyskrecji.
+64:Bohater: Wracać mi do roboty albo całkiem stracicie pracę! Wino konfiskuję!
+
+//po wyruszeniu do płatnerza broni
+65:Bohater: Witaj przyjacielu. Dawno cię nie widziałem. Wszystko przez te sprawy w królestwie.
+66:Płatnerz: Nie ma problemu. Staram się jak mogę aby ludzie mogli się uzbroić. Sam wyglądasz jakbyś potrzebował narzędzi do walki. Proszę, oto kilka moich wyrobów.
+
+//po wyruszeniu do kopalni złota
+67:Bohater: Przeoczyłeś jedno ze złóż. I za co oni ci płacą.
+68:Górnik: Masz bystre oko mój Panie. Już się biorę do wydobywania tej rudy.
+//po wyruszeniu do kopalni żelaza
+69:Górnik: Otrzymałem list od samego Króla Stolicy.
+70:Bohater: Czemu nie otrzymałem go osobiście??
+71:Górnik: Król chciał utrzymać dyskrecję.
+
+//po wyruszeniu do Ratusza
+72:Doradca: Znaleźliśmy te bronie i tego konia na polu bitwy. Należał do jednego z głównych generałów Króla Grotona.|Niech służą ci dobrze.
+//po wyruszeniu do Targowiska
+73:Kupiec: To zaszczyt widzieć cię tutaj. Co zechciałbyś kupić Panie.
+74:Bohater: Co to takiego.
+75:Kupiec: Nikt tak do końca nie wie. Znaleźli to tydzień temu przy starych ruinach.
+76:Bohater: Biorę, zobaczę do czego mogę to użyć.
+77:Kupiec: 50 skrzyń złota się należy.
+78:Bohater: Nie mam tyle.
+79:Bohater: Proszę bardzo.
+
+//rzeźnia
+80:Doradca: Oto plany wszystkich budynków. Jeżeli zechcesz możemy zmienić nasz kierunek rozwoju.
+//po przybyciu do chlewa
+81:Rolnik: Dzięki słomie, którą nam dałeś, świnie bardzo szybko urosły i przytyły.
+//po przybyciu do piekarnii
+82:Piekarz: Witaj Panie. Właśnie jem z rodziną obiad. Proszę przyłącz się do nas.
+//płatnerz
+83:Płatnerz: Oto najlepsze zbroje, które kiedykolwiek zrobiłem.
+//kopalnia węgla
+84:Górnik: Więcej znalazłem tu kamieni niż węgla.
+//garbarnia
+85:Bohater: Chcę abyś zlecił kamieniarzom na północy, aby naprawili tamtejszy most.
+//kuźnie
+86:Bohater: Proszę cały zestaw żelaznych broni.
+87:Bohater: Daj mi całe uzbrojenie. Będę go potrzebował na wojnie.
+//wydobywanie kamienia
+88:Wydobyłeś kamień.
+
+89:Przeszukujesz ruiny i znajdujesz : 
+90:Ściąłeś drzewo. 
+
+91:Ciężar : 
+92:Obrażenia : 
+93:Defensywa : 
+94:Zdrowie Bohatera : 
+
+95:[$00FFA1]Sojusznicy : [$FFFFFF]
+96:[$0000FF]Wrogowie : [$FFFFFF]
+
+97: Groton
+98: Lewy Garnizon
+99: Prawy Garnizon
+100: Król Herin
+101: Baron Araton
+102: Książe Milin
+
+103:Neutralni :
+
+104:||[$00FF00]Zapotrzebowanie Sojuszników :
+105:Żywność
+
+106:Rybak : Czołem, Piękny dzień na łowienie ryb, nieprawdaż.
+107:Górnik : Nie mam teraz czasu. Wydobywam węgiel na opał.
+108:Rolnik : O widzę, że jesteś zajęty i pomagasz komuś innemu, wróć do mnie jak skończysz.
+109:Drwal : Te drzewa same się nie zetną. Jak skończę to dam ci trochę.
+110:Milin : Ta wiadomość nie jest wykorzystana. Graczu. Jeżeli to znalezłeś, masz moje pozdrowienia. Nigdy w grze tej wiadomości nei zobaczysz :D
+111:Żołnierz : Szkolę młodych rekrutów w tym czasie. Przyjdź jutro z rana.
+
+//starting messages
+120:Książe Milin : Witaj przyjacielu.|Mam nadzieję, że los będzie nam sprzyjał.
+121:Książe Milin : Na początku muszę zwiększyć moją wioskę. Jeszcze nie przyniosłem wszystkich surowców ze statku. Pomożesz mi je dowieść?|| Zadanie - Zabierz materiały ze statku na południu od wioski księcia i dowieź je pod spichlerz jego wioski.
+122:Książe Milin : Dziękuję przyjacielu. Teraz mogę zwiększyć moje małe miasteczko.
+123:Książe Milin : Gdzie są surowce? Gdzieś niedaleko. O... nie przyniosłeś ich. Proszę, idź na statek i wróć z materiałami budowlanymi.
+124:Znalazłeś materiały budowlane : | Kamień : 20| Drewno : 15| Zboże : 23| Wino i Chleb : 42.
+125:Książe Milin : Słyszałem, że jak żyłeś w mieście byłeś dobrym budowniczym. Jeżeli masz pomysły jak usprawnić miasto za pomocą infrastruktury drogowej, śmiało możesz mi je zlecić.||W każdej chwili możesz postawić na terenie księcia Milin'a plany dróg, które będą później wybudowane.
+
+
+//tutorial
+131:Ustawiono Adresata - Gracz : [$%s]%s
+132:Poradnik : Wysyłanie surowców do graczy : |->postaw beacon/sygnał("B") na spuchrzu należącego do innego gracza |-> Włącz odbudowę spichrza(tego, z którego mają być wysłane towary) |-> Naciśnij PPM na surowiec, który ma być przesłany.
+
+//emissary starting
+//_Emisariusz przed twierdzą:
+200:Groton: Nie rozpędzajmy się do wojny. Możemy sporo zyskać na sojuszu. Mój emisariusz czeka przed twierdzą, nie radzę zwlekać.
+
+
+//_Przybycie bohaterem we wskazane miejsce:
+201:Bohater: Słucham, co macie do zaoferowania?
+202:Emisariusz: Staniesz u boku mego pana, jako najlepszy wojownik twierdzy. Dzieki niemu, zemścisz się na tych, którzy cię wygnali ze stolicy.
+203:Bohater: Daj mi chwilę do zastanowienia.|| Akceptuj : Sygnał na emisariusza| Odrzuć : Sygnał na bohatera
+
+//_Odrzucenie(sygnał na bohatera) lub Zabicie lub opuszczenie emisariusza:
+204:Groton: Jak śmiałeś odrzucić moją propozycję. Teraz nie tylko ty, ale i inne miasta ucierpią. Przygotuj się na kroczącą śmierć.
+
+//_Atak Twierdzy na Barona:
+205:Groton: Pokonałeś moją armię, więc zniszczę tych z którymi trzymasz.
+
+//Wiadomość po upadku barona:
+206:Groton: Widzisz, nic mnie nie zatrzyma, zmierzam ku tobie.
+
+//_Obrona Barona:
+207:Baron Araton: Dziękuje ci, moi ludzie widząc twoją odwagę, chętnie dołączą do twojej rebelii.
+
+//_(sygnał na emisariusza) Zawarcie ugody z emisariuszem:
+208:Bohater: Przyjmuję twoją propozycję.
+209:Groton: I to mi się podoba, razem będziemy niepokonani.
+
+
+///Kolejna wiadomość:
+210:Król Herin: Pokładaliśmy w was nadzieję, jednak mieli rację co mówili. Myślicie tylko o sobie. Staniemy przeciwko wam.
+211:Baron Araton: A mogliśmy razem stawić mu czoła. Skusiła cię chęć nieograniczonej władzy. Od teraz moja armia, skrzyżuje miecze z twoją.
+212:Książe Milin: Od początku mi pomagałeś. Wierzyłem że razem damy mu radę, ale teraz sam muszę dać radę tobie i twierdzy.
+
+
+//_Emisariusze Miast:
+213:Król Herin: Damy ci jeszcze jedną szansę, każdy popełnia błędy. Czekamy na ciebie przy Jeziorze Jartan.
+
+//_Zawarcie Ugody:
+214:Bohater: Zgoda, nie wiem co mnie napadło. Stanę przeciwko Grotonowi.
+215:Baron Araton: Dobry ruch. Nasze wojska skierują się na twierdzę, a ciebie zostawią w spokoju. Niedługo przybędziemy ze wsparciem.
+
+//Kolejna wiadomość:
+216:Groton: A więc zdrada. Po tym co dla ciebie zrobiłem. Wszystkich was zniszczę, a ty przygotuj się na śmierć. Moje ataki przybiorą postać burzy, której nie powstrzymasz.
+
+
+//_Atak Twierdzy na Barona:
+217:Groton: Skoro dalej się trzymasz, zmiażdzę tych, z którymi trzymasz, a zacznę od barona.
+
+//Wiadomość po upadku barona:
+218:Groton: Widzisz, nic mnie nie zatrzyma, zmierzam ku tobie.
+
+//_Obrona Barona:
+219:Baron Araton: Dziękuje ci, moi ludzie widząc twoją odwagę, chętnie dołączą do twojej rebelii.
+
+////////////////////////////////////
+//_Emisariusz3 koło miasta:
+220:Król Herin: Trzymam z Grotonem, ponieważ mam dzięki niemu największe wpływy i ochronę. Jednak obserwuje ciebie i mam wrażenie, że jesteś gotów stawić mu czoło. Zakończyć jego tyranię. Proponuje sojusz, na którym obaj dobrze wypadniemy. Przed moim miastem czeka na ciebie mój wysłannik.
+
+
+//_Zawarcie sojuszu:
+221:Król Herin: Dobry ruch. Przymierze wyjdzie nam na dobre. Czas abyśmy odwrócili się od usłóg Grotona.
+
+
+//_Eskorta pomocników:
+222:Król Herin: Nasz młody książe dobrze się rozwija, jednak za wolno. Wysyłam tam moich inżynierów, jednocześnie nie chcę wysyłać moich żołnierzy, skoro nie jestem już w przymierzu z Grotonem. Jeśli możesz, eskortuj ich do miasta Milina.
+
+//Kolejna wiadomość:
+223:Król Herin: Moi inżynierowie są gotowi. Jeszcze chwila i wyruszają w drogę.
+
+//Kolejna wiadomość:
+224:Król Herin: W drogę moi poddani. Oby wam podróż sprzyjała.
+
+
+//_Bezpieczna podróż:
+225:Książe Milin: Dziękuję ci bohaterze. Dzięki twoim staraniom, nasi żołnierze będą lepiej wyszkoleni do walki z Grotonem. Dobrze robisz zawiązując sojusze.
+226:Król Herin: Dobry ruch. Będą z ciebie ludzie.
+227:Bohater: Już byli, lecz mnie zdradzono. Teraz muszę dowieść swej prawdy.
+228:Król Herin: Jeśli się uda, pomogę ci jej dowieść.
+
+//_Śmierć Pomocników:
+229:Książe Milin: Inżynierowie mieli mi pomóc się rozwinąć. Herin mówił mi, że można na ciebie liczyć, mylił się, my się myliliśmy.
+230:Król Herin: Sądziłem, że będzie nam dane współpracować, ale teraz wiem, że popełniłem błąd.
+231:Baron Araton: Szczerze mówiąc, od początku spodziewałem się takiego obrotu spraw. Nie wiem już kto jest większym manipulantem, ty czy Groton. Odpowiedz sobie na to pytanie.
+
+//_Zabicie lub zignorowanie:
+232:Król Herin: A więc tak pogrywasz. Widzę, że nie chcesz sojuszy. Chciałem dać ci szansę, jednak było to błedem. Przygotuj się na ataki z mojej strony.
+
+
+//_Atak na gracza 3:
+233:Król Herin: Zaatakowałeś moje miasto, to oznacza wojnę.
+
+
+//Kolejna wiadomość:
+234:Groton: Lubie twoje podejście, jest bardzo podobne do mojego. Dlatego, to mi się nie podoba. Mój sojusz z Herinem dalej jest aktualny, tak więc, gotów do walki?
+
+
+//_Przybycie armią pod miasto:
+235:Baron Araton: Śmiesz po tym wszystkim stawiać swoje oddziały na moim terenie? To co mówił Groton to prawda. Zaczynają ci się kończyć sprzymierzeńcy.
+
+
+//_Zaatakowanie graczy od 2-5:
+236:Król Herin: Wojna się rozpoczeła moi drodzy. Tego już nie zmienisz bohaterze.
+237:Groton: A nie mówiłem, że tak będzie. Przecież zabił córkę króla, tacy się nie zmieniają.
+238:Baron Araton: Słuszna uwaga. Nam trzem nie da rady.
+239:Książe Milin: Czterem. Mój kodeks nie zezwala na takie postępowanie. Może i Groton ma swój reżim, jednak bohater przewyższył jego talent.
+
+//Kolejna wiadomość:
+240:Groton: Straciłeś już wszystkich, a taki był mój plan od początku. Jeszcze zanim zostałeś wygnany. Zniszczę wszystkich przyjaciół Króla Stolicy.
+241:Bohater: A więc to ty za tym wszystkim stoisz.
+242:Groton: A nawet nie musiałem się wysilać.
+243:Bohater: Zabiję cię za to. Zniszczę wszystko i wszystkich.
+244:Groton: Tak, zrób to. Śmiało!
+
+
+//_Pokonanie gracza 2:
+245:Bohater: Ostrzegałem cię, że tak będzie.
+246:Groton: A teraz walcz ze stolicą. Teraz naprawdę jesteś ich wrogiem i mordercą.
+
+247:-Gratulacje, twoje działania i wybory, doprowadziły do śmierci tego, który cię wrobił w morderstwo. Niestety nie udowodniłeś jego winy i stałeś się wrogiem stolicy. Teraz już krótka droga, do upadku. :[ (Zakończenie nr.7)
+
+//_Przybycię pośredników:
+248:Doradca: Mój panie. Twoje rządy idą na coraz wiekszą skalę. Myślę że to dobry moment, aby cie koronować na króla. Jednak do tego celu, będziesz potrzebował partnerki życiowej. Pozwoliłem sobie porozmawiać z tutejszymi władcami i zgodzili się oddać w twoje ręce, królewskie damy.
+249:Bohater: Niech mówią, wysłucham ich propozycji.
+250:Pośrednik Milina: O wielki bohaterze. Książe Milin oferuje tobie rękę swojej siostry Arminy, młodej i pięknej. Miasto zaoferuje ci swoich lekkich czempionów, w zamian za pomoc surowcową w rozwoju miasta.
+251:Pośrednik Aratona: Szlachetny wojowniku. Nasz miłościwy baron, ofiaruje ci rękę swojej bratanicy Greny. Dzięki temu wyborowi, wasze miasto zostanie obdarowane najlepszymi rycerzami, w zamian za zapewnienie nam zaopatrzenia dla naszych wojsk.
+252:Pośrednik Herina: Potężny władco. Nasz wspaniały król, jest gotów oddać rękę swojej jedynej córki Latii. Miasto wesprze cię najlepszymi halabardierami. Na tą okazję, nasz król zamierza wyprawić ucztę i prosi cię jedynie o wino.
+
+253:Pośrednik Herina: Ten sojusz może dać nam przewagę w walce.
+254:Bohater: Tak, może. Ewentualnie jemu kiedy dowie się, że coś knujemy.
+255:Doradca: Wybierz mądrze mój panie. To może być najlepsza inwestycja w przyszłość naszego miasta. Każde miasto, pernamentnie stanie przeciwko Grotonowi.
+
+
+//_Wybór pośrednika Milina:
+256:Książe Milin: Dobrze jest mieć ciebie u swego boku. Jeźdzcy wkrótce przybędą do twojego miasta.
+
+
+//_Wrodzy żołdacy w mieście:
+257:Doradca: Mój panie. Ludzie zaczęli się buntować. Doszły mnie słuchy, że twoja królowa, postanowiła działać na dwa fronty. Całkiem możliwe, że Groton macza w tym swoje łapska.
+258:Bohater: Zapewne i maczał palce w śmierć córki króla stolicy.
+259:Doradca: Jeżeli tak, musisz ją podejść.
+
+//Kolejna wiadomość:
+260:Książe Milin: Co ma znaczyć, że zrywasz sojusz. To ja powinienem zerwać. Wsadziłeś moją siostrę do lochu i kazałeś przesłuchać.
+261:Bohater: Armina przyznała się do romansu z Grotonem i współpracowania z nim. Przekonał ją jego majątek i może nie tylko.
+262:Książe Milin: Jak śmiesz, to oznacza wypowiedzenie wojny. Chyba, że chcesz jeszcze mnie przekonać.
+Bohater: Możemy spróbować.
+
+//Kolejna wiadomość:
+263:Baron Araton: Doszły mnie słuchy, o zdradzie twojej żony.
+264:Bohater: Wieści szybko się rozchodzą.
+265:Baron Araton: Jak wszędzie. Nie chcesz może o tym porozmawiać w moim mieście. Załagodzimy tą sytuację.
+
+
+//_Wyruszenie do barona:
+266:Baron Araton: Więc, czego dokładnie sie dowiedziałeś?
+267:Bohater: Groton obiecał Arminie tron u swego boku. Miała sposobem dostać się w moje łaski, a ślub był idealny do tej sytucji. Jednak brakowało jej skrycia i moi ludzie zaczęli się burzyć na jej podchody. Na szczęście, nie zdążyła przekazać żadnych informacji Grotonowi.
+268:Baron Araton: A Milin?
+269:Bohater: Podobno od samego początku był mamiony jego ofertami.
+270:Baron Araton: Nie można mu ufać. Jeżeli taka jest sytuacja, to najpierw obierzmy jego za cel.
+
+
+//_Atak Grotona:
+271:Groton: Nie wywiązałeś się z umowy Milinie, a twoja siostra mnie zawiodła.
+272:Książe Milin: Daj mi jeszcze jedną szansę.
+273:Groton: Nikt cię nie uratuje!
+
+
+//_Upadek wioski:
+274:Groton: Ostrzegałem was. Stajecie się coraz słabsi. Nie można tego zatrzymać.
+
+
+//_Przybycie do punktu zbiórki:
+275:Bohater: Należy to w końcu zakończyć. Królu Herin, baronie Araton, wzywam was do zjednoczenia i ostatecznego starcia z Grotonem. Spotkajmy się w starych ruinach.
+
+//Kolejna wiadomość:
+276:Baron Araton: To jaki masz plan?
+278:Król Herin: Taki, który nas zabije.
+279:Bohater: To się przekonamy w praktyce. Wykonajmy szturm na główną bramę, wszystkim co mamy.
+280:Król Herin: To pewna śmierć.
+281:Bohater: Więc zginiemy, razem.
+282:Baron Araton: Jesteś szalony.
+
+
+//_Przybycie armi 6:
+//"Dźwięk królewskiego rogu"
+283:Król Stolicy: Grotonie! Zostajesz oskarżony o zabójstwo mojej córki i terror pobliskich krain. Przygotuj się na śmierć.
+284:Groton: Jakim cudem. Jej śmierć spowodowała twoje załamanie. Miałeś nigdy nie wrócić na pole bitwy.
+285:Król Stolicy: To była moja pierworodna! Jednak mój doradca uświadomił mi, że to nie postawa godna króla, wojownika i bohatera.
+286:Groton: A więc zabiłem ją po nic. Całe moje starania legły w gruzach.
+287:Król Stolicy: Tym samym potwierdzasz, że to ty jesteś odpowiedzalny za jej śmierć.
+288:Groton: Przecież wygnałeś mordercę.
+289:Król Stolicy: Zrobiłem to, by wszyscy myśleli, że tak jest. A tak naprawdę, działał cały czas dla mnie. I wykonał swoją rolę.
+290:Groton: Jeszcze odwrócą się role. Stolica prędzej czy później upadnie. Byłem tam z tobą, gdy o tym mówiła. On w końcu nadejdzie.
+291:Król Stolicy: Możliwe, ale nie, gdy ja rządzę i mam swoją zbroję.
+
+//Kolejna wiadomość:
+292:Król Stolicy: Dziekuję ci bohaterze. Dowiodłeś swojego oddania, względem mnie.
+
+293:Gratulacje, dowiodłeś swojej niewinności i zjednoczyłeś, przynajmniej część, wszystkich miast do walki z Grotonem. ;) (Zakończenie nr.9)
+
+//_Obrona wioski:
+294:Bohater: Spróbujmy czegoś nowego. Ja ci dam jeszcze jedną szansę, a ty ostatecznie staniesz przeciwko Grotonowi. Co ty na to?
+295:Książe Milin: Zgoda.
+
+
+//_Przybycie do punktu zbiórki:
+296:Bohater: Należy to w końcu zakończyć. Królu Herin, baronie Araton, książe Milin, wzywam was do zjednoczenia i ostatecznego starcia z Grotonem. Spotkajmy się w starych ruinach.
+
+//Kolejna wiadomość:
+297:Baron Araton: To jaki masz plan?
+298:Król Herin: Taki, który nas zabije.
+299:Bohater: To się przekonamy w praktyce. Wykonajmy szturm na główną bramę, wszystkim co mamy.
+300:Król Herin: To pewna śmierć.
+301:Książe Milin: On wie co robi.
+302:Bohater: Miejmy taką nadzieję.
+303:Baron Araton: Jesteście stuknięci. Dlatego, będę działał z wami.
+
+//Kolejna wiadomość:
+304:Król Stolicy: Dziekuję ci bohaterze. Dowiodłeś swojego oddania, względem mnie. Zjednoczyłeś wszystkie miasta, niesamowite. Zasługujesz na najwyższe odznaczenie. Mam nadzieję, że doradca wymyślił w końcu jego nazwę.
+
+305:Gratulacje, dowiodłeś swojej niewinności i zjednoczyłeś wszystkie miasta do walki z Grotonem. :o (Zakończenie nr.10)
+
+
+//Ostatnia wiadomość:
+306:[$8BE08E]Ojciec[$ffffff]: I tak kończy się historia o bohaterze, który musiał podjąć bardzo trudne wybory.
+307:[$BB7574]Syn[$ffffff]: Dobrze że nie stał się zły.
+308:[$8BE08E]Ojciec[$ffffff]: Zapewne przyniosło by to straszne konsekwencje. Jak dorośniesz, też będziesz musiał podejmować wybory.
+309:[$BB7574]Syn[$ffffff]: Ja wybiorę te najlepsze, będę najlepszym bohaterem. Za wszelką cenę.
+310:[$8BE08E]Ojciec[$ffffff]: I tak będzie, mój wojowniku.
+311:[$BB7574]Syn[$ffffff]: Jeszcze jedno tato.
+312:[$8BE08E]Ojciec[$ffffff]: Słucham cię.
+313:[$BB7574]Syn[$ffffff]: Przez całą historię, nie wymówiłeś jego imienia. Jak się nazywał?
+314:[$8BE08E]Ojciec[$ffffff]: Teriop.
+315:[$BB7574]Syn[$ffffff]: Słabo, nie jest jakieś specjalne.
+316:[$8BE08E]Ojciec[$ffffff]: Idź spać mój bohaterze.
+317:[$BB7574]Syn[$ffffff]: Dobranoc tato.
+318:[$8BE08E]Ojciec[$ffffff]: Dobranoc, Dyronie.
+
+//_Wyruszenie do księcia:
+319:Bohater: Dobrze więc, porozmawiajmy.
+320:Książe Milin: Nie takim tonem do mnie.
+321:Bohater: Do ciebie?! Opanuj się! Twoja siostra wszystko nam wyjaśniła. Miałeś bardzo duży wkład, w jej zdradę.
+322:Armina: To prawda bracie. Wszystko im powiedziałam. Nie warto zaprzeczać.
+323:Książe Milin: W tych czasach, wszyscy starają się przeżyć. A twoja pozycja nie była zbyt imponująca.
+324:Bohater: Więc wolałeś grać na dwie strony. Niech ci będzie. Daję ci ostatnią szansę. Wybierz stronę, albo giń.
+
+
+//_Atak na strażnicę:
+325:Książe Milin: Udowodnię swoją wartość. Jeżeli jest to cokolwiek warte. Zaatakuję strażnicę Grotona. Osłabię ich, chociażby z jednej strony.
+
+
+//_Przybycie do punktu zbiórki:
+326:Bohater: Należy to w końcu zakończyć. Królu Herin, baronie Araton, książe Milin, wzywam was do zjednoczenia i ostatecznego starcia z Grotonem. Spotkajmy się w starych ruinach.
+
+//Kolejna wiadomość:
+327:Baron Araton: To jaki masz plan?
+328:Król Herin: Taki, który nas zabije.
+329:Bohater: To się przekonamy w praktyce. Wykonajmy szturm na główną bramę, wszystkim co mamy.
+330:Król Herin: To pewna śmierć.
+331:Książe Milin: On wie co robi.
+332:Bohater: Miejmy taką nadzieję.
+333:Baron Araton: Jesteście stuknięci. Dlatego, będę działał z wami.
+
+//_Wybór pośrednika Aratona:
+334:Baron Araton: Będziecie idealną parą. Moja bratanica jest bardzo podekscytowana. Wkrótce przybędą oddziały do waszego miasta.
+
+
+//_Zniszczenie wież strażnicy:
+335:Baron Araton: Dobry ruch mój przyjacielu. Idziemy ze wsparciem.
+
+
+//_Wybór pośrednika Herina:
+336:Król Herin: Moja rodzina jest szczęśliwa, że wybrałeś moją córkę. Wkrótce przybędą oddziały do waszego miasta.
+
+
+//_Eskorta oddziałów:
+337:Król Herin: Doszły mnie słuchy na temat mojej córki. Jest bardzo szczęśliwa i to mnie cieszy. W podzięce wysyłam oddział wojowników. Jeżeli chcesz wykorzystać ich cały potencjął, radzę dopilnować, aby nic ich nie dopadło w drodze do ciebie.
+
+
+
+
+
+
+
+///////////////////////////
+/////Ataki
+
+//gracz 5 na start
+//_Pokonanie gracza 5:
+338:Groton: No proszę, czyli zaczynamy od najsłabszych, aż nie moge się doczekać, co zrobisz dalej. Już widzę tę wojska kroczące w twoją stronę.
+
+//_Pokonanie gracza 4:
+339:Groton: I runda druga ukończona. Idziesz jak burza.
+
+//_Pokonanie gracza 3:
+340:Groton: I tak byli zbyt trudni do utrzymania. Pokonując coraz silniejszych, myślisz że sam jesteś silniejszy. Pomyśl przez chwilę.
+
+//_Pokonanie gracza 2:
+341:Bohater: Ostrzegałem cię, że tak będzie. Zabiłem wszystkich, którzy stali mi na drodze do ciebie. Teraz przyszła pora na ciebie.
+342:Groton: A teraz walcz ze stolicą. Teraz naprawdę jesteś ich wrogiem i mordercą.
+
+
+343:-Gratulacje, twoje działania i wybory, doprowadziły do wymordowania i zniszczenia wszystkich miast. Niestety nie możesz uniknąć nadchodzącej wojny ze stolicą. Teraz już krótka droga, do upadku. :[ (Zakończenie nr.8a)
+
+
+//_Pokonanie gracza 3:
+344:Groton: I nagłe przejście na silniejszego. A co z baronem? Pamiętaj! Moje bramy są otwarte.
+
+//_Pokonanie gracza 4:
+345:Groton: I tak byli zbyt trudni do utrzymania. Wspaniały pogrom i ludobójstwo.
+
+346:-Gratulacje, twoje działania i wybory, doprowadziły do wymordowania i zniszczenia wszystkich miast. Niestety nie możesz uniknąć nadchodzącej wojny ze stolicą. Teraz już krótka droga, do upadku. :[ (Zakończenie nr.8b)
+
+
+//gracz 4 na start
+//_Pokonanie gracza 4:
+347:Groton: Baron i tak nie pasował do mojego towarzystwa. Kto następny?
+
+//_Pokonanie gracza 3:
+348:Groton: I nagłe przejście na silniejszego. Chyba zapomniałeś o księciu. Fakt, nawet nie wiem czy warto.
+
+//_Pokonanie gracza 5:
+349:Groton: Deserek zjedzony. Liczę że pojawisz się u mnie. Mam ogromny szwedzki stół, na twoją porażkę.
+
+350:-Gratulacje, twoje działania i wybory, doprowadziły do wymordowania i zniszczenia wszystkich miast. Niestety nie możesz uniknąć nadchodzącej wojny ze stolicą. Teraz już krótka droga, do upadku. :[ (Zakończenie nr.8c)
+
+
+
+//_Pokonanie gracza 5:
+351:Groton: Obserwowanie, jak pozostali szturmują twoje miasto, jest dla mnie wspaniałą ucztą.
+
+//_Pokonanie gracza 3:
+352:Groton: Przystawka zaserwowana, czas na danie główne. Liczę, że pojawisz się u mnie. Mam ogromny szwedzki stół, na twoją porażkę.
+
+353:-Gratulacje, twoje działania i wybory, doprowadziły do wymordowania i zniszczenia wszystkich miast. Niestety nie możesz uniknąć nadchodzącej wojny ze stolicą. Teraz już krótka droga, do upadku. :[ (Zakończenie nr.8d)
+
+
+//_Pokonanie gracza 3:
+354:Groton: No tak, chcesz pokazać swoją dominację. Trzeba było zacząć ode mnie.
+
+//_Pokonanie gracza 4:
+355:Groton: Co to teraz ma znaczyć. Robisz sobie odpoczynek po królu i zajmujesz się robactwem? To niezbyt honorowe.
+
+
+
+
+356:-Gratulacje, twoje działania i wybory, doprowadziły do wymordowania i zniszczenia wszystkich miast. Niestety nie możesz uniknąć nadchodzącej wojny ze stolicą. Teraz już krótka droga, do upadku. :[ (Zakończenie nr.8e)
+
+
+
+//_Pokonanie gracza 3:
+357:Groton: No tak, chcesz pokazać swoją dominację. Trzeba było zacząć ode mnie.
+
+//_Pokonanie gracza 5:
+358:Groton: Nie rozumiem twojego podejścia. Najpierw silny, teraz najsłabszy. Dlaczego nie moje miasto. W razie czego, to został ci jeszcze baron.
+
+//_Pokonanie gracza 4:
+359:Groton: Rzeźnia jak się patrzy. Skoro pokazałeś, że żaden z nich ci nie dorówna, to chodź w końcu na mnie.
+
+360:-Gratulacje, twoje działania i wybory, doprowadziły do wymordowania i zniszczenia wszystkich miast. Niestety nie możesz uniknąć nadchodzącej wojny ze stolicą. Teraz już krótka droga, do upadku. :[ (Zakończenie nr.8f)
+
+
+361:Król Herin: Dołącz do wojny przeciwko twierdzy, a zrezygnujemy z ataków na ciebie.
+362:Akceptuj : Sygnał na emisariuszy || Odrzuć : Sygnał na bohatera
+
+//_Zabicie emisariuszy:
+363:Bohater: Już wybrałem stronę, ta wojna jest nieuikniona, moi bracia!
+364:Król Herin: A więc wojna.
+365:Baron Araton: Nie potrafiłeś zjednoczyć nas przeciwko Grotonowi, a udało ci się zjednoczyć nas przeciwko tobie.
+366:Książe Milin: Gratuluję bohaterze. Słusznie zostałeś wygnany, za zabicie córki króla stolicy.
+
+//_Utrata Miasta:
+367:Król Herin: Dostał to, na co zasłużył.
+368:Baron Araton: Szkoda, teraz nasza porażka ze strony Grotona jest nieunikniona.
+369:Książe Milin: To umrzemy ze świadomością, że pokonaliśmy chociaż jednego tyrana.
+
+370:Emisariusz: A więc jaka decyzja? || Akceptuj : Sygnał na emisariusza || Odrzuć : Sygnał na bohatera
+371:-Gratulacje. Twoje działania i wybory, doprowadziły do twojej przedwczesnej klęski. Nawet nie zdążyłeś zaistnieć. To smutne :( (Zakończenie nr.4)
+
+//rozmowa z trzema emisariuszami
+372:Bohater: I miałbym zrezygnować z władzy, którą posiadam teraz?!
+373:Baron Araton: Chyba nie widzisz powagi sytuacji. Groton i tak cię zdradzi, wcześniej czy później.
+374:Książe Milin: Czyli wolisz walczyć z nami, z przyjaciółmi?
+375:Bohater: Sojusze nie trwają wiecznie. Do tego potrzebny byłby idealny król, a takich nie ma.
+376:Baron Araton: Wiesz co może spowodować zerwanie permamentnie sojuszu?!
+377:Król Herin: Dosyć!!! || Wybieraj bohaterze, my albo on.
+378:Bohater: Czego chcecie?
+
+379:Postaw sygnał na pośredniku, którego chcesz wybrać. Nie zwlekaj z decyzją, nie można odrzucić propozycji.
+
+380: Każde miasto przysłało swojego pośrednika, aby jednocześnie z damą, zaoferować dobra jakie mogą wypłynąć ze ślubu. Czekają na ciebie w starej latarnii morskiej.
+
+//276:Baron Araton: To jaki masz plan?
+//278:Król Herin: Taki, który nas zabije.
+//279:Bohater: To się przekonamy w praktyce. Wykonajmy szturm na główną bramę, wszystkim co mamy.
+//280:Król Herin: To pewna śmierć.
+//281:Bohater: Więc zginiemy, razem.
+//282:Baron Araton: Jesteś szalony.
+381:Bohater: Znam Grotona od bardzo dawna. Byłem w jego mieście kilka razy. Kamienie do wież są dostarczane specjalnymi tunelami. Jak zniszczymy wieże, to będziemy mieli wolną drogę do centrum.
+
+
+//_Pokonanie gracza 5:
+382:Groton: Miasta upadają jeden za drugim, a ty dalej nie masz dość. Te małe wioski też wybijesz, za nim dotrzesz do mnie?
+
+
+//wstęp
+500:[$ffff00]Historia wielu wyborów
+501:[$8BE08E]Ojciec[$ffffff]: I tam właśnie został ukryty potężny młot. Jego właściciel, podobno dalej żyje wśród nas.|[$BB7574]Syn[$ffffff]: Tato, ta historia robi się nudna, opowiedz proszę coś innego.|[$8BE08E]Ojciec[$ffffff]: A o czym chciałbyś posłuchać?|[$BB7574]Syn[$ffffff]: O bohaterach!|[$8BE08E]Ojciec[$ffffff]: Przecież opowiadam.|[$BB7574]Syn[$ffffff]: Bardziej opowiadasz o przedmiotach, niż o ich właścicielach. Chcę posłuchać o bohaterskim rycerzu. Jeśli takich nie było, wymyśl coś na teraz.|[$8BE08E]Ojciec[$ffffff]: No dobrze, chcesz usłyszeć o bohaterze, to proszę bardzo.|Dawno, dawno temu, na początku naszego istnienia, z królewskiej stolicy, został wygnany rycerz, za złamanie przysięgi. On i jego wierni poddani, udali się na skraj kontynentu, aby udowodnić królowi, że się mylił.|Musiał podjąć decyzje, od których zależał los jego miasta i jego przyszłości:
+
+//Na początku gry:
+502:Bohater: Będąc najlepszym rycerzem, od zawsze wiedziałem, że ktoś spróbuje mnie sprzciwić przeciwko królowi. Moi zwiadowcy donieśli, że za tą całą sprawą stoi król Groton, władca twierdzy Morbin i armii Inkwizycji. Dlatego jesteśmy tutaj, tuż pod jego stopami. Niczego się nie spodziewa. Podróżując w to miejsce, napotkaliśmy młodego księcia, który dopiero zakłada swoją osadę,
+503: a może i w krótce miasto. Jest wrogo nastawiony do rządów twierdzy, więc udało mi się dojść do porozumienia. Zyskaliśmy na start sojusznika, jednak przy każdej możliwej okazji, powinniśmy go wesprzeć, by nadchodząca wojna z Grotonem była łatwiejsza. Może i uda się przekonać innych władców tych krain.
+
