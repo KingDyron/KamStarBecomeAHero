@@ -19,6 +19,11 @@ begin
 						Actions.HouseAddWaresTo(aHouse,aWare,ResourceCount[aWare]);
 					end;
 			end;
+	If Player = 12 then 
+		If States.StatArmyCount(12) < 96 then 
+			If States.HouseType(aHouse) = 9 then 
+				If States.KaMRandomI(100) > 97 then 
+					A.GiveGroup(12, 23, States.HousePositionX(aHouse),States.HousePositionY(aHouse)+1, 4, 1, 1);
 end;
 Procedure ProductionOnMissionStart;
 var III:Integer;

@@ -1,4 +1,6 @@
 
+
+
 Procedure UnlockHouse(aType :array of integer);
 var LEA : Integer;
 begin
@@ -131,41 +133,41 @@ begin
 
 	end;
 	case aType of 
-		2 : SetNewMultiMessages([86]);
-		3 : SetNewMultiMessages([84]);
-		4 : SetNewMultiMessages([69,70,71]);
-		5 : SetNewMultiMessages([67,68]);
-		6 : SetNewMultiMessages([35]);
-		7 : SetNewMultiMessages([82]);
-		8 : SetNewMultiMessages([32,33,34]);
-		9 : SetNewMultiMessages([49,58,59]);
-		10 : SetNewMultiMessages([87]);
-		12 : SetNewMultiMessages([28,29,30,31]);
-		13 : SetNewMultiMessages([46]);
-		14 : SetNewMultiMessages([48]);
-		16 : SetNewMultiMessages([81]);
-		17 : SetNewMultiMessages([44,45]);
-		18 : SetNewMultiMessages([72]);
-		19 : SetNewMultiMessages([65,66]);
-		20 : SetNewMultiMessages([83]);
+		2 : SetNewMultiMessages([86],60);
+		3 : SetNewMultiMessages([84],60);
+		4 : SetNewMultiMessages([69,70,71],60);
+		5 : SetNewMultiMessages([67,68],60);
+		6 : SetNewMultiMessages([35],60);
+		7 : SetNewMultiMessages([82],60);
+		8 : SetNewMultiMessages([32,33,34],60);
+		9 : SetNewMultiMessages([49,58,59],60);
+		10 : SetNewMultiMessages([87],60);
+		12 : SetNewMultiMessages([28,29,30,31],60);
+		13 : SetNewMultiMessages([46,387,388,389],100);
+		14 : SetNewMultiMessages([48],60);
+		16 : SetNewMultiMessages([81],60);
+		17 : SetNewMultiMessages([44,45],60);
+		18 : SetNewMultiMessages([72],60);
+		19 : SetNewMultiMessages([65,66],60);
+		20 : SetNewMultiMessages([83],60);
 		21 :If HousesFirstBuilt[1].aType = 14 then 
-				SetNewMultiMessages([38,39])
+				SetNewMultiMessages([38,39],60)
 			else
-				SetNewMultiMessages([41,42,43]);
-		24 : SetNewMultiMessages([16]);
-		25 : SetNewMultiMessages([85]);
-		27 : SetNewMultiMessages([47]);
-		28 : SetNewMultiMessages([60,61,62,63,64]);
+				SetNewMultiMessages([41,42,43],60);
+		24 : SetNewMultiMessages([16],60);
+		25 : SetNewMultiMessages([85],60);
+		27 : SetNewMultiMessages([47],60);
+		28 : SetNewMultiMessages([60,61,62,63,64],60);
 		29 : If States.HouseResourceAmount(MainStoreHouse[0],7) < 50 then 
 			begin
 				HousesFirstBuilt[aIndex].Once := false;				
-				SetNewMultiMessages([73,74,75,76,77,78])
+				SetNewMultiMessages([73,74,75,76,77,78],75)
 			end	else 
 			If States.HouseResourceAmount(MainStoreHouse[0],7) >= 50 then
 			begin
 				A.HouseTakeWaresFrom(MainStoreHouse[0],7, 50);
 				GiveSpecialItem;
-				SetNewMultiMessages([73,74,75,76,77,79]);
+				SetNewMultiMessages([73,74,75,76,77,79],75);
 			end;
 	end;
 end;
@@ -354,7 +356,7 @@ end;
 Procedure OnHouseBuilt(aHouse:Integer);
 var aOwner, aType, I : Integer;
 	HousePos : TKMPoint;
-	aIndex,aLength:Integer;
+	aIndex:Integer;
 begin
 	aOwner := States.HouseOwner(aHouse);
 	If aOwner = 13 then 

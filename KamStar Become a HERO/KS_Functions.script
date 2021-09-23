@@ -185,11 +185,43 @@ begin
 	Actions.UnitDirectionSet(Hero,aDir);
 end;
 
-
+function GetHeroStatDelta(aMode : Integer) : Ansistring;
+var aDifference : array[0..3] of integer;
+	aColor : Ansistring;
+begin	
+	Result := '';
+	case aMode of 
+		0:aDifference[aMode] := HeroStats[0].MultiHealth - HeroStats[1].MultiHealth;
+		1:aDifference[aMode] := HeroStats[0].Attack - HeroStats[1].Attack;
+		2:aDifference[aMode] := HeroStats[0].Defense - HeroStats[1].Defense;
+		3:aDifference[aMode] := HeroStats[0].Haste - HeroStats[1].Haste;
+	end;
+	If aDifference[aMode] = 0 then 
+		Exit;
+	
+	If aMode = 3 then 
+	begin
+		if aDifference[aMode] < 0 then 
+			aColor := '[$00FF00]  '
+		else
+			aColor := '[$0000ff]  ';
+	end else		
+		if aDifference[aMode] > 0 then 
+			aColor := '[$00FF00]  '
+		else
+			aColor := '[$0000ff]  ';
+	If aDifference[aMode] > 0 then 
+		Result := Result + aColor+'+'+IntToStr(aDifference[aMode]);
+	If aDifference[aMode] < 0 then 
+		Result := Result + aColor+IntToStr(aDifference[aMode]);
+	
+	Result := Result + ' <$' + IntToStr(91+aMode) + '>[$ffFFff]';
+end;
 
 Procedure ShowHeroStats;
 var I, K : Integer;
 	aPos,aPos2 : TKMPoint;
+	finString : Ansistring;
 begin
 	aPos := States.UnitPosition(Hero);
 	aPos2 := VillageQuestGiver[5].QPos;
@@ -198,16 +230,27 @@ begin
 		Exit;
 	Actions.OverlayTextSet(-1,'');
 	If U.ArrayHasElementI(ShowStatsOrPlayers[0], [0,1]) then 
+	begin
+		If  HeroStats[0].Health>0 then 
 		begin
-		If  Health>0 then 
-		begin
-			Actions.OverlayTextAppend(-1,'<$94> [$00FF00]' +IntToStr(Health)+'[$FFFFFF] / [$0000FF]'+IntToStr(HPmax)+'[$FFFFFF]');
-			Actions.OverlayTextAppend(-1,'|<$92> [$00FF00]' +IntToStr(Attack)+'[$FFFFFF]');
-			Actions.OverlayTextAppend(-1,'|<$93> [$00FF00]' +IntToStr(Defense)+'[$FFFFFF]');
-			//Actions.OverlayTextAppend(-1,'|Position : ' +IntToStr(aPos2.X)+' : '+IntToStr(aPos2.Y) + '[$FFFFFF]');
-			Actions.OverlayTextAppend(-1,'|<$91>[$00FF00]' + IntToStr(Haste)+'[$FFFFFF]');	
-			Actions.OverlayTextAppend(-1,'[$00FF00]||Hero Inventory : [$FFFFFF]');
-			
+			If (States.GameTime < HeroStats[0].ChangeTime) then 
+			begin
+				finString := ''
+				Actions.OverlayTextAppend(-1,'<$91> : [$00FF00]' +IntToStr(HeroStats[0].Health)+'[$FFFFFF] / [$0000FF]'+IntToStr(HPmax)+'[$FFFFFF]' + GetHeroStatDelta(0));
+				Actions.OverlayTextAppend(-1,'|<$92> : [$00FF00]' +IntToStr(HeroStats[0].Attack)+'[$FFFFFF]' + GetHeroStatDelta(1));
+				Actions.OverlayTextAppend(-1,'|<$93> : [$00FF00]' +IntToStr(HeroStats[0].Defense)+'[$FFFFFF]' + GetHeroStatDelta(2));
+				//Actions.OverlayTextAppend(-1,'|Position : ' +IntToStr(aPos2.X)+' : '+IntToStr(aPos2.Y) + '[$FFFFFF]');
+				Actions.OverlayTextAppend(-1,'|<$94> : [$00FF00]' + IntToStr(HeroStats[0].Haste)+'[$FFFFFF]' + GetHeroStatDelta(3));	
+				Actions.OverlayTextAppend(-1,'[$00FF00]||Hero Inventory : [$FFFFFF]');
+			end else
+			begin
+				Actions.OverlayTextAppend(-1,'<$91> : [$00FF00]' +IntToStr(HeroStats[0].Health)+'[$FFFFFF] / [$0000FF]'+IntToStr(HPmax)+'[$FFFFFF]');
+				Actions.OverlayTextAppend(-1,'|<$92> : [$00FF00]' +IntToStr(HeroStats[0].Attack)+'[$FFFFFF]');
+				Actions.OverlayTextAppend(-1,'|<$93> : [$00FF00]' +IntToStr(HeroStats[0].Defense)+'[$FFFFFF]');
+				//Actions.OverlayTextAppend(-1,'|Position : ' +IntToStr(aPos2.X)+' : '+IntToStr(aPos2.Y) + '[$FFFFFF]');
+				Actions.OverlayTextAppend(-1,'|<$94> : [$00FF00]' + IntToStr(HeroStats[0].Haste)+'[$FFFFFF]');	
+				Actions.OverlayTextAppend(-1,'[$00FF00]||Hero Inventory : [$FFFFFF]');
+			end;
 			for I := low(HeroInventory)to high(HeroInventory) do
 			begin
 				K := HeroInventoryString[I]
@@ -259,12 +302,14 @@ begin
 						aResourceString := '|[$' + States.PlayerColorText(I)+']<$'+IntToStr(96+I)+'>[$ffffff] :' + aResourceString;
 				end;
 		end;
+		If aResourceString <> '' then 
+		begin
+			Actions.OverlayTextAppend(-1,'|<$104>');
+			Actions.OverlayTextAppend(-1,aResourceString);
+		end;
 	end;
-	If aResourceString <> '' then 
-	begin
-		Actions.OverlayTextAppend(-1,'|<$104>');
-		Actions.OverlayTextAppend(-1,aResourceString);
-	end;	
+	//Actions.OverlayTextAppend(-1,'|'+IntToStr(HeroStats[0].MultiHealth));	
+	//Actions.OverlayTextAppend(-1,'|'+IntToStr(HeroStats[1].MultiHealth));	
 end;
 
 Function Point(X,Y:Integer) : TKMPoint;
@@ -464,11 +509,12 @@ begin
 			A.PlayerAllianceChange(aPlayers[I],aPlayers2[K],true,aTrue);
 end;
 
-procedure SetNewMultiMessages(aArrayI : array of Integer);
+procedure SetNewMultiMessages(aArrayI : array of Integer; aModTime : Integer);
 begin
 	If MultiMessages.aIndex > high(MultiMessages.aShowArray) then 
 	begin
 		MultiMessages.aIndex := 0;
+		MultiMessages.aModTime := aModTime;
 		MultiMessages.aShowArray := aArrayI;
 	end;
 end;

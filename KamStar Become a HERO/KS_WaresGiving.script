@@ -8,7 +8,7 @@
 /////
 /////
 /////
-var Gracz, WaresGiven: Integer;//array of integer; - zmienna ma w sobie zbiór liczb całkowitych, może być maksymalnie ileś liczb w zależności co chesz zrobić                                            
+var Gracz: Integer;//array of integer; - zmienna ma w sobie zbiór liczb całkowitych, może być maksymalnie ileś liczb w zależności co chesz zrobić                                            
 	Giving: boolean;
 	Stores:array of integer;
 	TimeG,TimeT:Integer;

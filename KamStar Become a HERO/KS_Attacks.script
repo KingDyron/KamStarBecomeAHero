@@ -22,14 +22,14 @@ begin
 		//attack after watchtower or sawmill
 		0 : Case HousesFirstBuilt[2].aType of 
 				0:	begin
-						Actions.GroupOrderAttackHouse(Actions.GiveGroup(1,25,150,64,2,15,5),MainStoreHouse[0])
-						Actions.GroupOrderAttackHouse(Actions.GiveGroup(1,14,150,64,2,10,5),MainStoreHouse[0])
-						Actions.GroupOrderAttackHouse(Actions.GiveGroup(1,27,150,64,2,10,5),MainStoreHouse[0])
+						Actions.GroupOrderAttackHouse(Actions.GiveGroup(1,25,150,64,2,10,5),MainStoreHouse[0])
+						Actions.GroupOrderAttackHouse(Actions.GiveGroup(1,14,150,64,2,8,5),MainStoreHouse[0])
+						Actions.GroupOrderAttackHouse(Actions.GiveGroup(1,27,150,64,2,8,5),MainStoreHouse[0])
 					end;
 				17:	begin
-						Actions.GroupOrderAttackHouse(Actions.GiveGroup(1,25,20,110,2,20,5),MainStoreHouse[0])
-						Actions.GroupOrderAttackHouse(Actions.GiveGroup(1,14,20,110,2,25,5),MainStoreHouse[0])
-						Actions.GroupOrderAttackHouse(Actions.GiveGroup(1,27,20,110,2,20,6),MainStoreHouse[0])
+						Actions.GroupOrderAttackHouse(Actions.GiveGroup(1,25,20,110,2,15,5),MainStoreHouse[0])
+						Actions.GroupOrderAttackHouse(Actions.GiveGroup(1,15,20,110,2,10,5),MainStoreHouse[0])
+						Actions.GroupOrderAttackHouse(Actions.GiveGroup(1,27,20,110,2,15,6),MainStoreHouse[0])
 					end;
 			end;
 		//attack after townhall
@@ -250,9 +250,7 @@ var  DCount, LEA :Integer;
 	 aRadius: Word;
 	 aDefType: Byte;
 	 aPos : TKMPoint;
-	 aCount : integer;
 	 WarriorsCount : array[0..3] of Integer;
-	 I : Integer;
 begin
 	
 	WarriorsCount[0] := S.StatHouseMultipleTypesCount(0, [11,13,18,21,27,29,0]) div 2;//warriors

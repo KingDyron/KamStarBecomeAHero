@@ -28,7 +28,8 @@ type KS_QuestTypeTime = record
 	QMade : array[0..QT_MAX] of Boolean;
 	
 	QVOnQuest : Boolean;
-	QVVillageType : Integer;
+	QVVillageType,
+	QVStartTime	: Integer;
 end;
 
 type KS_Item = record
@@ -39,6 +40,15 @@ type KS_Item = record
 	Haste,
 	ID: Integer;
 	Name : String;
+end;
+
+type KS_HeroStats = record
+	Attack,
+	Defense, 
+	Health,
+	MultiHealth,
+	Haste, 
+	ChangeTime: Integer;
 end;
 
 
@@ -55,6 +65,7 @@ type KS_HousesDATA = record
 	Pos : TKMPoint;
 	Once : Boolean;
 end;
+
 type KS_PlayerAll = record
 	AttackedTime : Integer;
 	Attacked,
@@ -77,7 +88,7 @@ type KS_WinSet = record
 	WinType : KS_WinType;
 end;
 type KS_MultiMessages = record
-	aIndex : Integer;
+	aIndex, aModTime : Integer;
 	aShowArray : array of Integer;
 end;
 
@@ -97,7 +108,6 @@ var StartUnitCount : array[0..18] of KS_StartArmy;
 	QuestNow : KS_QuestTypeTime;
 	PlayersMines : array[0..4] of array[0..2] of array of Integer;
 	PlayersFirstDefeated : array[0..3] of Integer;
-	aEnemyCount : integer;
 	QuestInteger :array[0..5] of integer;
 	Win : KS_WinSet;
 	TheChoice : array[0..3] of Integer;
@@ -109,6 +119,7 @@ var StartUnitCount : array[0..18] of KS_StartArmy;
 	
 	ShowStatsOrPlayers : array[0..1] of Integer;
 	aResourceString : String;
+	BarbariansVisited : Boolean;
 	
 //event times variables
 var	AttacksTime : array[0..11] of Integer;
@@ -117,22 +128,23 @@ var	AttacksTime : array[0..11] of Integer;
 	WallBuildingTime1, WallBuildingTime2,
 	CornVillageHousesBuilt: Integer;
 	RandomTime, BeaconSetTime : Integer;
-	NextTime : Integer;
+	
 const 	POOL_X1 = 27;
 		POOL_Y1 = 199;
 		POOL_X2 = 40;
 		POOL_Y2 = 215;
 ///hero variables
 
-var Defense2,Attack2,Iloczyn2, Haste, aHeroAttackTime:Integer;// special variables
-	Defense,Health,Attack,HPmax,Iloczyn:Integer;//constant variables
+var aHeroAttackTime:Integer;// special variables
+	HPmax:Integer;//constant variables
 	HeroInventoryString : array[0..7] of integer;
 	HeroInventory : array[0..7] of array of KS_Item;
+	HeroStats :array[0..1] of KS_HeroStats;
 	
 
 ///villages variables
 var VillageQuestGiver : array[0..5] of KS_VillageQuest;
-	QuestTasks : array[0..4] of array[0..2] of Boolean;
+	QuestTasks : array[0..5] of array[0..5] of Boolean;
 	MessageDelay, MessageDelay2 : Integer;
 	MinersToTrain, MinersKilled, TreesToChop, TreesToTime: Integer;
 	
@@ -206,10 +218,9 @@ begin
 
 end;
 procedure SetUnlimitedDeposits2;
-var I, aIndex, LEA, aTile: Integer;
+var aIndex, LEA, aTile: Integer;
 	aPos : TKMPoint;
-var aHouses : array of Integer;
-	aLength : Integer;
+	aHouses : array of Integer;
 begin	
 	aHouses := States.PlayerGetAllHouses(6);
 	for LEA := 0 to high ( aHouses ) do begin
@@ -871,14 +882,14 @@ begin
 		AttackAfterAttack(5);
 		
 	//normal attacks
-	
+	{
 	If States.GameTime mod 9000 = 0 then
 		RandomTime := States.GameTime + States.KaMRandomI(9000);
 	If QuestNow.QType <> qFormation1 then 
 		If QuestNow.QType <> qFormation2 then 
 			If States.GameTime = RandomTime then 
 				NormalAttacks;
-		
+	}	
 end;
 
 Procedure OnTickBonuses;
@@ -928,9 +939,9 @@ begin
 				If U.InAreaI(aPos.X,aPos.Y,28,202,40,215) then 
 				begin
 					If duckIndex = 0 then 
-						SetNewMultiMessages([36]);
+						SetNewMultiMessages([36],60);
 					If duckIndex = high(Ducks) then 
-						SetNewMultiMessages([37]);
+						SetNewMultiMessages([37],60);
 						
 					Actions.GiveWares(0,14,1);
 					Actions.UnitKill(Ducks[duckIndex],true);
@@ -1020,7 +1031,7 @@ begin
 end;
 
 Procedure OnUnitAttacked(aUnit,aAttacker:Integer);
-var aOwner,aOwner2, I  : Integer;
+var aOwner, aOwner2  : Integer;
 begin
 	aOwner := States.UnitOwner(aUnit)
 	aOwner2 := States.UnitOwner(aAttacker)
@@ -1226,22 +1237,23 @@ begin
 	//QuestNow.QMade[1] := false;
 	//QuestNow.QMadeTime[1] := States.GameTime;
 	//poœrednicy
-	QuestNow.QMadeTime[3] := States.GameTime;
-	QuestNow.QType := qTheChoice;
+	//QuestNow.QMadeTime[3] := States.GameTime;
+	//QuestNow.QType := qTheChoice;
 	
 	//AttacksTime[8] := 300;
 end;
 
 procedure OnTickTesting;
 begin
-	
+	//If States.GameTime mod 1000 = 0 then 
+	//	SetNewMultiMessages([0],60);
+		
 end;
 
 
 
 Procedure OnTick;
-var I, LEA : Integer;
-	aHouses : array of Integer;
+var I : Integer;
 	aPos:TKMPoint;
 begin
 	aPos := States.UnitPosition(Hero);
@@ -1325,7 +1337,7 @@ begin
 		Actions.FogRevealCircle(0,190,203,10);
 		Actions.FogRevealCircle(0,51,207,10);
 		Actions.FogRevealRect(0,3,244,18,252);
-		Health := HPmax;
+		HeroStats[0].Health := HPmax;
 	end;
 		
 	If States.UnitDead(Hero) then Actions.PlayerDefeat(0);
@@ -1348,7 +1360,7 @@ begin
 		VillageQuestGiver[4].QEventType := 1;
 	end;
 	If States.GameTime = 2400 then 
-		A.ShowMSG(0,'<$126>');
+		A.ShowMSG(0,'<$125>');
 	
 	If not S.UnitDead(Hero) then 
 		If States.UnitHunger(Hero) < 10 then 
@@ -1482,9 +1494,11 @@ begin
 		If States.GameTime = Win.WinTime + 250 then
 			A.PlayerWin([0],true);
 	end;
-	
+	If States.GameTime = 6000 then
+		A.ShowMSG(0, '<$383>');
+		
 	If MultiMessages.aIndex <= High(MultiMessages.aShowArray) then
-		If States.GameTime mod 60 = 0 then 
+		If States.GameTime mod MultiMessages.aModTime = 0 then 
 			ShowMultiMessages(MultiMessages.aIndex,MultiMessages.aShowArray);
 	
 	If States.GameTime mod 600 = 0 then 
@@ -1493,6 +1507,21 @@ begin
 	If States.GameTime mod 600 = 0 then 
 		for I := 0 to high(UnlimitedIronPoints) do 
 			A.MapTileSet(UnlimitedIronPoints[I].X,UnlimitedIronPoints[I].Y,151,0);
+			
+	
+	If not BarbariansVisited then
+		If States.FogRevealed(0, 21,97) or
+			States.FogRevealed(0, 24,81) or
+			States.FogRevealed(0, 11,84) then
+			begin
+				BarbariansVisited := true;
+				A.ShowMSG(0, '<$385>');
+			end;	
+	If not HousesFirstBuilt[0].Once then
+		If STtaes.GameTime = HousesFirstBuilt[0].aTime + 6000 then 
+			A.ShowMSG(0,'<$386>');
+	If States.GameTime = QuestNow.QMadeTime[5] + 1000 then	
+			A.ShowMSG(0,'<$384>');
 end;
 
 procedure OnMissionStartSetMainStoresAndHero;
@@ -1537,14 +1566,7 @@ end;
 procedure OnMissionStartSetAlliances;
 var I, K :Integer;
 begin
-	for I := 11 to 14 do 
-	begin
-		Actions.PlayerAllianceChange(I, 0,false, true)
-		Actions.PlayerAllianceChange(6, I,false, true)
-		Actions.PlayerAllianceChange(1, I,false, true)
-		Actions.PlayerAllianceChange(4, I,false, true)
-		Actions.PlayerShareFogCompliment(I, 0, false)
-	end;
+	Actions.PlayerAllianceChange(13, 0,false, true)
 	
 	for I := 1 to 14 do 
 		for K := 1 to 14 do 			
@@ -1605,6 +1627,7 @@ begin
 	for I := Low(QuestNow.QMadeTime) to High(QuestNow.QMadeTime) do
 		QuestNow.QMadeTime[I] := 9999999;
 		
+	QuestNow.QVStartTime := 9999999;
 	WallBuildingTime1 := 999999	
 	WallBuildingTime2 := 999999	
 	Win.WinTime := 999999	

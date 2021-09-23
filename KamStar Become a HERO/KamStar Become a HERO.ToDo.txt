@@ -25,6 +25,8 @@ wzglêdem poziomu trudnoœci czas oczekiwania na emisariuszy/etc jest mniejszy
 
 Pokazaæ wiadomoœæ ile pól/dróg zosta³o do postawienia przy questach
 
+zanim jest spotkanie, trzeba pokonaæ garnizony
+
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////WIOSKI - ZADANIA//////////////////////////////////////////////
@@ -49,7 +51,7 @@ Pokazaæ wiadomoœæ ile pól/dróg zosta³o do postawienia przy questach
 
 
 //wioska koszar
-
+ - - otrzymanie wie¿y pomocniczej wrogo nastawionej dla naszych wrogów.
 
 //gracz 7
  - póŸno - znajduje artefakt, którego nie wie jak u¿yæ

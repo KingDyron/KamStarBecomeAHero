@@ -509,6 +509,7 @@ begin
 							StartCinematic(0,0);
 							MessageDelay := States.GameTime + 1200;
 							QuestNow.QVVillageType := I;
+							QuestNow.QVStartTime := States.GameTime + 100;
 							//A.ShowMSG(0,'');
 						end;
 	end else

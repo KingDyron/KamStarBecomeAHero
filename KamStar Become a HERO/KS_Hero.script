@@ -57,12 +57,23 @@ end;
 Procedure SetInventoryStats(aIndex : Integer);
 var I , K: Integer;
 begin
+	HeroStats[1].Attack := HeroStats[0].Attack;
+	HeroStats[1].Defense := HeroStats[0].Defense;
+	HeroStats[1].Haste := HeroStats[0].Haste;
+	HeroStats[1].MultiHealth := HeroStats[0].MultiHealth;
+	
+	HeroStats[0].ChangeTime := States.GameTime + 300;
+	HeroStats[0].MultiHealth := 0;
+	
 	If aIndex <> -1 then 
-	begin		
-		Attack2 := 0;
-		Defense2 := 1;
-		Iloczyn2 := 0;
-		Haste := 0;
+	begin	
+		HeroStats[0].Attack := 0;
+		HeroStats[0].Defense := 0;
+		HeroStats[0].Haste := 0;
+		//Attack2 := 0;
+		//Defense2 := 1;
+		//Iloczyn2 := 0;
+		//Haste := 0;
 		If length(HeroInventory[7]) > 0 then
 		begin
 
@@ -93,35 +104,46 @@ begin
 				If length(HeroInventory[I]) > 0 then
 				begin						
 					K := HeroInventoryString[I];
-					Attack2 := Attack2 + HeroInventory[I][K].Attack;
-					Defense2 := Defense2 + HeroInventory[I][K].Defense;
-					Iloczyn2 := Iloczyn2 + HeroInventory[I][K].Health;
-					Haste := Haste+ HeroInventory[I][K].Haste
-
+					HeroStats[0].Attack := HeroStats[0].Attack + HeroInventory[I][K].Attack;
+					HeroStats[0].Defense := HeroStats[0].Defense + HeroInventory[I][K].Defense;
+					HeroStats[0].Haste := HeroStats[0].Haste + HeroInventory[I][K].Haste
 				end;
 			If States.GameTime > 10 then 
 				ChangeHeroWithNoHorse;				
 			
 			If HeroInventory[5][HeroInventoryString[5]].Name = 'Boots of the Multigravitation'then 
-				Haste := 3;
+				HeroStats[0].Haste := 3;
 
 		end;
 		
 		If HeroInventory[0][HeroInventoryString[0]].Name = 'Sword Xiphos' then 
 			If HeroInventory[1][HeroInventoryString[1]].Name = 'Sword Xiphos' then 
-				Attack2 := Attack2 + 7;
+				HeroStats[0].Attack := HeroStats[0].Attack + 7;
 				
-		Attack:=Attack2;
-		Defense:=Defense2;
-		Iloczyn:=Iloczyn2;
-		//Health:=50+(50*Iloczyn);
 	end;
+	for I := 0 to 7 do
+		If length(HeroInventory[I]) > 0 then
+		begin						
+			K := HeroInventoryString[I];
+			HeroStats[0].MultiHealth := HeroStats[0].MultiHealth + HeroInventory[I][K].Health;
+		end;
 		
-		
-	HPmax:=50+ Iloczyn + HeroSpecialHPPoints;	
+	HeroStats[0].MultiHealth := 50 + HeroStats[0].MultiHealth + HeroSpecialHPPoints;
+	
+	If States.GameTime < 10 then
+	begin	
+		HeroStats[1].Attack := HeroStats[0].Attack;
+		HeroStats[1].Defense := HeroStats[0].Defense;
+		HeroStats[1].Haste := HeroStats[0].Haste;
+		HeroStats[1].MultiHealth := HeroStats[0].MultiHealth;
+	end;
+	
+	HPmax:= HeroStats[0].MultiHealth;
+	
 	ShowHeroStats;
-	If Health > HPmax then 
-		Health := HPmax;
+	
+	If HeroStats[0].Health > HPmax then 
+		HeroStats[0].Health := HPmax;
 end;
 
 Procedure AddInventoryItem(aIndex : Integer; Item : KS_Item);
@@ -219,7 +241,7 @@ end;
 
 
 Procedure GiveSpecialItem;
-var Random, aTrue, aIndex : Integer;
+var Random, aTrue : Integer;
 	aName : AnsiString;
 begin
 	aTrue := -1;
@@ -265,28 +287,28 @@ end;
 
 
 Procedure OnUnitWoundedHero(aUnit,aKiller:Integer);
-begin
+begin	
 	If aUnit = Hero then 
 	begin
-		If Health>0 then 
-			If U.RandomRangeI(1,100)<100-Defense then 
+		If HeroStats[0].Health>0 then 
+			If U.RandomRangeI(1,100)> HeroStats[0].Defense then 
 			begin
 				Actions.UnitHpSetInvulnerable(Hero,true);
 				case States.UnitType(aKiller) of
-					13:Health:=Health-30;
-					14,24,25,27,17,15:Health:=Health-1;
-					19,21:Health:=Health-2;
-					16,18,20,22:Health:=Health-3;
-					23,26:Health:=Health-4;
+					13:HeroStats[0].Health:=HeroStats[0].Health-30;
+					14,24,25,27,17,15:HeroStats[0].Health:=HeroStats[0].Health-1;
+					19,18,21:HeroStats[0].Health:=HeroStats[0].Health-2;
+					16,20,22:HeroStats[0].Health:=HeroStats[0].Health-3;
+					23,26:HeroStats[0].Health:=HeroStats[0].Health-4;
 				end;
-				If Health	<= 0 then Health:=0;		
+				If HeroStats[0].Health	<= 0 then HeroStats[0].Health:=0;		
 			end;
-		If Health<=0 then 
+		If HeroStats[0].Health<=0 then 
 		begin
 			Actions.UnitHpSetInvulnerable(Hero,false);
 			Actions.UnitKill(Hero,false);
 		end;	
-	end;	
+	end;
 end;
 
 Procedure OnUnitAttackedHero(aUnit,aKiller:Integer);
@@ -296,34 +318,34 @@ begin
 		if States.GameTime > aHeroAttackTime then 
 		begin
 			case States.UnitType(aUnit) of 
-				14 : Random := 55;
+				14 : Random := 45;
 				15 : Random := 75;
 				16 : Random := 85;
-				17 : Random := 70;
+				17 : Random := 65;
 				18 : Random := 80;
 				19 : Random := 80;
 				20 : Random := 90;
 				21 : Random := 78;
 				22 : Random := 100;
 				23 : Random := 100;
-				24 : Random := 45;
-				25 : Random := 40;
+				24 : Random := 40;
+				25 : Random := 30;
 				26 : Random := 100;
 				27 : Random := 50;
 			end;
-			If S.KaMRandomI(Random) >= 100 - Attack then 
+			If S.KaMRandomI(Random) >= Random - HeroStats[0].Attack then 
 			begin
-				aHeroAttackTime := States.GameTime + Haste;
+				aHeroAttackTime := States.GameTime + HeroStats[0].Haste;
 				A.UnitKill(aUnit,false);
 			end;
 			//Actions.UnitHpChange(aUnit,-Attack);		
-	end;
+		end;
 end;
 
 
 Procedure OnHouseDamagedHero(aHouse,aKiller:Integer);
 begin
-	If aKiller = Hero then Actions.HouseAddDamage(aHouse,Attack div 3);
+	If aKiller = Hero then Actions.HouseAddDamage(aHouse,HeroStats[0].Attack div 3);
 end;
 
 Procedure OnTickHero;
@@ -333,11 +355,11 @@ begin
 	If States.GameTime mod 15 = 0 then 
 		If not(States.UnitDead(Hero))
 			and(States.UnitIdle(Hero)) then
-				If (Health<HPmax) and (Health>0) then
+				If (HeroStats[0].Health<HPmax) and (HeroStats[0].Health>0) then
 				begin
-					Health:=Health+1+HeroSpecialReg;
-					If Health > HPmax then 
-						Health := HPmax;
+					HeroStats[0].Health:=HeroStats[0].Health+1+HeroSpecialReg;
+					If HeroStats[0].Health > HPmax then 
+						HeroStats[0].Health := HPmax;
 				end;
 	If States.GameTime mod 15 = 0 then 
 		If not(States.UnitDead(Hero))
@@ -347,6 +369,7 @@ begin
 	If HeroSpecialPoints = 150 then 
 	begin
 		HeroSpecialPoints := 0;
+		//HeroStats[0].MultiHealth := HeroStats[0].MultiHealth - HeroSpecialHPPoints;
 		HeroSpecialHPPoints := HeroSpecialHPPoints + 1;
 		SetInventoryStats(-1);
 	end;
@@ -388,7 +411,7 @@ end;
 
 Procedure OnMissionStartHero;
 begin
-	Health:=50 + Iloczyn + HeroSpecialHPPoints;	
+	HeroStats[0].Health:=50 + HeroStats[0].Health + HeroSpecialHPPoints;	
 	
 	GiveItemFromID(0);
 	GiveItemFromID(1);

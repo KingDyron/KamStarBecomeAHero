@@ -100,7 +100,7 @@ Kolejna wiadomość:
 44:Bohater: Musisz popracować nad celem. Nie patrz gdzie jest przeciwnik, lecz gdzie się znajdzie za kilka sekund.
 45:Strzelec: Dziękuję Panie za radę. Postaram się już nigdy nie chybić z tej katapulty.
 
-46:Udzielono ci lekcji przetrwania.
+46:Doradca: Groton ma głównie ciężką jazdę przy bramie, a on sam był dobrze wyszkolony. Jak zamierzasz z nimi walczyć?
 47:Karczmarz: Straciłeś czas na to działanie.
 
 48:Kamieniarz: Nie wiem jak jeszcze mogę ci się odwdzięczyć Panie. Wiem... |Proszę. Weź go na pamiątkę.|Zrobiłem ten kilof bardzo dawno temu.
@@ -173,10 +173,10 @@ Kolejna wiadomość:
 89:Przeszukujesz ruiny i znajdujesz : 
 90:Ściąłeś drzewo. 
 
-91:Ciężar : 
-92:Obrażenia : 
-93:Defensywa : 
-94:Zdrowie Bohatera : 
+91:Zdrowie Bohatera
+92:Obrażenia 
+93:Defensywa  
+94:Ciężar 
 
 95:[$00FFA1]Sojusznicy : [$FFFFFF]
 96:[$0000FF]Wrogowie : [$FFFFFF]
@@ -616,6 +616,15 @@ Bohater: Możemy spróbować.
 //_Pokonanie gracza 5:
 382:Groton: Miasta upadają jeden za drugim, a ty dalej nie masz dość. Te małe wioski też wybijesz, za nim dotrzesz do mnie?
 
+//nowe wiadomości doradcy
+383:Doradca: Na zachodzie i północy od nas natknęliśmy się na obozy bandytów. Zapewne zabierają tamtejsze dobra i zarabiają dzięki Grotonowi. Warto będzie ich stąd wykurzyć zanim wydobędą wszystkie potrzebne nam złoża.
+384:Doradca: Mój najlepszy szpieg powrócił. Według jego raportu Miasto Grotona ma słabe punkty we Wschodnim Garnizonie, jak i na północy jego miasta, lecz niestety nie mamy do niego dostępu. Jest on słabiej strzeżony niż główna brama. Rozsądniej będzie zająć się najpierw Wschodnim Garnizonem.
+385:Bohater: Barbarzyńcy... Najgorszy typ człowieka. Zabijają dla przyjemności. Na szczęście nie stanowią dużego zagrożenia dla Artidram.
+386:Doradca: Panie, jak najszybciej przybądź do szkoły. Mam ważne informacje dla ciebie.
+
+387:Bohater: Jeszcze nie wiem. Niech stratedzy znajdą sposób aby przedrzeć się do jego miasta. Wyszkolimi wojsko, które zajmie się armią wroga. Grotona zostawcie mnie.
+388:Doradca: Oczywiście Panie.
+389:Bohater: Idę trenować. Jeżeli mam go pokonać to muszę być w formie. || [$00ff00] + 40 Zdrowie Bohatera [$ffffff]
 
 //wstęp
 500:[$ffff00]Historia wielu wyborów
