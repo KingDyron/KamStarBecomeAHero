@@ -634,3 +634,76 @@ Bohater: Możemy spróbować.
 502:Bohater: Będąc najlepszym rycerzem, od zawsze wiedziałem, że ktoś spróbuje mnie sprzciwić przeciwko królowi. Moi zwiadowcy donieśli, że za tą całą sprawą stoi król Groton, władca twierdzy Morbin i armii Inkwizycji. Dlatego jesteśmy tutaj, tuż pod jego stopami. Niczego się nie spodziewa. Podróżując w to miejsce, napotkaliśmy młodego księcia, który dopiero zakłada swoją osadę,
 503: a może i w krótce miasto. Jest wrogo nastawiony do rządów twierdzy, więc udało mi się dojść do porozumienia. Zyskaliśmy na start sojusznika, jednak przy każdej możliwej okazji, powinniśmy go wesprzeć, by nadchodząca wojna z Grotonem była łatwiejsza. Może i uda się przekonać innych władców tych krain.
 
+///////////questy
+600:Rybak: O dzielny Wędrowcze. zawsze chciałem więcej chat rybackich w naszej wiosce, ale potrzebuję materiałów aby je wybudować. Mógłbyś pójść po słomę i drewno do innych wiosek? Chętnie cie wynagrodzę.
+
+601: Zaakceptuj : sygnał na zleceniodawcę|| Odrzuć : sygnał na bohatera
+602:Bohater: Chętnie pomagam ludziom w potrzebie.
+603:Bohater: Zawsze mogę pomóc.
+604:Bohater: Oczywiście.
+605:Bohater: Wybacz, nie mogę teraz.
+606:Bohater: Muszę dalej planować.
+607:Bohater: Może innym razem.
+
+608:Rybak: Oh Wędrowcze. Przyszedłeś ale nie przyniosłeś ze sobą materiały. Proszę pójdź do innych wiosek żeby je zebrać.||
+609:Rybak: Oh Wędrowcze. Dziękuję Ci za przywiezienie surowców na budowę chat. Jestem pewien, że ci jakoś pomogę wkrótce, a tymczasem weź to złoto. ||Otrzymałeś 23 złota + dostawa ryb z wioski.
+
+610:Drwal: Widzę, że mój brat - Utis,  przysłał cię tu po drewno, które potrzebuje. Proszę bardzo, oto ono.||Zebrano drewno.
+611:Bohater: Wielkie dzięki.||Zebrano drewno.
+612:Rolnik: A to ty. To ty miałeś przybyć po słomę, którą potrzebuje Utis. Przemiły facet. Oczywiście wspomogę przyjaciela.
+613:Bohater: Wielkie dzięki.||Zebrano słomę.
+
+614:GAME: Zebrałeś wszystkie materiały. Wróć do rybaka aby ukończyć zadanie.
+
+615:Górnik: Dzień dobry Panu. Co cię do nas sprowadza?
+616:Bohater: Przejeżdzałem tylko. Sądziłem że mogę tu coś kupić na podróż.
+617:Górnik: Nie znajdzie pan tu nic poza rybami.
+618:Bohater: Dobrze, to będę ruszał.
+619:Górnik: Panie proszę, poczekaj chwilkę. Mamy wybudowane kilka kopalń, ale nie mamy wystarczająco dużo górników, którzy mogliby w nich pracować. Czy miałbyś kilku, których byś nam przysłał? Będę ich utrzymywać jeżeli będzie taka potrzeba.|Wyszkol 12 górników
+
+620:Górnik: Przepraszam, ale gdzie są pozostali???||Wyszkol 12 górników
+621:Górnik: Dziękuję.|Teraz będę mógł wesprzeć moich przyjaciół na północy.||Dostawa węgla dla Króla Hariona i Barona Aratona
+
+
+622:Górnik: Witam cię ponownie. To nie jest najlepszy moment.
+623:Bohater: Co się stało?
+624:Górnik: Nie będę ukrywał... Bandyci nas czasami atakują. Zabierają wszystko co mamy. Nawet jedzenie.
+625:Bohater: Więc przemówię im do rozumu.
+626:Górnik: Panie... Oni nie będą tacy łatwi do pokonania.
+627:Bohater: Spokojnie, o mnie się nie martw.
+
+628:GAME : Zadanie wykonane. Wróć do górnika aby zakończyć zadanie.
+629:GAME : Zadanie wykonane. Wróć do rolnika aby zakończyć zadanie.
+630:GAME : Zadanie wykonane. Wróć do drwala aby zakończyć zadanie.
+631:GAME : Zadanie wykonane. Wróć do rekruta aby zakończyć zadanie.
+
+632: Plany dróg do postawienia : %d
+633: Pola do wyorania : %d
+634:GAME : Zadanie nie wykonane.
+635: Dostarczeni górnicy : 
+
+636:Górnik: Bardzo ci dziękuję wędrowcze. Uratowałeś nas wszystkich. Proszę, weź ten węgiel. Na pewno przyda ci się do pordukcji broni.
+637:Bohater: Żaden problem. || Nagroda : 115 węgla
+
+
+638:Rolnik: Witam. Czy mógłbyś mi pomóc? Mimo że nie wyglądasz jak budowniczy możesz nam pomóc wybudować budynki, w których będziemy używać słomę. Pomożesz nam?
+639:GAME : Aby wybudować budynki dla rolników podejdź POD ich postawione plany.
+640:Rolnik: Sądziłem, że już je wybudowałeś.
+641:Rolnik: Dziękuję ci. Dam ci trochę słomy w podzięce|| Nagroda : 55 ziarna
+
+642:Rolnik: Dzień dobry. Pomógłbyś mi ponownie? Jestem już wystarczająco stary i nie mam sił do wykopania nowych pól.
+643:GAME : Do wykonania zadania musisz na terenie wioski wybudować 20 pól.
+644:Rolnik: Dziękuję ci. Będę dostarczał nadmiar jedzenia do Księcia Milina || Nagroda : 31 ziarna + 12 złota + 24 chleba + 17 kiełbas
+
+
+645:Drwal: Witam Generale! OStatni raz widziałem cię w stolicy
+646:Bohater: Ostatnio ciężkie czasy nastały w moim życiu.
+647:Drwal: Tak czasami już bywa. 
+648:Drwal: Wiem że siłą dorównujesz nawet najlepszym rycerzom. W tym lesie jest dużo uschniętych drzew. Mógłbyś je ściąć zanim zarażą inne, a my będziemy mogli zasadzićnowe?
+
+649:Drwal: Jeszcze ich nie ściąłeś.
+650:Drwal: Dziękujęci Generale. Mam nadzieję, że los ci sprzyja. Moi budowniczy pomogą ci przy rozbudowie miasta. || Nagroda : Szybsza budowa budynków przez 10 minut.
+
+651:GAME : Śninanie uschniętego drzewa
+
+652: Drzewa do ścięcia : %d

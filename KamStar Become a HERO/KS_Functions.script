@@ -175,11 +175,13 @@ begin
 		Actions.CinematicStart(0);
 		Actions.CinematicPanTo(0,States.UnitPositionX(Hero),States.UnitPositionY(Hero),0);
 		Actions.GameSpeed(1);
+		InCinematic := true;
 		//Actions.GameSpeedChangeAllowed(false);
 	end else
 	begin
 		Actions.CinematicEnd(0);
 		Actions.GameSpeed(1);
+		InCinematic := false;
 		//Actions.GameSpeedChangeAllowed(true);
 	end;
 	Actions.UnitDirectionSet(Hero,aDir);
@@ -261,8 +263,6 @@ begin
 		If (States.UnitDead(Hero))then	
 			Actions.OverlayTextAppend(-1,'|Your Hero is [$0000FF]DEAD');
 			
-		If MinersKilled > 0 then 
-			Actions.OverlayTextAppend(-1,'|Miners delivered : ' + IntToStr(12-MinersKilled));
 	end else
 	begin	
 		Actions.OverlayTextAppend(-1,'||<$95>');
@@ -308,6 +308,22 @@ begin
 			Actions.OverlayTextAppend(-1,aResourceString);
 		end;
 	end;
+	
+	If MinersKilled > 0 then 
+		Actions.OverlayTextAppend(-1,'|<$635>' + IntToStr(12-MinersKilled));
+		
+	If States.GameTime > VillageQuestGiver[4].QEndTime then 
+		If VillageQuestGiver[4].QEventType = 2 then 
+				Actions.OverlayTextAppendFormatted(-1,'|<$632>',[30-QuestInteger[4]]);
+				
+	If States.GameTime > VillageQuestGiver[2].QEndTime then 
+		If VillageQuestGiver[2].QEventType = 5 then
+				Actions.OverlayTextAppendFormatted(-1,'|<$633>',[20-QuestInteger[5]]);
+				
+	If States.GameTime > VillageQuestGiver[3].QTime then 
+		if VillageQuestGiver[3].QEventType = 2 then
+				Actions.OverlayTextAppendFormatted(-1,'|<$652>',[5-TreesToChop]);
+		
 	//Actions.OverlayTextAppend(-1,'|'+IntToStr(HeroStats[0].MultiHealth));	
 	//Actions.OverlayTextAppend(-1,'|'+IntToStr(HeroStats[1].MultiHealth));	
 end;
@@ -511,12 +527,9 @@ end;
 
 procedure SetNewMultiMessages(aArrayI : array of Integer; aModTime : Integer);
 begin
-	If MultiMessages.aIndex > high(MultiMessages.aShowArray) then 
-	begin
-		MultiMessages.aIndex := 0;
-		MultiMessages.aModTime := aModTime;
-		MultiMessages.aShowArray := aArrayI;
-	end;
+	MultiMessages.aIndex := 0;
+	MultiMessages.aModTime := aModTime;
+	MultiMessages.aShowArray := aArrayI;
 end;
 
 procedure ShowMultiMessages(aIndex : integer; aArrayI : array of Integer);

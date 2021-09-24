@@ -19,6 +19,7 @@ type KS_WinType = (wNone, w1, w2, w3, w4, w5, w6, w7, w8, w9, w10, wX, w11, w12)
 
 const 
 	QT_MAX = 16;
+	NextQuestTime = 1000;
 	
 	
 type KS_QuestTypeTime = record
@@ -98,7 +99,7 @@ var StartUnitCount : array[0..18] of KS_StartArmy;
 	HousesFirstBuilt : array[0..10] of KS_HousesDATA;
 	Hero, Emissary1, Emissary4, Emissary5, Emissary6,PlayerBuildingsDestroyed : Integer;
 	EmissaryStats : array[0..8] of KS_EmissaryType;
-	VisitedLastVillage, UnlimitedFishes, WarriorsOff, HeroNotHungry,
+	VisitedLastVillage, UnlimitedFishes, WarriorsOff, HeroNotHungry, HeroImmortal,
 	GoldDoubleProduction	: Boolean;
 	PlayersAttacked : array[0..11] of KS_PlayerAll;
 	DefAttack : array[0..8] of boolean;
@@ -147,6 +148,7 @@ var VillageQuestGiver : array[0..5] of KS_VillageQuest;
 	QuestTasks : array[0..5] of array[0..5] of Boolean;
 	MessageDelay, MessageDelay2 : Integer;
 	MinersToTrain, MinersKilled, TreesToChop, TreesToTime: Integer;
+	InCinematic : Boolean;
 	
 	
 {$I KS_Functions.script}
@@ -1103,8 +1105,8 @@ begin
 	begin		
 		If not U.InAreaI(X,Y,0,150,94,255) then
 			Actions.PlanRemove(0,X,Y);
-		If VillageQuestGiver[2].QEventType = 3 then
-			If QuestInteger[0] < 20 then 
+		If VillageQuestGiver[2].QEventType = 5 then
+			If QuestInteger[5] < 20 then 
 				If U.InAreaI(X,Y,107,114,133,134) then 
 					A.PlanAddField(0,X,Y);
 		
@@ -1114,16 +1116,16 @@ end;
 Procedure OnFieldBuilt(aPlayer,X,Y :Integer);
 begin
 	
-	If VillageQuestGiver[2].QEventType = 3 then
+	If VillageQuestGiver[2].QEventType = 5 then
 		If aPlayer = 0 then	
-			If VillageQuestGiver[2].QEventType = 3 then
-				If QuestInteger[0] < 20 then 
-				begin
-					
-					QuestInteger[0] := QuestInteger[0] + 1;
-					If QuestInteger[0] = 20 then 
-						QuestTasks[2][1] := true;
-					
+				If QuestInteger[5] < 20 then 
+				begin					
+					QuestInteger[5] := QuestInteger[5] + 1;
+					If QuestInteger[5] = 20 then 
+					begin
+						A.ShowMSG(0,'<$629>');
+						QuestTasks[2][1] := true;					
+					end;
 				end;
 end;
 Procedure OnPlanRoadPlaced(aPlayer,X,Y :Integer);
@@ -1154,8 +1156,8 @@ begin
 			begin
 				If VillageQuestGiver[4].QEventType = 2 then 
 					If States.GameTime > VillageQuestGiver[4].QEndTime then 
-						QuestInteger[0] := QuestInteger[0] + 1;
-				If QuestInteger[0] = 15 then 
+						QuestInteger[4] := QuestInteger[4] + 1;
+				If QuestInteger[4] = 30 then 
 					QuestTasks[4][1] := true;
 			end;
 			Actions.PlanRemove(0,X,Y);
@@ -1518,7 +1520,7 @@ begin
 				A.ShowMSG(0, '<$385>');
 			end;	
 	If not HousesFirstBuilt[0].Once then
-		If STtaes.GameTime = HousesFirstBuilt[0].aTime + 6000 then 
+		If States.GameTime = HousesFirstBuilt[0].aTime + 6000 then 
 			A.ShowMSG(0,'<$386>');
 	If States.GameTime = QuestNow.QMadeTime[5] + 1000 then	
 			A.ShowMSG(0,'<$384>');
@@ -1646,6 +1648,9 @@ begin
 	VillageQuestGiver[5].QPontsToReveal := [Point(68,119),Point(79,129),Point(67,123),Point(67,123)];//forest
 end;
 
+
+{$I KS_Commands.script}
+
 Procedure OnMissionStart;
 begin
 	SetDucksArray;
@@ -1693,6 +1698,7 @@ begin
 	];
 	
 	VillageVisited[4] := true;
+	//MinersToTrain := 12;
+	//MinersKilled := 12;
+	SetImmortality(0,0);
 end;
-
-{$I KS_Commands.script}

@@ -31,6 +31,11 @@ begin
 	AllGroups := States.PlayerGetAllUnits(aPlayer);
 	for LEA := 0 to length(AllGroups)-1 do
 		A.UnitHPSetInvulnerable(AllGroups[LEA],true);
+	If aPlayer = 0 then
+	begin
+		HeroImmortal := true;
+		HeroNotHungry := true;//
+	end;
 end;
 
 Procedure AddHouses(aHandID,aCount:Integer);
