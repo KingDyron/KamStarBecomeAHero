@@ -2,8 +2,25 @@
 
 {$EVENT evtBeacon:VillOnBeacon}
 
+procedure OnTaskCompleted(aAddHouses : Integer; aWares,aCount : array of Integer; aMessage : AnsiString; DeliveryOn : Boolean);
+var I ,aVill : integer;
+begin
+	QuestNow.QVVillageType := aVill;
+	VillageQuestGiver[aVill].QEventType := VillageQuestGiver[aVill].QEventType + 1;
+	VillageQuestGiver[aVill].QEndTime := States.GameTime+NextQuestTime;
+	QuestNow.QVOnQuest := false;
+	QuestNow.QVVillageType := -1;
+	HousesToBuild[6] := HousesToBuild[6]+aAddHouses;
+	Actions.ShowMSG(0,aMessage);
+	VillageQuestGiver[aVill].DTrue := DeliveryOn;
+	
+	for I := low(aWares) to High(aWares) do
+		A.GiveWares(0,aWares[I],aCount[I]);
+end;
 procedure AcceptTask(aVill,aQVNow : Integer);
 begin
+	If aVill = 4 then 
+		Exit;
 	case aVill of
 		0:	Case aQVNow of
 				2:;
@@ -15,7 +32,7 @@ begin
 					end;
 			end;
 		2:	Case aQVNow of
-				2: 	begin	
+				2: 	begin					
 					end;
 			end;
 		3: 	Case aQVNow of
@@ -28,9 +45,57 @@ begin
 			end;
 	end;
 end;
+procedure AbandonTask(aVill,aQVNow : Integer);
+var I : Integer;
+begin
+	If aVill = 4 then 
+		Exit;
+	case aVill of
+		0:	Case aQVNow of
+				2: 	begin
+					end;
+				end;
+		1: 	Case aQVNow of
+				2: 	begin			
+						MinersToTrain := 0;
+						MinersKilled := 0;
+					end;
+			end;
+		2:	Case aQVNow of
+				2: 	begin	
+						A.HouseDestroy(States.HouseAt(117,118),true);
+						A.HouseDestroy(States.HouseAt(118,127),true);
+						A.HouseDestroy(States.HouseAt(130,125),true);
+						A.HouseDestroy(States.HouseAt(121,118),true);
+					end;
+				5: 	begin	
+						QuestInteger[5] := 0;
+					end;
+			end;
+		3: 	Case aQVNow of
+				2: 	begin
+						TreesToChop := 0;
+					end;
+			end;
+		5: Case aQVNow of
+				2: 	begin			
+					end;
+			end;
+	end;
+	VillageQuestGiver[aVill].QEndTime := States.GameTime + 2400;
+	VillageQuestGiver[aVill].QEventType := VillageQuestGiver[aVill].QEventType - 2;
+	
+	QuestNow.QVVillageType := - 1;
+	QuestNow.QVOnQuest := false;
+	for I := 0 to high(QuestTasks[aVill]) do
+		QuestTasks[aVill][I] := false;
+	A.ShowMSG(0, '<$653>');
+end;
+
 Procedure VillOnBeacon(aPlayer, X,Y : Integer);
 begin
 	If InCinematic then 
+	begin
 		If QuestNow.QVVillageType <> -1 then 
 			If U.KMPoint(X,Y) = States.UnitPosition(VillageQuestGiver[QuestNow.QVVillageType].QGiver) then
 			begin
@@ -42,12 +107,18 @@ begin
 			end else
 			If U.KMPoint(X,Y) = States.UnitPosition(Hero) then
 			begin
+				QuestNow.QVOnQuest := false;
 				A.ShowMSG(0,'<$' + IntToStr(605 + States.KaMRandomI(3))+ '>');
 				StartCinematic(1,0);
 				VillageQuestGiver[QuestNow.QVVillageType].QEventType := VillageQuestGiver[QuestNow.QVVillageType].QEventType-1;
 				VillageQuestGiver[QuestNow.QVVillageType].QEndTime := States.GameTime + 1200;
+				QuestNow.QVVillageType := -1;
 			end;
 			
+	end else 
+	If QuestNow.QVVillageType <> -1 then 
+		If U.KMPoint(X,Y) = States.UnitPosition(VillageQuestGiver[QuestNow.QVVillageType].QGiver) then
+			AbandonTask(QuestNow.QVVillageType, VillageQuestGiver[QuestNow.QVVillageType].QEventType);
 end;
 Procedure OnUnitTrainedCoalVillage(aUnit : Integer);
 var aPos : TKMPoint;
@@ -102,15 +173,7 @@ begin
 							
 						If QuestTasks[0][0] and QuestTasks[0][1] then
 						begin	
-							VillageQuestGiver[0].QEventType := 3;
-							VillageQuestGiver[0].QEndTime := States.GameTime+NextQuestTime;
-							QuestNow.QVOnQuest := false;
-							QuestNow.QVVillageType := -1;
-							HousesToBuild[6] := HousesToBuild[6]+2;
-							A.GiveWares(0,7,23);
-							Actions.ShowMSG(0,'<$609>');
-							VillageQuestGiver[0].DTrue := true;
-							
+							OnTaskCompleted(2,[7],[23],'<$609>',true);
 						end;
 						
 					end;
@@ -167,6 +230,8 @@ begin
 						end;
 					If QuestTasks[1][0] then
 					begin
+						QuestNow.QVOnQuest := false;
+						QuestNow.QVVillageType := -1;
 						HousesToBuild[6] := HousesToBuild[6]+3;
 						Actions.ShowMSG(0,'<$621>');
 						VillageQuestGiver[1].QEventType := 3;
@@ -250,12 +315,13 @@ begin
 		If QuestTasks[1][1] then
 			If States.UnitPosition(Hero) = VillageQuestGiver[1].QPos then 
 			begin
+				QuestNow.QVOnQuest := false;
+				QuestNow.QVVillageType := -1;
 				A.GiveWares(0, 5, 200);
 				HousesToBuild[6] := HousesToBuild[6]+2;
 				SetNewMultiMessages([636,637],70);
 				VillageQuestGiver[1].QEventType := 6;
 				VillageQuestGiver[1].QEndTime := States.GameTime+NextQuestTime;
-				QuestNow.QVOnQuest := false;
 			end;
 	end;
 end;
@@ -305,12 +371,13 @@ begin
 						end;
 					If QuestTasks[2][0] then
 					begin
+						QuestNow.QVOnQuest := false;
+						QuestNow.QVVillageType := -1;
 						Actions.GiveWares(0,9,55);
 						HousesToBuild[6] := HousesToBuild[6]+4;
 						Actions.ShowMSG(0,'<$641>');
 						VillageQuestGiver[2].QEventType := 3;
 						VillageQuestGiver[2].QEndTime := States.GameTime+NextQuestTime;
-						QuestNow.QVOnQuest := false;
 					end;
 				end;
 			end;
@@ -337,13 +404,14 @@ begin
 					
 				If QuestTasks[2][1] = true then 
 				begin
+					QuestNow.QVOnQuest := false;
+					QuestNow.QVVillageType := -1;
 					Actions.GiveWares(0,9,31);
 					Actions.GiveWares(0,7,12);
 					HousesToBuild[6] := HousesToBuild[6]+3;
 					Actions.ShowMSG(0,'<$644>');
 					VillageQuestGiver[2].QEventType := 6;
 					VillageQuestGiver[2].QEndTime := States.GameTime+NextQuestTime;
-					QuestNow.QVOnQuest := false;
 				end;
 			end;
 	end;
@@ -374,6 +442,7 @@ begin
 						end;
 					If QuestTasks[3][0] then
 					begin
+						QuestNow.QVVillageType := -1;
 						HousesToBuild[6] := HousesToBuild[6]+4;
 						Actions.ShowMSG(0,'<$650>');
 						VillageQuestGiver[3].QEventType := 3;
@@ -616,12 +685,13 @@ begin
 			If States.GameTime mod 50 = 0 then 
 				for I := 0 to 5 do
 					If (I <> 4) and (I <> QuestNow.QVVillageType) then
-						If (VillageQuestGiver[I].QEndTime = 9999999) or (States.GameTime >VillageQuestGiver[I].QEndTime) then 
-							If States.UnitPosition(Hero) = VillageQuestGiver[I].QPos then 
-							begin
-								A.ShowMSG(0, '<$'+IntToStr(106+I) + '>');
-								MessageDelay2 := States.GameTime + 600;
-							end;
+						If not U.ArrayHasElementI(I,[2,3]) and not(VillageQuestGiver[0].QEventType <> 2) then 
+							If (VillageQuestGiver[I].QEndTime = 9999999) or (States.GameTime >VillageQuestGiver[I].QEndTime) then 
+								If States.UnitPosition(Hero) = VillageQuestGiver[I].QPos then 
+								begin
+									A.ShowMSG(0, '<$'+IntToStr(106+I) + '>');
+									MessageDelay2 := States.GameTime + 600;
+								end;
 
 	end;	
 

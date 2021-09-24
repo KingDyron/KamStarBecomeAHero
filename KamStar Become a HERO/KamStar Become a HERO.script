@@ -117,6 +117,7 @@ var StartUnitCount : array[0..18] of KS_StartArmy;
 	MultiMessages : KS_MultiMessages;
 	ScannerOn : Boolean;
 	Ruins : array of TKMPoint;
+	InstantKill : array[0..17] of Boolean;
 	
 	ShowStatsOrPlayers : array[0..1] of Integer;
 	aResourceString : String;
@@ -1037,6 +1038,9 @@ var aOwner, aOwner2  : Integer;
 begin
 	aOwner := States.UnitOwner(aUnit)
 	aOwner2 := States.UnitOwner(aAttacker)
+	If InstantKill[aOwner2] then 
+		If aUnit <> Hero then 
+			A.UnitKill(aUnit, false);
 	If HousesFirstBuilt[2].aType = 17 then 	
 		If HousesFirstBuilt[2].Once = true then 	
 			If aOwner2 = 0 then 
@@ -1701,4 +1705,5 @@ begin
 	//MinersToTrain := 12;
 	//MinersKilled := 12;
 	SetImmortality(0,0);
+	InstantKill[0] := true;
 end;

@@ -3,6 +3,7 @@
 {$COMMAND allow_all:AllowAll}
 {$COMMAND givewares:GiveWares}
 {$COMMAND immortal:SetImmortality}
+{$COMMAND instant_kill:SetInstantKill}
 {$COMMAND house_bonus:AddHouses}
 {$COMMAND give_item:GiveItem}
 
@@ -46,4 +47,8 @@ end;
 Procedure GiveItem(aHandID,aID:Integer);
 begin
 	GiveItemFromID(aID);
+end;
+Procedure SetInstantKill(aHandID,aPlayer:Integer);
+begin
+	InstantKill[aPlayer] := true;
 end;
