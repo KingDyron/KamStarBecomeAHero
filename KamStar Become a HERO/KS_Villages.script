@@ -99,6 +99,8 @@ begin
 		If QuestNow.QVVillageType <> -1 then 
 			If U.KMPoint(X,Y) = States.UnitPosition(VillageQuestGiver[QuestNow.QVVillageType].QGiver) then
 			begin
+				If FirstTaskTime = 0 then 
+					FirstTaskTime := States.GameTime + 600;
 				StartCinematic(1,0);
 				A.ShowMSG(0,'<$' + IntToStr(602 + States.KaMRandomI(3))+ '>');
 				VillageQuestGiver[QuestNow.QVVillageType].QEventType := VillageQuestGiver[QuestNow.QVVillageType].QEventType+1;
@@ -657,10 +659,10 @@ begin
 					begin	
 						Actions.GroupKillAll(VillageQuestGiver[I].DMan,true);
 						VillageQuestGiver[I].DMan := 0;
-					end;	
+					end;
 				end;	
 	
-			
+	
 	//visiting villager
 	If not QuestNow.QVOnQuest then 
 	begin
@@ -735,6 +737,9 @@ begin
 		end;
 		VillageQuestGiver[4].QPos := U.KMPoint(190,205);
 	end;
+	
+	If CheckTime(FirstTaskTime) then 
+		A.ShowMSG(0, '<$654>');
 end;
 
 Procedure OnMissionStartVillages;

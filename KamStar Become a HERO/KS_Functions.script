@@ -1,5 +1,9 @@
 
-
+function CheckTime(aTime : Integer) : Boolean;
+begin
+	If States.GameTime = aTime then 
+		Result := true;
+end;
 function GetUnitNextLevel(aType : Integer) : Integer;
 begin
 	case aType of
@@ -15,7 +19,6 @@ begin
 		27 : Result := 21;
 	end;
 end;
-
 
 function HeroInVillage(HeroPos : TKMPoint) : Integer;
 var I, K : Integer;

@@ -345,7 +345,11 @@ end;
 
 
 Procedure OnHouseDamagedHero(aHouse,aKiller:Integer);
+var aOwner : Integer;
 begin
+	aOwner := States.UnitOwner(aKiller);
+	If InstantKill[aOwner] then 
+		A.HouseDestroy(aHouse,false);
 	If aKiller = Hero then Actions.HouseAddDamage(aHouse,HeroStats[0].Attack div 3);
 end;
 

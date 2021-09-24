@@ -1,12 +1,12 @@
 
 
-Procedure SetImmortality2(aPlayer:Integer);
+Procedure SetImmortality2(aPlayer:Integer; aImmortality : Boolean);
 var LEA : Integer;
 	AllGroups : array of Integer;
 begin
 	AllGroups := States.PlayerGetAllUnits(aPlayer);
 	for LEA := 0 to length(AllGroups)-1 do
-		A.UnitHPSetInvulnerable(AllGroups[LEA],true);
+		A.UnitHPSetInvulnerable(AllGroups[LEA],aImmortality);
 end;
 
 
@@ -180,10 +180,10 @@ begin
 				A.GiveGroup(5,15 + States.KaMRandomI(2) ,27 ,113, 0,10,5);
 				A.GiveGroup(5,15 + States.KaMRandomI(2) ,31 ,113, 0,10,5);
 				
-				A.GiveGroup(5,26 ,18 ,116, 0,6,3);
-				A.GiveGroup(5,26 ,24 ,116, 0,6,3);
-				A.GiveGroup(5,26 ,27 ,116, 0,6,3);
-				A.GiveGroup(5,26 ,31 ,116, 0,6,3);
+				A.GiveGroup(5,15 ,18 ,116, 0,6,3);
+				A.GiveGroup(5,15 ,24 ,116, 0,6,3);
+				A.GiveGroup(5,16 ,27 ,116, 0,6,3);
+				A.GiveGroup(5,16 ,31 ,116, 0,6,3);
 				
 				A.GiveGroup(5,17 + States.KaMRandomI(2) ,18 ,118, 0,10,5);	
 				A.GiveGroup(5,17 + States.KaMRandomI(2) ,24 ,118, 0,10,5);	
@@ -238,7 +238,7 @@ begin
 					A.GiveGroup(17,16,aPos.X,aPos.Y,0,10,5);
 					A.GiveGroup(17,18,aPos.X,aPos.Y,0,10,5);
 				end;
-				SetImmortality2(17);
+				SetImmortality2(17,true);
 			end;
 	end;
 

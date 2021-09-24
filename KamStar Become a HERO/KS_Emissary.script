@@ -37,6 +37,7 @@ begin
 		If aUnit = States.GroupMember(Emissary1,0) then	
 			If (EmissaryStats[1]=eTalkEnd) or (EmissaryStats[1]=eArrived) then 
 			begin
+				SetImmortality2(1,false);
 				Actions.ShowMSG(0,'<$204>');
 				Actions.PlayerAllianceChange(0, 1,true, false)
 				EmissaryStats[1] := eNotAllied;
@@ -171,6 +172,8 @@ begin
 	If States.GameTime = HousesFirstBuilt[5].aTime + 36000 then
 		If HousesFirstBuilt[5].aType = 29 then 
 		begin
+			
+			SetImmortality2(1,true);
 			Emissary4 := Actions.GiveGroup(13,21,154,65,4,1,1)
 			EmissaryStats[4] := eArrived;
 			for I := 1 to 6 do
@@ -185,6 +188,7 @@ begin
 			Actions.ShowMSGGoTo(0,154,67,'<$220>');
 		end else 
 		begin
+			SetImmortality2(1,true);
 			Emissary1 := Actions.GiveGroup(15,22,114,65,4,1,1);
 			EmissaryStats[1] := eArrived;
 			for I := 2 to 6 do
@@ -617,6 +621,7 @@ begin
 					A.AIEquipRate(6,1,100);
 					A.AIEquipRate(5,0,100);
 					A.AIEquipRate(5,1,100);
+					SetImmortality2(1,false);
 				end;
 			end;
 			
@@ -630,7 +635,8 @@ begin
 			for I := 1 to 10 do 
 				for K := 1 to 10 do 
 					A.PlayerAllianceChange(I,K,true,true);
-		aOnce := 1;
+			aOnce := 1;		
+			SetImmortality2(1,false);
 		end;
 	
 	If (States.GameTime = QuestNow.QMadeTime[3]+1000) or (QuestNow.QMade[1] and (States.GameTime = QuestNow.QMadeTime[1]+18000)) then 
@@ -752,7 +758,8 @@ begin
 				TheChoice[2] := A.GiveGroup(6,20,182,204,4,1,1);
 				QuestNow.QMadeTime[5] := States.GameTime;
 			end;
-		
+	If CheckTime(QuestNow.QMadeTime[5] + 600) then 
+		A.ShowMSG(0,'<$384>');
 	If QuestNow.QType = qCivilWar then 
 	begin
 		
@@ -872,12 +879,12 @@ begin
 			A.PlayerAllianceChange(6,5, true ,true);
 			A.PlayerAllianceChange(6,4, true ,true);
 			A.PlayerAllianceChange(6,6, true ,true);
-
-			QuestNow.QType := qRightGarrison
+			
 			StartCinematic(1,0);
+			EmissaryTime[7] := States.GameTime + 600;
 			AttacksTime[7] := States.GameTime + 9000;
 			QuestNow.QType := qFormation1;
-			QuestNow.QMadeTime[12] := States.GameTime+27000;
+			//QuestNow.QMadeTime[12] := States.GameTime+27000;
 		end;
 		
 	end;
@@ -917,7 +924,8 @@ begin
 			If States.GroupDead(NewEscortGroup) then 
 			begin
 				QuestNow.QType := qFormation1;
-				QuestNow.QMadeTime[12] := States.GameTime+9000;
+			EmissaryTime[7] := States.GameTime + 600;
+				//QuestNow.QMadeTime[12] := States.GameTime+9000;
 				A.ShowMSG(0,'Not complete');
 			end;
 			If States.UnitIdle(States.GroupMember(NewEscortGroup,0)) then 
@@ -926,7 +934,8 @@ begin
 				A.GroupKillAll(NewEscortGroup , true);
 				NewEscortGroup := 0;
 				QuestNow.QType := qFormation1;
-				QuestNow.QMadeTime[12] := States.GameTime+9000;
+			EmissaryTime[7] := States.GameTime + 600;
+				//QuestNow.QMadeTime[12] := States.GameTime+9000;
 				A.ShowMSG(0,'Complete');
 			end;
 			
@@ -1000,7 +1009,6 @@ begin
 					A.MapTileObjectSet(160 + I,104 + K,61);
 					A.MapTileObjectSet(158 + I,102 + K,61);
 				end;
-			A.ShowMSG(0,'<$275>');
 		end;
 		If EmissaryStats[8] = eNone then
 			If States.UnitPosition(Hero) = U.KMPoint(157,105) then

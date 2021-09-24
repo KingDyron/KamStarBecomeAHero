@@ -626,6 +626,8 @@ Bohater: Możemy spróbować.
 388:Doradca: Oczywiście Panie.
 389:Bohater: Idę trenować. Jeżeli mam go pokonać to muszę być w formie. || [$00ff00] + 40 Zdrowie Bohatera [$ffffff]
 
+390:Doradca: Pamiętaj że powinniśmy skypić się na garnizonach. Potem czysto wejdziemy do twierdzy.
+
 //wstęp
 500:[$ffff00]Historia wielu wyborów
 501:[$8BE08E]Ojciec[$ffffff]: I tam właśnie został ukryty potężny młot. Jego właściciel, podobno dalej żyje wśród nas.|[$BB7574]Syn[$ffffff]: Tato, ta historia robi się nudna, opowiedz proszę coś innego.|[$8BE08E]Ojciec[$ffffff]: A o czym chciałbyś posłuchać?|[$BB7574]Syn[$ffffff]: O bohaterach!|[$8BE08E]Ojciec[$ffffff]: Przecież opowiadam.|[$BB7574]Syn[$ffffff]: Bardziej opowiadasz o przedmiotach, niż o ich właścicielach. Chcę posłuchać o bohaterskim rycerzu. Jeśli takich nie było, wymyśl coś na teraz.|[$8BE08E]Ojciec[$ffffff]: No dobrze, chcesz usłyszeć o bohaterze, to proszę bardzo.|Dawno, dawno temu, na początku naszego istnienia, z królewskiej stolicy, został wygnany rycerz, za złamanie przysięgi. On i jego wierni poddani, udali się na skraj kontynentu, aby udowodnić królowi, że się mylił.|Musiał podjąć decyzje, od których zależał los jego miasta i jego przyszłości:
@@ -708,3 +710,5 @@ Bohater: Możemy spróbować.
 
 652: Drzewa do ścięcia : %d
 653:GAME : Zadanie odrzucone.
+
+654:GAME : W każdej chwili możesz porzucić aktualny quest stawiając sygnał na zleceniodawcę.

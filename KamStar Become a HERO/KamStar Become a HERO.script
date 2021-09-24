@@ -11,7 +11,7 @@ type KS_EmissaryType = (eNone,eNotArrived,eArrived,eKilled,eDenied,eAccepted,
 						eDefended,eHelping,eInDanger, eBetrayed, ePicked);
 						
 type KS_QuestType = (qNone,qServes,qFFA,qDef6,qFFA1, qTheChoice, qTheKing1, qEscort, qLeftGarrison,
-					 qCivilWar, qMilin, qAraton, qRightGarrison, qAttackOnMilin, qFormation1, qFormation2,
+					 qCivilWar, qMilin, qAraton, qAttackOnMilin, qFormation1, qFormation2,
 					 qTheKing2);
 
 type KS_WinType = (wNone, w1, w2, w3, w4, w5, w6, w7, w8, w9, w10, wX, w11, w12);
@@ -129,7 +129,7 @@ var	AttacksTime : array[0..11] of Integer;
 	Ducks : array of Integer;
 	WallBuildingTime1, WallBuildingTime2,
 	CornVillageHousesBuilt: Integer;
-	RandomTime, BeaconSetTime : Integer;
+	RandomTime, BeaconSetTime, FirstTaskTime : Integer;
 	
 const 	POOL_X1 = 27;
 		POOL_Y1 = 199;
@@ -250,13 +250,14 @@ end;
 Procedure EquipWarrior;
 var I :Integer;
 begin
-	If (States.StatUnitTypeCount(1,16)+States.StatUnitTypeCount(1,26)) < StartUnitCount[1].Warr then
-		begin
-			If WarriorsOff then 
-				Actions.GiveGroup(1,16,THPos.X,THPos.Y+2,4,1,1)
-			else
-				Actions.GiveGroup(1,26,THPos.X,THPos.Y+2,4,1,1);
-		end;
+	If States.HouseAt(THPos.X,THPos.Y) > 0 then 
+		If (States.StatUnitTypeCount(1,16)+States.StatUnitTypeCount(1,26)) < StartUnitCount[1].Warr then
+			begin
+				If WarriorsOff then 
+					Actions.GiveGroup(1,16,THPos.X,THPos.Y+2,4,1,1)
+				else
+					Actions.GiveGroup(1,26,THPos.X,THPos.Y+2,4,1,1);
+			end;
 	for I := 7 to 10 do
 	begin
 		If States.HouseAt(THPos.X,THPos.Y) > 0 then 
@@ -542,6 +543,15 @@ begin
 	
 	If Win.WinTime = 999999 then 
 	begin
+		If U.ArrayHasElementI(aPlayer, [2,3]) then 
+			If States.PlayerDefeated(2) and  States.PlayerDefeated(3) then 
+				If (QuestNow.QType = qFormation1) or 
+				 (QuestNow.QType = qFormation2) then 
+				begin
+					SetImmortality2(1,false);
+					QuestNow.QMadeTime[12] := States.GameTime+ 100;	
+				end;
+				
 		If aPlayer = 1 then 
 		begin
 			If QuestNow.QType = qTheKing1 then
@@ -751,6 +761,7 @@ begin
 			A.ShowMSG(0, '<$274>' );
 			QuestNow.QType := qFormation2;
 			QuestNow.QMadeTime[12] := States.GameTime+9000;
+			EmissaryTime[7] := States.GameTime + 600;
 		end;
 	
 	//remove attack on player 2 by player 7
@@ -1526,8 +1537,10 @@ begin
 	If not HousesFirstBuilt[0].Once then
 		If States.GameTime = HousesFirstBuilt[0].aTime + 6000 then 
 			A.ShowMSG(0,'<$386>');
-	If States.GameTime = QuestNow.QMadeTime[5] + 1000 then	
-			A.ShowMSG(0,'<$384>');
+			
+	If CheckTime(EmissaryTime[7]) then 
+			A.ShowMSG(0,'<$390>');
+		
 end;
 
 procedure OnMissionStartSetMainStoresAndHero;
