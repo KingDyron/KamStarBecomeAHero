@@ -268,7 +268,7 @@ begin
 			
 	end else
 	begin	
-		Actions.OverlayTextAppend(-1,'||<$95>');
+		Actions.OverlayTextAppend(-1,'<$95>');
 		for I := 1 to 6 do			
 			If States.PlayerAllianceCheck(0,I) then 
 				Actions.OverlayTextAppend(-1,'|[$' + States.PlayerColorText(I)+']<$'+IntToStr(96+I)+'>[$ffffff]');

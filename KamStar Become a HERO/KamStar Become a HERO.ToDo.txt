@@ -25,7 +25,7 @@ wzglêdem poziomu trudnoœci czas oczekiwania na emisariuszy/etc jest mniejszy
 
 //Pokazaæ wiadomoœæ ile pól/dróg zosta³o do postawienia przy questach
 
-zanim jest spotkanie, trzeba pokonaæ garnizony
+//zanim jest spotkanie, trzeba pokonaæ garnizony
 
 //akceptacja questów
 

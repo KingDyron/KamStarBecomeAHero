@@ -201,17 +201,31 @@ Kolejna wiadomość:
 111:Żołnierz : Szkolę młodych rekrutów w tym czasie. Przyjdź jutro z rana.
 
 //starting messages
-120:Książe Milin : Witaj przyjacielu.|Mam nadzieję, że los będzie nam sprzyjał.
-121:Książe Milin : Na początku muszę zwiększyć moją wioskę. Jeszcze nie przyniosłem wszystkich surowców ze statku. Pomożesz mi je dowieść?|| Zadanie - Zabierz materiały ze statku na południu od wioski księcia i dowieź je pod spichlerz jego wioski.
-122:Książe Milin : Dziękuję przyjacielu. Teraz mogę zwiększyć moje małe miasteczko.
-123:Książe Milin : Gdzie są surowce? Gdzieś niedaleko. O... nie przyniosłeś ich. Proszę, idź na statek i wróć z materiałami budowlanymi.
+120:Książe Milin: Witaj przyjacielu.|Mam nadzieję, że los będzie nam sprzyjał.
+121:Książe Milin: Na początku muszę zwiększyć moją wioskę. Jeszcze nie przyniosłem wszystkich surowców ze statku. Pomożesz mi je dowieść?|| Zadanie - Zabierz materiały ze statku na południu od wioski księcia i dowieź je pod spichlerz jego wioski.
+122:Książe Milin: Dziękuję przyjacielu. Teraz mogę zwiększyć moje małe miasteczko.
+123:Książe Milin: Gdzie są surowce? Gdzieś niedaleko. O... nie przyniosłeś ich. Proszę, idź na statek i wróć z materiałami budowlanymi.
 124:Znalazłeś materiały budowlane : | Kamień : 20| Drewno : 15| Zboże : 23| Wino i Chleb : 42.
-125:Książe Milin : Słyszałem, że jak żyłeś w mieście byłeś dobrym budowniczym. Jeżeli masz pomysły jak usprawnić miasto za pomocą infrastruktury drogowej, śmiało możesz mi je zlecić.||W każdej chwili możesz postawić na terenie księcia Milin'a plany dróg, które będą później wybudowane.
+125:Książe Milin: Słyszałem, że jak żyłeś w mieście nie byłeś tylko dobrym gwardzistą ale także budowniczym. Jeżeli masz pomysły jak usprawnić miasto za pomocą infrastruktury drogowej, śmiało możesz mi je zlecić.||W każdej chwili możesz postawić na terenie księcia Milin'a plany dróg, które będą później wybudowane.
 
 
 //tutorial
 131:Ustawiono Adresata - Gracz : [$%s]%s
 132:Poradnik : Wysyłanie surowców do graczy : |->postaw beacon/sygnał("B") na spuchrzu należącego do innego gracza |-> Włącz odbudowę spichrza(tego, z którego mają być wysłane towary) |-> Naciśnij PPM na surowiec, który ma być przesłany.
+
+133:Książe Milin: Ehh, kompletnie nie wiem co robić. Moi ludzie tłoczą się na drogach. Mógłbyś coś pradzić?|| Postaw na terenie Księcia Milina plany dróg, które ma wybudować.
+134:Książe Milin: Proszę. Chcę ci pomóc jak najlepiej mogę, ale nie będę wstanie jeśli moi ludzi nie dojdą do swojego miejsca pracy.
+135:Książe Milin: Wielkie dzięki. Teraz moje miasto powinno być bardziej wydajne.
+
+136:Książe Milin: Możesz do mnie przyjechać? Znalazłem coś i może ty będziesz widział jak się tym posłużyć.
+137:Książe Milin: Przyjacielu, ten przedmiot wciąż u mnie jest.
+
+138:Bohater: A więc o co chodzi?
+139:Książe Milin: Moi górnicy znaleźli to podczas rozbudowy miasta. 
+140:Bohater: Już gdzieś widziałem podobną konstrukcję.
+141:Książe Milin: Wiesz może do czego służy?
+142:Bohater: Nie jestem pewien, ale wiem kto może to wyjaśnić.
+
 
 //emissary starting
 //_Emisariusz przed twierdzą:
@@ -704,9 +718,9 @@ Bohater: Możemy spróbować.
 648:Drwal: Wiem że siłą dorównujesz nawet najlepszym rycerzom. W tym lesie jest dużo uschniętych drzew. Mógłbyś je ściąć zanim zarażą inne, a my będziemy mogli zasadzićnowe?
 
 649:Drwal: Jeszcze ich nie ściąłeś.
-650:Drwal: Dziękujęci Generale. Mam nadzieję, że los ci sprzyja. Moi budowniczy pomogą ci przy rozbudowie miasta. || Nagroda : Szybsza budowa budynków przez 10 minut.
+650:Drwal: Dziękuję ci Generale. Mam nadzieję, że los ci sprzyja. Moi budowniczy pomogą ci przy rozbudowie miasta. || Nagroda : Szybsza budowa budynków przez 10 minut.
 
-651:GAME : Śninanie uschniętego drzewa
+651:GAME : Ścinanie uschniętego drzewa
 
 652: Drzewa do ścięcia : %d
 653:GAME : Zadanie odrzucone.

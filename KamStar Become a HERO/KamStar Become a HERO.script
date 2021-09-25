@@ -117,7 +117,7 @@ var StartUnitCount : array[0..18] of KS_StartArmy;
 	MultiMessages : KS_MultiMessages;
 	ScannerOn : Boolean;
 	Ruins : array of TKMPoint;
-	InstantKill : array[0..17] of Boolean;
+	InstantKill : array[0..18] of Boolean;
 	
 	ShowStatsOrPlayers : array[0..1] of Integer;
 	aResourceString : String;
@@ -150,7 +150,7 @@ var VillageQuestGiver : array[0..5] of KS_VillageQuest;
 	MessageDelay, MessageDelay2 : Integer;
 	MinersToTrain, MinersKilled, TreesToChop, TreesToTime: Integer;
 	InCinematic : Boolean;
-	
+	DifficultyTimes : array[0..5] of Integer;
 	
 {$I KS_Functions.script}
 {$I AIBuilding.script}
@@ -1178,7 +1178,7 @@ begin
 			Actions.PlanRemove(0,X,Y);
 			Actions.PlanAddRoad(6,X,Y);
 		end;
-		If not U.InAreaI(X,Y,0,150,109,255) and not U.InAreaI(X,Y,110,151,242,243) then
+		If not U.InAreaI(X,Y,0,139,109,255) and not U.InAreaI(X,Y,110,151,242,243) then
 		begin
 			Actions.PlanRemove(0,X,Y);
 		end;
@@ -1198,7 +1198,7 @@ end;
 Procedure OnHousePlanPlaced(aPlayer,X,Y, aType :Integer);
 begin
 	If aPlayer = 0 then	
-		If not U.InAreaI(X,Y,0,150,94,255) then
+		If not U.InAreaI(X,Y,0,139,94,255) then
 		begin
 			Actions.PlanRemove(0,X,Y);
 		end;
@@ -1258,6 +1258,11 @@ begin
 	//QuestNow.QType := qTheChoice;
 	
 	//AttacksTime[8] := 300;
+	
+	//MinersToTrain := 12;
+	//MinersKilled := 12;
+	//SetImmortality(0,0);
+	//InstantKill[0] := true;
 end;
 
 procedure OnTickTesting;
@@ -1715,8 +1720,14 @@ begin
 	];
 	
 	VillageVisited[4] := true;
-	//MinersToTrain := 12;
-	//MinersKilled := 12;
-	SetImmortality(0,0);
-	InstantKill[0] := true;
+	case States.MissionDifficulty of 
+		0: DifficultyTimes[0] := 36000;
+		1: DifficultyTimes[0] := 44000;
+		2: DifficultyTimes[0] := 40000;
+		3: DifficultyTimes[0] := 36000;
+		4: DifficultyTimes[0] := 18000;
+		5: DifficultyTimes[0] := 15000;
+		6: DifficultyTimes[0] := 9000;
+		7: DifficultyTimes[0] := 6000;
+	end;
 end;

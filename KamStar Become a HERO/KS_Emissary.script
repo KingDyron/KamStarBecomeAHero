@@ -169,7 +169,7 @@ var I,K : Integer;
 begin	
 	aPos := States.UnitPosition(Hero);
 	//emissary 1 and 4
-	If States.GameTime = HousesFirstBuilt[5].aTime + 36000 then
+	If States.GameTime = HousesFirstBuilt[5].aTime + DifficultyTimes[0] then
 		If HousesFirstBuilt[5].aType = 29 then 
 		begin
 			
@@ -203,7 +203,7 @@ begin
 		end;	
 		
 		
-	If (States.GameTime = HousesFirstBuilt[5].aTime + 48000) then
+	If (States.GameTime = HousesFirstBuilt[5].aTime + DifficultyTimes[0] + 12000) then
 		If HousesFirstBuilt[5].aType = 29 then 
 		begin
 			If (EmissaryStats[4]=eArrived) then EmissaryStats[4] := eDenied;
@@ -237,7 +237,7 @@ begin
 		end;
 	
 	//check if emissary is nearby
-	If States.GameTime > HousesFirstBuilt[5].aTime + 36000 then 
+	If States.GameTime > HousesFirstBuilt[5].aTime + DifficultyTimes[0] then 
 		if States.GameTime mod 50 = 0 then
 			for I := 1 to 6 do
 				If EmissaryTime[I] = 9999999 then 
