@@ -16,10 +16,25 @@ type KS_QuestType = (qNone,qServes,qFFA,qDef6,qFFA1, qTheChoice, qTheKing1, qEsc
 
 type KS_WinType = (wNone, w1, w2, w3, w4, w5, w6, w7, w8, w9, w10, wX, w11, w12);
 
+type KS_QuestTypeSet = set of KS_QuestType;
+
+
+type KS_HouseData = record
+	Usable : Boolean;
+	X, Y : Integer;
+	HouseOnTile : array[0..3] of array[0..3] of Boolean;
+end;
+
+type KS_PatrolData = record
+	aID : Integer;
+	aPos1 : TKMPoint;
+	aPos2 : TKMPoint;
+	aMode : Boolean;
+end;
 
 const 
 	QT_MAX = 16;
-	NextQuestTime = 1000;
+	NextQuestTime = 6000;
 	
 	
 type KS_QuestTypeTime = record
@@ -61,14 +76,14 @@ type KS_StartArmy = record
 end;
 
 type KS_HousesDATA = record
-	aType, aTime, ID, 
+	aType, aTime, ID, aDelay, 
 	VisTime : Integer;//visiting time
 	Pos : TKMPoint;
 	Once : Boolean;
 end;
 
 type KS_PlayerAll = record
-	AttackedTime : Integer;
+	AttackedTime, DefeatedTime : Integer;
 	Attacked,
 	Defeated : Boolean;
 end;
@@ -90,38 +105,46 @@ type KS_WinSet = record
 end;
 type KS_MultiMessages = record
 	aIndex, aModTime : Integer;
-	aShowArray : array of Integer;
+	aShowArray : array of AnsiString;
+	ItemAtLastMessage : array of Integer;
+	GroupsToKill : array of Integer;
 end;
 
+
+
+var HouseTiles : array[0..29] of KS_HouseData;
 
 var StartUnitCount : array[0..18] of KS_StartArmy;
 	BarracksPos, THPos : TKMPoint;
 	HousesFirstBuilt : array[0..10] of KS_HousesDATA;
-	Hero, Emissary1, Emissary4, Emissary5, Emissary6,PlayerBuildingsDestroyed : Integer;
+	Hero, Emissary1, Emissary4, Emissary5, Emissary6, PlayerBuildingsDestroyed, MeritonSword : Integer;
 	EmissaryStats : array[0..8] of KS_EmissaryType;
-	VisitedLastVillage, UnlimitedFishes, WarriorsOff, HeroNotHungry, HeroImmortal,
+	VisitedLastVillage, UnlimitedFishes, HeroNotHungry, HeroImmortal,
 	GoldDoubleProduction	: Boolean;
-	PlayersAttacked : array[0..11] of KS_PlayerAll;
+	PlayersAttacked : array[0..18] of KS_PlayerAll;
 	DefAttack : array[0..8] of boolean;
 	CavarlyGroup, FreeUnitsToEquip, duckIndex,
 	BiggerEnemyAttacks
 	: Integer;
 	QuestNow : KS_QuestTypeTime;
-	PlayersMines : array[0..4] of array[0..2] of array of Integer;
 	PlayersFirstDefeated : array[0..3] of Integer;
 	QuestInteger :array[0..5] of integer;
 	Win : KS_WinSet;
 	TheChoice : array[0..3] of Integer;
 	TheLast : array[0..2] of Integer;
-	UnlimitedCoalPoints,UnlimitedIronPoints : array of TKMPoint;
+	UnlimitedCoalPoints,UnlimitedIronPoints,UnlimitedGoldPoints : array of TKMPoint;
 	MultiMessages : KS_MultiMessages;
-	ScannerOn : Boolean;
+	ScannerOn, Player2Attacks, Meriton: Boolean;
 	Ruins : array of TKMPoint;
 	InstantKill : array[0..18] of Boolean;
+	QuestSet : KS_QuestTypeSet;
 	
 	ShowStatsOrPlayers : array[0..1] of Integer;
 	aResourceString : String;
 	BarbariansVisited : Boolean;
+	Player7TH : integer;
+	
+	BarbarainsStartPositions : array of TKMPoint;
 	
 //event times variables
 var	AttacksTime : array[0..11] of Integer;
@@ -142,6 +165,9 @@ var aHeroAttackTime:Integer;// special variables
 	HeroInventoryString : array[0..7] of integer;
 	HeroInventory : array[0..7] of array of KS_Item;
 	HeroStats :array[0..1] of KS_HeroStats;
+
+var HeroSpecialPoints, HeroSpecialHPPoints, HeroSpecialReg : Integer;
+	AncientFound : array[0..7] of Boolean;
 	
 
 ///villages variables
@@ -150,8 +176,11 @@ var VillageQuestGiver : array[0..5] of KS_VillageQuest;
 	MessageDelay, MessageDelay2 : Integer;
 	MinersToTrain, MinersKilled, TreesToChop, TreesToTime: Integer;
 	InCinematic : Boolean;
-	DifficultyTimes : array[0..5] of Integer;
+	Patrolls : array of KS_PatrolData;
 	
+	DifficultyMultipiers : array[0..5] of Integer;
+	
+
 {$I KS_Functions.script}
 {$I AIBuilding.script}
 {$I KS_Attacks.script}
@@ -163,111 +192,25 @@ var VillageQuestGiver : array[0..5] of KS_VillageQuest;
 {$I KS_Villages.script}
 
 
-Procedure SetPlayerMines(aPlayer: Integer);
-var aHouses : array of Integer;
-	LEA,aIndex, aLength, I : Integer;
-begin
-	case aPlayer of
-		1 : I := 0;
-		4 : I := 1;
-		5 : I := 2;
-		6 : I := 3;
-	end;
-	
-	aHouses := States.PlayerGetAllHouses(aPlayer);
-	for LEA := 0 to high ( aHouses ) do begin
-		aIndex := -1;
-		case States.HouseType(aHouses[LEA]) of 
-			3 : aIndex := 0;
-			4 : aIndex := 1;
-			5 : aIndex := 2;
-			else aIndex := -1;
-		end;
-		If aIndex <> -1 then
-			If not U.ArrayHasElementI(aHouses[LEA],PlayersMines[I][aIndex]) then 
-			begin
-				aLength := length(PlayersMines[I][aIndex]);
-				SetLength(PlayersMines[I][aIndex],aLength+1);
-				PlayersMines[I][aIndex][aLength] := aHouses[LEA];
-				//A.ShowMSG(-1,'')
-			end;
-	end;
-end;
-
-procedure SetUnlimitedDeposits;
-var I, aIndex, LEA, aTile: Integer;
-	aPos : TKMPoint;
-begin
-	aTile := 263;
-	for I := 0 to 3 do
-		for aIndex := 0 to 2 do
-		begin			
-			If Length(PlayersMines[I][aIndex]) <= 0 then
-				Exit;
-				
-			case aIndex of
-				0 : aTile := 263;
-				1 : aTile := 260;
-				2 : aTile := 307;
-			end;
-			for LEA := 0 to Length(PlayersMines[I][aIndex])-1 do
-				If not States.HouseDestroyed(PlayersMines[I][aIndex][LEA]) then 
-				begin
-					aPos := States.HousePosition(PlayersMines[I][aIndex][LEA]);
-					A.MapTileSet(aPos.X,aPos.Y-1,aTile,0);
-				end;
-		end;
-
-
-end;
-procedure SetUnlimitedDeposits2;
-var aIndex, LEA, aTile: Integer;
-	aPos : TKMPoint;
-	aHouses : array of Integer;
-begin	
-	aHouses := States.PlayerGetAllHouses(6);
-	for LEA := 0 to high ( aHouses ) do begin
-		aIndex := -1;
-		case States.HouseType(aHouses[LEA]) of 
-			3 : aIndex := 0;
-			4 : aIndex := 1;
-			5 : aIndex := 2;
-			else aIndex := -1;
-		end;
-		case aIndex of
-			0 : aTile := 263;
-			1 : aTile := 260;
-			2 : aTile := 307;
-		end;
-		If aIndex <> -1 then
-		begin
-			aPos := States.HousePosition(aHouses[LEA]);
-			A.MapTileSet(aPos.X,aPos.Y-1,aTile,0);
-		end;
-	end;
-end;
-
 Procedure EquipWarrior;
 var I :Integer;
 begin
-	If States.HouseAt(THPos.X,THPos.Y) > 0 then 
-		If (States.StatUnitTypeCount(1,16)+States.StatUnitTypeCount(1,26)) < StartUnitCount[1].Warr then
-			begin
-				If WarriorsOff then 
-					Actions.GiveGroup(1,16,THPos.X,THPos.Y+2,4,1,1)
-				else
+	If States.HouseAt(THPos.X,THPos.Y) > 0 then
+		If States.HouseResourceAmount(States.HouseAt(THPos.X,THPos.Y), 7) > 8 then 
+			If (States.StatUnitTypeCount(1,16)+States.StatUnitTypeCount(1,26)) < StartUnitCount[1].Warr then
+				begin
 					Actions.GiveGroup(1,26,THPos.X,THPos.Y+2,4,1,1);
-			end;
+					A.HouseTakeWaresFrom(States.HouseAt(THPos.X,THPos.Y),7,8)
+				end;
 	for I := 7 to 10 do
 	begin
 		If States.HouseAt(THPos.X,THPos.Y) > 0 then 
-			If (States.StatUnitTypeCount(I,16)+States.StatUnitTypeCount(I,26)) < StartUnitCount[I].Warr then 
-			begin
-				If WarriorsOff then 
-					Actions.GiveGroup(I,16,THPos.X,THPos.Y+2,4,1,1)
-				else
+			If States.HouseResourceAmount(States.HouseAt(THPos.X,THPos.Y), 7) > 8 then 
+				If (States.StatUnitTypeCount(I,16)+States.StatUnitTypeCount(I,26)) < StartUnitCount[I].Warr then 
+				begin
 					Actions.GiveGroup(I,26,THPos.X,THPos.Y+2,4,1,1);
-			end;
+					A.HouseTakeWaresFrom(States.HouseAt(THPos.X,THPos.Y),7,8)
+				end;
 		
 		If States.HouseAt(BarracksPos.X,BarracksPos.Y) > 0 then 
 		begin
@@ -305,17 +248,6 @@ begin
 end;
 
 
-Procedure AutoFeed;
-var I, LEA : Integer;
-	AllGroups : array of Integer;
-begin
-	for I := 7 to 17 do 
-	begin
-		AllGroups := States.PlayerGetAllUnits(I);
-		for LEA := 0 to length(AllGroups)-1 do
-			A.UnitHungerSet(AllGroups[LEA],States.UnitMaxHunger);
-	end;
-end;
 
 Procedure PlayerFeed(aPlayer:Integer);
 var LEA : Integer;
@@ -325,6 +257,15 @@ begin
 	for LEA := 0 to length(AllGroups)-1 do
 		A.UnitHungerSet(AllGroups[LEA],States.UnitMaxHunger-600-S.KaMRandomI(600));
 end;
+
+Procedure AutoFeed;
+begin
+	PlayerFeed(7);
+	PlayerFeed(8);
+	PlayerFeed(12);
+	PlayerFeed(13);
+end;
+
 Procedure CheckGroupsAtArea(aPlayer:Integer);
 var LEA : Integer;
 	AllGroups : array of Integer;
@@ -354,19 +295,6 @@ begin
 				A.HouseAddWaresTo(AllHouses[LEA],1,1);
 end;
 
-Procedure UpgradeArmy(aPlayer:Integer);
-var AUnits:array of integer;
-	LEA,GroupLeader:Integer;
-begin	
-	AUnits:=States.PlayerGetAllGroups(aPlayer);
-	For LEA := 0 to length(AUnits)-1 do begin
-		GroupLeader:=States.GroupMember(AUnits[LEA],0);
-		If GroupLeader <>Hero then begin
-			Actions.GiveGroup(aPlayer,GetUnitNextLevel(States.UnitType(GroupLeader)),States.UnitPositionX(GroupLeader),States.UnitPositionY(GroupLeader),States.UnitDirection(GroupLeader),States.GroupMemberCount(AUnits[LEA]),States.GroupColumnCount(AUnits[LEA]));
-			Actions.GroupKillAll(AUnits[LEA],true)
-		end;
-	end;
-end;
 
 Procedure SetInvurnelabeUnits;
 var allUnits : array of Integer;
@@ -540,13 +468,39 @@ end;
 Procedure OnPlayerDefeated(aPlayer: Integer);
 var I, allDef : Integer;
 begin
+	PlayersAttacked[aPlayer].Defeated:= true;
+	PlayersAttacked[aPlayer].DefeatedTime:= States.GameTime + 1200;
 	
+	If aPlayer = 11 then 
+	begin
+		//A.GiveGroup(2, 22, 26, 44, 0, 1, 1);
+		//SetNewMultiMessages([152],60,[])
+	end;
+	
+	If aPlayer = 14 then 
+	begin
+		//A.GiveGroup(2, 22, 26, 44, 0, 1, 1);
+		//SetNewMultiMessages([153],60,[])
+	end;
+	
+	If not Player2Attacks then 
+		If PlayersAttacked[11].Defeated then 
+			If PlayersAttacked[14].Defeated then 
+				If PlayersAttacked[12].Defeated then 
+				begin					
+					SetNewMultiMessages([151],60,[],[]);
+					Player2Attacks := true;
+					A.AIEquipRate(2,1,600);
+					A.AIEquipRate(3,1,600);
+					Actions.AIAttackAdd(2,true,1,45,1,1,1,1,true,attClosestBuildingFromArmy,U.KMPoint(213,106))
+					Actions.AIAttackAdd(3,true,1,45,1,1,1,1,true,attClosestBuildingFromArmy,U.KMPoint(213,106))					
+				end;
+					
 	If Win.WinTime = 999999 then 
 	begin
 		If U.ArrayHasElementI(aPlayer, [2,3]) then 
 			If States.PlayerDefeated(2) and  States.PlayerDefeated(3) then 
-				If (QuestNow.QType = qFormation1) or 
-				 (QuestNow.QType = qFormation2) then 
+				If QuestNow.QType in [qFormation1, qFormation2] then 
 				begin
 					SetImmortality2(1,false);
 					QuestNow.QMadeTime[12] := States.GameTime+ 100;	
@@ -566,7 +520,7 @@ begin
 			end;
 		end;
 		If QuestNow.QType = qFFA then
-			PlayersAttacked[aPlayer].Defeated:= true;
+		begin
 			If U.ArrayHasElementI(aPlayer, [1,4,5,6]) then
 			begin
 				
@@ -600,6 +554,7 @@ begin
 				If (PlayersFirstDefeated[3] = 1) then
 					 SetWin(w8);
 			end;
+		end;
 			
 			
 		If QuestNow.QType = qNone then
@@ -710,7 +665,12 @@ begin
 			QuestNow.QType := qDef6;
 			A.ShowMSG(0, '<$219>' );
 		end;
-			
+	If (PlayersAttacked[1].Defeated = false) and (States.StatHouseCount(1) < 15) then 
+	begin
+		PlayersAttacked[1].Defeated := true;
+		OnPlayerDefeated(1);
+	end;
+		
 	//remove attack on player 6 after player defeat
 	If (PlayersAttacked[5].Defeated = false) and (States.StatHouseCount(5) < 8) then 
 	begin	
@@ -766,14 +726,14 @@ begin
 	
 	//remove attack on player 2 by player 7
 	If DefAttack[7] = false then 
-		If (States.GameTime > AttacksTime[7]+100) and (States.StatArmyCount(6) < 290) then 
+		If (States.GameTime > AttacksTime[7]+100) and (States.StatArmyCount(6) < 216) then 
 		begin		
 			AttacksTime[7] := 9999999
 			Actions.AIAttackRemoveAll(6);
 			DefAttack[7] := true;
 			A.AISoldiersLimit(6,-1);
 			Actions.AIAttackAdd(6,true,0,90,1,1,1,1,true,attClosestBuildingFromStartPos,U.KMPoint(213,106))
-			A.ShowMSG(0, 'Defended' );
+			A.ShowMSG(0, 'Def attack 7' );
 		end;
 	//remove attack on player 7 by player 2 almost the end
 	If DefAttack[8] = false then 
@@ -784,9 +744,20 @@ begin
 			DefAttack[8] := true;
 			A.AISoldiersLimit(5,-1);
 			Actions.AIAttackAdd(5,true,0,90,1,1,1,1,true,attClosestBuildingFromStartPos,U.KMPoint(213,106))
-			A.ShowMSG(0, 'Defended' );
+			A.ShowMSG(0, '' );
 			QuestNow.QType := qFormation1;
 			QuestNow.QMadeTime[12] := States.GameTime+9000;
+			
+			If States.PlayerDefeated(2) and  States.PlayerDefeated(3) then 
+				If QuestNow.QType in [qFormation1, qFormation2] then
+				begin
+					SetImmortality2(1,false);
+					QuestNow.QMadeTime[12] := States.GameTime+ 3000;	
+					UpgradeArmy(0,true);
+					UpgradeArmy(4,true);
+					UpgradeArmy(5,true);
+					UpgradeArmy(6,true);
+				end;
 		end;
 		
 	//remove attacks after player defeat
@@ -882,9 +853,9 @@ begin
 	If States.GameTime = AttacksTime[8]+750 then
 		AllAttacks(9);
 		
-	If States.GameTime = AttacksTime[9] then
+	If States.GameTime = AttacksTime[9]+6000 then
 		AllAttacks(10);
-	If States.GameTime = AttacksTime[10] then
+	If States.GameTime = AttacksTime[10]+2000 then
 		AllAttacks(11);
 		
 	If States.GameTime = AttacksTime[11] then
@@ -896,18 +867,18 @@ begin
 		AttackAfterAttack(5);
 		
 	//normal attacks
-	{
-	If States.GameTime mod 9000 = 0 then
-		RandomTime := States.GameTime + States.KaMRandomI(9000);
-	If QuestNow.QType <> qFormation1 then 
-		If QuestNow.QType <> qFormation2 then 
-			If States.GameTime = RandomTime then 
+	
+	If Player2Attacks then
+		If States.GameTime mod 18000 = 0 then
+			RandomTime := States.GameTime + States.KaMRandomI(18000);
+	 
+	If not (QuestNow.QType in QuestSet) then 
+		If States.GameTime = RandomTime then 
 				NormalAttacks;
-	}	
 end;
 
 Procedure OnTickBonuses;
-var I : Integer;
+var I, aHouse : Integer;
 	aPos : TKMPoint;
 begin
 	aPos := States.UnitPosition(Hero);
@@ -918,14 +889,18 @@ begin
 				If U.InAreaI(States.UnitPositionX(Hero),States.UnitPositionY(Hero),58,64,90,76) then 
 				begin
 					HousesFirstBuilt[0].Once := true;
-					Actions.ShowMSG(0,'I see you have made a decision to join us.');
+					Actions.ShowMSG(0,'<$391>');
 					for I := 1 to 3 do 
 						Actions.PlayerAllianceChange(0,I,true,true);
 					for I := 7 to 10 do 
 						Actions.PlayerAllianceChange(0,I,true,true);
 					for I := 4 to 6 do 
 						Actions.PlayerAllianceChange(0,I,true,false);
+					Win.WinTime := States.GameTime + 300
+					Win.WinType := w1;
 				end;
+				
+				
 	//hero not hungry
 	If HeroNotHungry then 
 		If States.GameTime mod 1200 = 0 then 
@@ -948,39 +923,41 @@ begin
 				Actions.GiveWares(0,7,States.StatHouseCount(0) div 2);
 			
 	If (HousesFirstBuilt[1].aType = 6) then 
-		If States.GameTime mod 600 = 0 then
+		If States.GameTime mod 300 = 0 then
 			If duckIndex <= high(Ducks) then 
 				If U.InAreaI(aPos.X,aPos.Y,28,202,40,215) then 
 				begin
 					If duckIndex = 0 then 
-						SetNewMultiMessages([36],60);
+						SetNewMultiMessages([36],60,[],[]);
 					If duckIndex = high(Ducks) then 
-						SetNewMultiMessages([37],60);
+						SetNewMultiMessages([37],60,[],[]);
 						
 					Actions.GiveWares(0,14,1);
 					Actions.UnitKill(Ducks[duckIndex],true);
 					duckIndex := duckIndex+1;
 				end;
 				
-	If States.GameTime mod 50 = 0 then
+	If States.GameTime mod 100 = 0 then
 	begin
 		//all bonuses
 		for I := low(HousesFirstBuilt) to High(HousesFirstBuilt) do
 			If States.GameTime = HousesFirstBuilt[I].aTime + 300 then
 				SetBonus(I);
 				
-		for I := low(HousesFirstBuilt) to High(HousesFirstBuilt) do		
-			If not HousesFirstBuilt[I].Once then 
-				If HousesFirstBuilt[I].aType <> -1 then 
-					If aPos = U.KMPoint(HousesFirstBuilt[I].Pos.X,HousesFirstBuilt[I].Pos.Y+1) then 
-						SetBonusNearHouse(I);
+		begin
+			aHouse := States.HouseAt(aPos.X,apos.Y-1);
+			SetBonusNearHouse(aHouse);
+		end;
 						
 	end;
 	
 	If UnlimitedFishes then 
 		If States.GameTime mod 600 = 0 then
 			If States.UnitAt(33,209)  <=0 then 
+			begin
 				Actions.GiveAnimal(31,33,209);
+				Actions.GiveAnimal(31,157,224);
+			end;
 			
 end;
 
@@ -1058,18 +1035,18 @@ begin
 				If aAttacker = S.HouseWorker(HousesFirstBuilt[2].ID) then 
 					A.UnitKill(aUnit,false);
 				
-			
-	If aAttacker > 0 then
-		If (aOwner2 = 0) and ( aOwner = 5) then 
-			If States.PlayerAllianceCheck(aOwner,aOwner2) then
-			begin
-				QuestNow.QType := qFFA;
-				A.ShowMSG(0,'<$236>');
-				QuestNow.QMadeTime[1] := States.GameTime;
-				Actions.PlayerAllianceChange(aOwner2,aOwner,true,false);
-				Actions.AIStartPosition(5,70,188);
-				Actions.AIAttackAdd(5,true,0,60,1,1,1,1,true,attClosestBuildingFromStartPos,U.KMPoint(213,106))
-			end;
+	If QuestNow.QType = qNone then 	
+		If aAttacker > 0 then
+			If (aOwner2 = 0) and ( aOwner = 5) then 
+				If States.PlayerAllianceCheck(aOwner,aOwner2) then
+				begin
+					QuestNow.QType := qFFA;
+					A.ShowMSG(0,'<$236>');
+					QuestNow.QMadeTime[1] := States.GameTime;
+					Actions.PlayerAllianceChange(aOwner2,aOwner,true,false);
+					Actions.AIStartPosition(5,70,188);
+					Actions.AIAttackAdd(5,true,0,60,1,1,1,1,true,attClosestBuildingFromStartPos,U.KMPoint(213,106))
+				end;
 	If (aOwner2 = 0) and (aOwner = 4) and (EmissaryStats[4] = eNotAllied) then 
 	begin		
 		Actions.ShowMSG(0,'<$233>')
@@ -1133,15 +1110,16 @@ begin
 	
 	If VillageQuestGiver[2].QEventType = 5 then
 		If aPlayer = 0 then	
-				If QuestInteger[5] < 20 then 
-				begin					
-					QuestInteger[5] := QuestInteger[5] + 1;
-					If QuestInteger[5] = 20 then 
-					begin
-						A.ShowMSG(0,'<$629>');
-						QuestTasks[2][1] := true;					
+				If U.InAreaI(X,Y,107,114,133,134) then 
+					If QuestInteger[5] < 20 then 
+					begin					
+						QuestInteger[5] := QuestInteger[5] + 1;
+						If QuestInteger[5] = 20 then 
+						begin
+							A.ShowMSG(0,'<$629>');
+							QuestTasks[2][1] := true;					
+						end;
 					end;
-				end;
 end;
 Procedure OnPlanRoadPlaced(aPlayer,X,Y :Integer);
 var aOutIndex : Integer;
@@ -1203,20 +1181,21 @@ begin
 			Actions.PlanRemove(0,X,Y);
 		end;
 end; 
+
 //debug, killing group for testing
 Procedure OnBeacon(aPlayer,X,Y :Integer);
 begin
-	If States.GameTime > BeaconSetTime then 
-		If not QuestNow.QVOnQuest then
-			If not States.UnitDead(Hero) then 
-				If States.UnitIdle(Hero) then 
-				begin
-					BeaconSetTime := States.GameTime + 600;
-					StartCinematic(0,States.UnitDirection(Hero));
-					StartCinematic(1,States.UnitDirection(Hero));
-				end;
-	//If S.HouseAt(X,Y) > 0 then
-	//	A.HouseDestroy(S.HouseAt(X,Y), false);
+	If not InCinematic then 
+		If States.GameTime > BeaconSetTime then 
+				If not States.UnitDead(Hero) then 
+					If States.UnitIdle(Hero) then 
+					begin
+						BeaconSetTime := States.GameTime + 600;
+						StartCinematic(0,States.UnitDirection(Hero));
+						StartCinematic(1,States.UnitDirection(Hero));
+					end;
+	If S.HouseAt(X,Y) > 0 then
+		A.HouseDestroy(S.HouseAt(X,Y), false);
 	//If States.GroupAt(X,Y) > 0 then
 	//	Actions.GroupKillAll(States.GroupAt(X,Y),false);
 	//Actions.GiveGroup(6,15,X,Y,0,1,1)
@@ -1261,18 +1240,16 @@ begin
 	
 	//MinersToTrain := 12;
 	//MinersKilled := 12;
-	//SetImmortality(0,0);
+	//SetImmortality2(0,true);
 	//InstantKill[0] := true;
 end;
 
 procedure OnTickTesting;
 begin
 	//If States.GameTime mod 1000 = 0 then 
-	//	SetNewMultiMessages([0],60);
+	//	SetNewMultiMessages([0],60,[],[]);
 		
 end;
-
-
 
 Procedure OnTick;
 var I : Integer;
@@ -1286,6 +1263,7 @@ begin
 	OnTickVillageReaveling;
 	OnTickRemoveAttacks;
 	OnTickVillages;
+	
 	If States.GameTime mod 5 = 0 then 
 		If States.HouseRepair(MainStoreHouse[0]) and (ShowStatsOrPlayers[1] = 0) then 
 		begin
@@ -1304,7 +1282,18 @@ begin
 		
 	
 		
-		
+	If Length(Patrolls) > 0 then 
+		If States.GameTime mod 600 = 0 then
+			for I := 0 to High(Patrolls) do	
+				If not States.GroupDead(Patrolls[I].aID) and States.GroupIdle(Patrolls[I].aID) then 
+				begin
+					If Patrolls[I].aMode then 
+						A.GroupOrderWalk(Patrolls[I].aID, Patrolls[I].aPos2.X,Patrolls[I].aPos2.Y,S.KamRandomI(7))
+					else
+						A.GroupOrderWalk(Patrolls[I].aID, Patrolls[I].aPos1.X,Patrolls[I].aPos1.Y,S.KamRandomI(7));
+						
+					Patrolls[I].aMode := not Patrolls[I].aMode;
+				end;
 		
 	If length(Ruins) > 0 then 
 		If States.GameTime mod 1200 = 0 then 
@@ -1336,6 +1325,7 @@ begin
 	//covering the world at start 
 	If States.GameTime mod 600 = 0 then
 		AddStoneToTowers(8);
+		
 	If States.GameTime mod 50 = 0 then 
 	begin
 		If ScannerOn = false then
@@ -1352,6 +1342,7 @@ begin
 				A.HouseAllowAllyToSelectAll(-1,false);
 			end;
 	end;
+	
 	If States.GameTime = 1 then 
 	begin
 		Actions.FogCoverAll(0);
@@ -1359,10 +1350,12 @@ begin
 		Actions.FogRevealCircle(0,190,203,10);
 		Actions.FogRevealCircle(0,51,207,10);
 		Actions.FogRevealRect(0,3,244,18,252);
+		Actions.FogRevealAll(0);
 		HeroStats[0].Health := HPmax;
 	end;
 		
 	If States.UnitDead(Hero) then Actions.PlayerDefeat(0);
+	If States.HouseDestroyed(MainStoreHouse[0]) then Actions.PlayerDefeat(0);
 	
 	If CavarlyGroup > 0 then
 		If States.GroupIdle(CavarlyGroup) then
@@ -1392,20 +1385,6 @@ begin
 			Actions.UnitKill(Hero,false);
 		end;
 		
-		
-	If States.GameTime = 100 then 
-	begin
-		SetPlayerMines(1);
-		SetPlayerMines(4);
-		SetPlayerMines(5);
-		SetPlayerMines(6);
-	end;
-	If States.GameTime mod 1200 = 0 then 
-	begin
-		SetUnlimitedDeposits;
-		SetUnlimitedDeposits2;
-	end;
-		
 	If QuestNow.QType = qDef6 then 
 	begin
 		QuestNow.QType := qTheChoice;
@@ -1414,7 +1393,7 @@ begin
 	If States.GameTime = QuestNow.QMadeTime[3] then 
 	begin
 		QuestNow.QMade[3] := true;
-		A.ShowMSG(0,'Baron Araton: Dziêkuje ci, moi ludzie widz¹c twoj¹ odwagê, chêtnie do³¹cz¹ do twojej rebelii.');
+		A.ShowMSG(0,'<$207>');
 		A.GroupOrderWalk(A.GiveGroup(0,15,228,116,6,9,3),66,184,1);
 		A.GroupOrderWalk(A.GiveGroup(0,15,236,110,6,12,4),70,186,1);
 		A.GroupOrderWalk(A.GiveGroup(0,17,219,101,6,12,4),66,189,1);
@@ -1453,6 +1432,15 @@ begin
 	
 	
 	
+	If Win.WinType = w1 then
+	begin
+		If States.GameTime = Win.WinTime then
+			A.ShowMSG(0, '<$392>');
+			
+		If States.GameTime = Win.WinTime + 100 then
+			A.PlayerWin([0], true);
+	end;
+		
 	If Win.WinType = w9 then
 	begin
 		If States.GameTime = Win.WinTime + 20 then
@@ -1524,11 +1512,16 @@ begin
 			ShowMultiMessages(MultiMessages.aIndex,MultiMessages.aShowArray);
 	
 	If States.GameTime mod 600 = 0 then 
+	begin
 		for I := 0 to high(UnlimitedCoalPoints) do 
 			A.MapTileSet(UnlimitedCoalPoints[I].X,UnlimitedCoalPoints[I].Y,155,0);
-	If States.GameTime mod 600 = 0 then 
+		
 		for I := 0 to high(UnlimitedIronPoints) do 
 			A.MapTileSet(UnlimitedIronPoints[I].X,UnlimitedIronPoints[I].Y,151,0);
+			
+		for I := 0 to high(UnlimitedGoldPoints) do 
+			A.MapTileSet(UnlimitedGoldPoints[I].X,UnlimitedGoldPoints[I].Y,147,0);
+	end;
 			
 	
 	If not BarbariansVisited then
@@ -1539,12 +1532,58 @@ begin
 				BarbariansVisited := true;
 				A.ShowMSG(0, '<$385>');
 			end;	
+			
 	If not HousesFirstBuilt[0].Once then
 		If States.GameTime = HousesFirstBuilt[0].aTime + 6000 then 
 			A.ShowMSG(0,'<$386>');
 			
+	If States.GameTime = HousesFirstBuilt[0].aTime + 15000 then 
+		A.ShowMSG(0,'<$148>');
+			
 	If CheckTime(EmissaryTime[7]) then 
 			A.ShowMSG(0,'<$390>');
+	If States.GameTime = PlayersAttacked[11].DefeatedTime then 
+	begin
+		SetNewMultiMessages([152],60,[52,55],[]);
+		
+		A.AIEquipRate(2,1,S.AIEquipRate(2,1) - 100);
+		A.AIEquipRate(3,1,S.AIEquipRate(3,1) - 100);
+		
+	end;
+	
+	If States.GameTime = PlayersAttacked[14].DefeatedTime then 
+	begin
+		SetNewMultiMessages([153],60,[53],[]);
+		
+		A.AIEquipRate(2,1,S.AIEquipRate(2,1) - 200);
+		A.AIEquipRate(3,1,S.AIEquipRate(3,1) - 200);
+		A.AIAttackRemoveAll(6);		
+		Actions.AIAttackAdd(6,true,1,45,1,1,1,1,true,attClosestBuildingFromArmy,U.KMPoint(213,106))
+		If PlayersAttacked[11].Defeated then 
+		begin
+			A.AIAttackRemoveAll(6);
+			Actions.AIAttackAdd(6,true,1,60,1,1,1,1,true,attClosestBuildingFromArmy,U.KMPoint(213,106))
+		end;
+	end;
+	If not Meriton then 
+		If PlayersAttacked[12].Defeated then 
+			If States.GameTime >= PlayersAttacked[12].DefeatedTime then 
+			begin
+				If States.GameTime = PlayersAttacked[12].DefeatedTime then 
+				begin
+					MeritonSword := A.GiveGroup(9,27,38,172,4,1,1);
+					GroupHpInvulnerableSet([MeritonSword],true);		
+					A.ShowMSGGoTo(0, 38,172,'<$162>');
+				end;
+				If States.GameTime mod 100 = 0 then 
+					If aPos = Point(38,174) then 
+						begin
+							Meriton := true;
+							StartCinematic(0,0);
+							StartCinematic(1,0);
+							SetNewMultiMessages([155,156,157,158,159,160],60,[56],[MeritonSword]);					
+						end;
+			end;
 		
 end;
 
@@ -1565,7 +1604,10 @@ begin
 	MainStoreHouse[11] := States.HouseAt(47,104);
 	MainStoreHouse[13] := States.HouseAt(143,242);
 	MainStoreHouse[14] := States.HouseAt(237,228);
+	
 	THPos := U.KMPoint(100,20);
+	A.HouseTownHallMaxGold(States.HouseAt(THPos.X,THPos.Y),999);
+	A.HouseAddWaresTo(States.HouseAt(THPos.X,THPos.Y),7,999);
 	BarracksPos := U.KMPoint(93,18);
 	Actions.UnitHpSetInvulnerable(Hero,true);
 end;
@@ -1625,7 +1667,6 @@ begin
 	//A.ShowMSG(0, IntToStr(length(Ruins)));
 end;
 
-
 Procedure OnMissionStartSetMaxTime;
 var I :Integer;
 begin
@@ -1675,6 +1716,8 @@ end;
 
 Procedure OnMissionStart;
 begin
+	QuestSet := [qFormation1,qFormation2, qTheKing1, qTheKing2, qFFA]; 
+	MultiMessages.aModTime := 50;
 	SetDucksArray;
 	
 	OnMissionStartSetMainStoresAndHero;
@@ -1696,7 +1739,15 @@ begin
 	
 	A.ShowMSG(0, '<$502>');
 	A.ShowMSG(0, '<$503>');
+	
 	UnlimitedCoalPoints := [
+	U.KMPoint(251,214),
+	U.KMPoint(237,219),
+	U.KMPoint(229,213),
+	U.KMPoint(223,210),
+	U.KMPoint(215,204),
+	U.KMPoint(217,216),
+	U.KMPoint(219,223),
 	U.KMPoint(53,192),
 	U.KMPoint(60,190),
 	U.KMPoint(68,193),
@@ -1713,21 +1764,85 @@ begin
 	U.KMPoint(239,217),
 	U.KMPoint(252,214)
 	];
+	
+	
 	UnlimitedIronPoints := [
+	U.KMPoint(73,169),
+	U.KMPoint(68,167),
+	U.KMPoint(55,164),
+	U.KMPoint(47,163),
+	U.KMPoint(39,166),
+	U.KMPoint(127,208),
+	U.KMPoint(112,208),
+	U.KMPoint(232,49),
+	U.KMPoint(234,62),
+	U.KMPoint(217,59),
+	U.KMPoint(121,45),
+	U.KMPoint(99,53),
+	U.KMPoint(91,62),
 	U.KMPoint(60,176),
 	U.KMPoint(50,180),
 	U.KMPoint(37,184)
 	];
 	
+	UnlimitedGoldPoints := [
+	U.KMPoint(221,85),
+	U.KMPoint(238,87),
+	U.KMPoint(228,91),
+	U.KMPoint(211,92),
+	U.KMPoint(95,24),
+	U.KMPoint(82,31),
+	U.KMPoint(78,24),
+	U.KMPoint(179,177),
+	U.KMPoint(161,186),
+	U.KMPoint(78,140),
+	U.KMPoint(62,141),
+	U.KMPoint(50,140),
+	U.KMPoint(41,139)
+	];
+	BarbarainsStartPositions := [
+	U.KMPoint(167,84),
+	U.KMPoint(30,68),
+	U.KMPoint(158,120),
+	U.KMPoint(160,171),
+	U.KMPoint(60,195)
+	];
+	
 	VillageVisited[4] := true;
+	
 	case States.MissionDifficulty of 
-		0: DifficultyTimes[0] := 36000;
-		1: DifficultyTimes[0] := 44000;
-		2: DifficultyTimes[0] := 40000;
-		3: DifficultyTimes[0] := 36000;
-		4: DifficultyTimes[0] := 18000;
-		5: DifficultyTimes[0] := 15000;
-		6: DifficultyTimes[0] := 9000;
-		7: DifficultyTimes[0] := 6000;
+		0: 	begin
+				DifficultyMultipiers[0] := 36000;//emissary time 1
+				DifficultyMultipiers[1] := 50;//army
+				DifficultyMultipiers[2] := 70;//army
+			end;
+		1: ;
+		2: begin
+				DifficultyMultipiers[0] := 40000;
+				DifficultyMultipiers[1] := 80;
+				DifficultyMultipiers[2] := 85;//army
+			end;
+		3: ;
+		4: begin
+				DifficultyMultipiers[0] := 18000;
+				DifficultyMultipiers[1] := 100;
+				DifficultyMultipiers[2] := 100;//army
+			end;
+		5: ;
+		6: begin
+				DifficultyMultipiers[0] := 9000;
+				DifficultyMultipiers[1] := 120;
+				DifficultyMultipiers[2] := 115;//army
+			end;
+		7: begin
+				DifficultyMultipiers[0] := 6000;
+				DifficultyMultipiers[1] := 150;
+				DifficultyMultipiers[2] := 130;//army
+			end;
 	end;
+	
+	AddPatroll(13,14,Point(62,114),Point(105,109));
+	AddPatroll(13,27,Point(68,129),Point(236,217));
+	AddPatroll(13,14,Point(41,75),Point(60,127));
+	AddPatroll(13,14,Point(71,119),Point(131,196));
 end;

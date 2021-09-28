@@ -32,11 +32,20 @@ begin
 					end;
 			end;
 		2:	Case aQVNow of
-				2: 	begin					
+				2: 	begin
+						A.GiveHouseSite(13,7,117,118,true);
+						A.GiveHouseSite(13,16,118,127,true);
+						A.GiveHouseSite(13,22,130,125,true);
+						A.GiveHouseSite(13,24,121,118,true);				
 					end;
 			end;
 		3: 	Case aQVNow of
-				2: 	begin			
+				2: 	begin
+						A.MapTileObjectSet(21,109,190 + States.KamRandomI(4))
+						A.MapTileObjectSet(28,100,190 + States.KamRandomI(4))
+						A.MapTileObjectSet(38,102,190 + States.KamRandomI(4))
+						A.MapTileObjectSet(29,109,190 + States.KamRandomI(4))
+						A.MapTileObjectSet(26,110,190 + States.KamRandomI(4))
 					end;
 			end;
 		5: Case aQVNow of
@@ -103,7 +112,7 @@ begin
 					FirstTaskTime := States.GameTime + 600;
 				StartCinematic(1,0);
 				
-				SetNewMultiMessages([602 + States.KaMRandomI(3)],70);
+				SetNewMultiMessages([602 + States.KaMRandomI(3)],70,[],[]);
 				VillageQuestGiver[QuestNow.QVVillageType].QEventType := VillageQuestGiver[QuestNow.QVVillageType].QEventType+1;
 				AcceptTask(QuestNow.QVVillageType, VillageQuestGiver[QuestNow.QVVillageType].QEventType);
 				VillageQuestGiver[QuestNow.QVVillageType].QTime := States.GameTime;
@@ -111,7 +120,7 @@ begin
 			If U.KMPoint(X,Y) = States.UnitPosition(Hero) then
 			begin
 				QuestNow.QVOnQuest := false;
-				SetNewMultiMessages([605 + States.KaMRandomI(3)],70);
+				SetNewMultiMessages([605 + States.KaMRandomI(3)],70,[],[]);
 				StartCinematic(1,0);
 				VillageQuestGiver[QuestNow.QVVillageType].QEventType := VillageQuestGiver[QuestNow.QVVillageType].QEventType-1;
 				VillageQuestGiver[QuestNow.QVVillageType].QEndTime := States.GameTime + 1200;
@@ -154,7 +163,7 @@ begin
 	If VillageQuestGiver[0].QEventType = 1 then 
 	begin
 		If States.GameTime = VillageQuestGiver[0].QTime + 10 then
-			SetNewMultiMessages([600, 601],90);
+			SetNewMultiMessages([600, 601],90,[],[]);
 			
 		//If States.GameTime = VillageQuestGiver[0].QTime + 50 then 
 		//	StartCinematic(1,0);
@@ -184,9 +193,9 @@ begin
 						If States.UnitPosition(Hero) = VillageQuestGiver[3].QPos then 
 						begin
 							If QuestTasks[0][0] then
-								SetNewMultiMessages([610,611,614],70)
+								SetNewMultiMessages([610,611,614],70,[],[])
 							else
-								SetNewMultiMessages([610,611],70);
+								SetNewMultiMessages([610,611],70,[],[]);
 								
 							QuestTasks[0][0] := true;		
 						end;
@@ -195,9 +204,9 @@ begin
 						If States.UnitPosition(Hero) = VillageQuestGiver[2].QPos then 
 						begin
 							If QuestTasks[0][0] then
-								SetNewMultiMessages([612,613,614],70)
+								SetNewMultiMessages([612,613,614],70,[],[])
 							else
-								SetNewMultiMessages([612,613],70);
+								SetNewMultiMessages([612,613],70,[],[]);
 								
 							QuestTasks[0][1] := true;				
 						end;
@@ -213,7 +222,7 @@ var aUnit, aX,aY, I : Integer;
 begin
 	If VillageQuestGiver[1].QEventType = 1 then 
 		If States.GameTime = VillageQuestGiver[1].QTime + 10 then
-			SetNewMultiMessages([615,616,617,618,619, 601],70);
+			SetNewMultiMessages([615,616,617,618,619, 601],70,[],[]);
 		
 	//If States.GameTime = VillageQuestGiver[1].QTime + 50 then 
 	//	StartCinematic(1,0);
@@ -275,7 +284,7 @@ begin
 	//vagabonds
 	If VillageQuestGiver[1].QEventType = 4 then 
 		If States.GameTime = VillageQuestGiver[1].QTime + 10 then 	
-			SetNewMultiMessages([622,623,624,625,626,627,601],70);
+			SetNewMultiMessages([622,623,624,625,626,627,601],70,[],[]);
 			
 	If VillageQuestGiver[1].QEventType = 5 then 
 	begin
@@ -322,7 +331,7 @@ begin
 				QuestNow.QVVillageType := -1;
 				A.GiveWares(0, 5, 200);
 				HousesToBuild[6] := HousesToBuild[6]+2;
-				SetNewMultiMessages([636,637],70);
+				SetNewMultiMessages([636,637],70,[],[]);
 				VillageQuestGiver[1].QEventType := 6;
 				VillageQuestGiver[1].QEndTime := States.GameTime+NextQuestTime;
 			end;
@@ -333,7 +342,7 @@ Procedure OnTickCornVillage;
 begin
 	If VillageQuestGiver[2].QEventType = 1 then 
 		If States.GameTime = VillageQuestGiver[2].QTime + 10 then
-			SetNewMultiMessages([638, 601],70);
+			SetNewMultiMessages([638, 601],70,[],[]);
 
 	If VillageQuestGiver[2].QEventType = 2 then 
 	begin
@@ -388,7 +397,7 @@ begin
 	//give corn fields
 	If VillageQuestGiver[2].QEventType = 4 then 
 		If States.GameTime = VillageQuestGiver[2].QTime + 10 then 
-			SetNewMultiMessages([642, 601],70);
+			SetNewMultiMessages([642, 601],70,[],[]);
 		
 	If VillageQuestGiver[2].QEventType = 5 then 
 	begin			
@@ -426,7 +435,7 @@ begin
 			
 	if VillageQuestGiver[3].QEventType = 1 then 
 		If States.GameTime = VillageQuestGiver[3].QTime + 10 then
-			SetNewMultiMessages([645,646,647,648, 601],70);
+			SetNewMultiMessages([645,646,647,648, 601],70,[],[]);
 
 		
 	//first quest
@@ -488,9 +497,8 @@ begin
 end;
 
 Procedure OnTickBarracksVillage;
-var HPos : TKMPoint;
 begin
-			
+	
 	if VillageQuestGiver[5].QEventType = 1 then 
 		If States.GameTime = VillageQuestGiver[3].QTime + 10 then
 			Actions.ShowMSG(0,'');
@@ -595,20 +603,21 @@ begin
 						Actions.ShowMSG(0,'<$137>');
 						MessageDelay := States.GameTime + 1200;
 					end;
-				If (States.UnitPosition(Hero) = U.KMPoint(190,205)) 	or
-					(States.UnitPosition(Hero) = U.KMPoint(182,206)) 	then
+				If PosInRadius(States.UnitPosition(Hero), VillageQuestGiver[4].QPos, 1) 	or
+					PosInRadius(States.UnitPosition(Hero), U.KMPoint(182,206), 1) 	then
 						QuestTasks[4][2] := true;
 					
 				If QuestTasks[4][2] then
 				begin
 					HousesToBuild[6] := HousesToBuild[6]+3;
 					GiveSpecialItem;
-					SetNewMultiMessages([138,139,140,141,142],70);
+					SetNewMultiMessages([138,139,140,141,142],70,[],[]);
 					VillageQuestGiver[4].QEventType := 4;
 					VillageQuestGiver[4].QEndTime := States.GameTime + 6000;
 				end;
 			end;
 		end;
+	
 end;
 
 Procedure OnTickVillages;
@@ -622,11 +631,6 @@ begin
 	OnTickWoodVillage;
 	OnTickBarracksVillage;
 	OnTickPlayer7;
-	
-	If States.GameTime mod 600 = 0 then 
-		for I := 0 to 5 do 
-			If VillageQuestGiver[I].QGiver > 0 then 
-				Actions.UnitOrderWalk(VillageQuestGiver[I].QGiver,VillageQuestGiver[I].QPos.X,VillageQuestGiver[I].QPos.Y-2);
 	
 	If States.GameTime mod 10000 = 0 then 
 		for I := 0 to 5 do 

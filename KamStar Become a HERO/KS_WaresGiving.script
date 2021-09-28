@@ -36,7 +36,7 @@ begin
 		for blenght:= 0 to Length(Stores)-1 do 
 			If (States.HouseRepair(Stores[blenght]) = true) then 
 				for Wares := 0 to 27 do 
-					If (States.HouseWareBlockedTakeOut(Stores[blenght],Wares) = true) and (States.HouseResourceAmount(Stores[blenght],Wares) > WARES_TO_GIVE_COUNT*6) then
+					If (States.HouseWareBlockedTakeOut(Stores[blenght],Wares) = true) and (States.HouseResourceAmount(Stores[blenght],Wares) > WARES_TO_GIVE_COUNT) then
 					begin// zmieniłem ilość surowca żeby była większa od 4, żeby gra płynniej działała
 						Actions.HouseTakeWaresFrom(Stores[blenght],Wares,5);
 						Giving:=True;

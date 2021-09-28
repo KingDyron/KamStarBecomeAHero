@@ -98,18 +98,23 @@ begin
 end;
 	
 Procedure SetHousesPlans(I:Integer);
-var aX, aY {,RLE} :Integer;
+var aX, aY {,RLE},aType :Integer;
 	aSecPos : TKMPoint;
+	aPos : TKMPoint;
 begin
 	If length(aHousesData[I]) > 0 then 
 	begin
-		for aX := 0 to 6 do 
-			for aY := 0 to 6 do 
-				If U.InRangeI(States.MapTileObject(aHousesData[I][PlanIndex[I]][0]-3+aX,aHousesData[I][PlanIndex[I]][1]-3+aY), 88, 253) then
-					Actions.MapTileObjectSet(aHousesData[I][PlanIndex[I]][0]-3+aX,aHousesData[I][PlanIndex[I]][1]-3+aY,255);
+		aType := aHousesData[I][PlanIndex[I]][2]
+		aPos := U.KMPoint(aHousesData[I][PlanIndex[I]][0],aHousesData[I][PlanIndex[I]][1]);
+		If HouseTiles[aType].Usable then 
+			for aX := 0 to 3 do 
+				for aY := 0 to 3 do 
+					If HouseTiles[aType].HouseOnTile[aX][aY] then 
+						If U.InRangeI(States.MapTileObject(aPos.X-HouseTiles[aType].X + aX,aPos.Y-3 + aY), 88, 253) then
+							Actions.MapTileObjectSet(aPos.X-3+aX,aPos.Y-3+aY,255);
 		
 		aSecPos := U.KMPoint(States.HousePositionX(MainStoreHouse[I]),States.HousePositionY(MainStoreHouse[I])+1);
-		Actions.PlanAddHouse(I,aHousesData[I][PlanIndex[I]][2],aHousesData[I][PlanIndex[I]][0],aHousesData[I][PlanIndex[I]][1]);
+		Actions.PlanAddHouse(I,aType,aPos.X,aPos.Y);
 	
 		{If length(aRoadData[I][0]) > 0 then 
 			for RLE := 0 to length(aRoadData[I][0])-1 do 
@@ -199,8 +204,66 @@ begin
 			If States.GameTime = LastPlanSetTime[K] then CheckRoadPlans(K);
 		end;
 end;
+
+
+procedure OnMissionStartSetHouseTiles;
+var I, K, LEA, aType : Integer;
+	aHouses : array of Integer;
+	aPos : TKMPoint;
+begin
+	aHouses := States.PlayerGetAllHouses(9);
+	for LEA := high(aHouses) downto 0 do
+	begin
+		aType := States.HouseType(aHouses[LEA]);
+		HouseTiles[aType].Usable := true;
+		aPos := States.HousePosition(aHouses[LEA]);
+		If aType <= 29 then
+		begin
+			case aType of
+				0 : HouseTiles[aType].X := 1;
+				1 : HouseTiles[aType].X := 2;
+				2 : HouseTiles[aType].X := 1;
+				3 : HouseTiles[aType].X := 1;
+				4 : HouseTiles[aType].X := 1;
+				5 : HouseTiles[aType].X := 1;
+				6 : HouseTiles[aType].X := 0;
+				7 : HouseTiles[aType].X := 1;
+				8 : HouseTiles[aType].X := 2;
+				9 : HouseTiles[aType].X := 2;
+				10 : HouseTiles[aType].X := 1;
+				11 : HouseTiles[aType].X := 1;
+				12 : HouseTiles[aType].X := 2;
+				13 : HouseTiles[aType].X := 1;
+				14 : HouseTiles[aType].X := 1;
+				15 : HouseTiles[aType].X := 1;
+				16 : HouseTiles[aType].X := 3;
+				17 : HouseTiles[aType].X := 1;
+				18 : HouseTiles[aType].X := 1;
+				19 : HouseTiles[aType].X := 1;
+				20 : HouseTiles[aType].X := 0;
+				21 : HouseTiles[aType].X := 1;
+				22 : HouseTiles[aType].X := 1;
+				24 : HouseTiles[aType].X := 2;
+				25 : HouseTiles[aType].X := 1;
+				27 : HouseTiles[aType].X := 1;
+				28 : HouseTiles[aType].X := 2;
+				29 : HouseTiles[aType].X := 3;
+			end;
+			for I := 0 to 3 do
+				for K := 0 to 3 do
+				begin
+					If States.HouseAt(aPos.X-HouseTiles[aType].X + I,aPos.Y-3 + K) = aHouses[LEA] then 
+						HouseTiles[aType].HouseOnTile[I][K] := true;
+				end;
+			A.HouseDestroy(aHouses[LEA],true);
+		end;
+	end;
+
+end;
+
 Procedure AIBOnMissionStart;
 begin
+	OnMissionStartSetHouseTiles;
 	//A.ShowMsg(0,IntToStr(States.StatHouseCount(6)));
 	KeepBuildings[6] := false;
 	HousesToBuild[6] := 4//999;

@@ -47,16 +47,85 @@ begin
 end;
 
 
-procedure SetBonusNearHouse(aIndex:Integer);
-var aType, I, K : Integer;
+procedure SetBonusNearHouse(aHouse:Integer);
+var aType, I, K, aIndex, aType2 : Integer;
 	aPos : TKMPoint;
 begin
+	If States.HouseOwner(aHouse) <> 0 then
+		Exit;
+	aIndex := -1;
+	If aHouse <=0 then
+		Exit;
 	
+	aType2 := States.HouseType(aHouse);
+	
+	for I := 0 to 10 do
+		If HousesFirstBuilt[I].aType = aType2 then 
+			aIndex := I;
+			
+	If aIndex = -1 then
+	begin
+		A.ShowMSG(0,'<$' + IntToStr(144 + States.KamRandomI(4) ) + '>')
+		Exit;
+	end;
+	
+	If States.GameTime < HousesFirstBuilt[aIndex].aDelay then 
+		Exit;
+		
 	If MultiMessages.aIndex <= high(MultiMessages.aShowArray) then 
 		Exit;
+	
+	If aIndex <> -1 then 
+		HousesFirstBuilt[aIndex].aDelay := States.GameTime + 1200;
+		
+	If HousesFirstBuilt[aIndex].Once then
+	begin
+		SetNewMultiMessages([143],50,[],[]);
+		Exit;
+	end;
 	aType := HousesFirstBuilt[aIndex].aType;
 	aPos :=  HousesFirstBuilt[aIndex].Pos;
 	HousesFirstBuilt[aIndex].Once := true;
+	
+	case aType of 
+		2 : SetNewMultiMessages([86],60,[31,32,33,34],[]);
+		3 : SetNewMultiMessages([84],60,[],[]);
+		4 : SetNewMultiMessages([69,70,71],60,[],[]);
+		5 : SetNewMultiMessages([67,68],60,[],[]);
+		6 : SetNewMultiMessages([35],60,[],[]);
+		7 : SetNewMultiMessages([82],60,[],[]);
+		8 : SetNewMultiMessages([32,33,34],60,[16],[]);
+		9 : SetNewMultiMessages([49,58,59],60,[14,48],[]);
+		10 : SetNewMultiMessages([87],60,[35,36,37,38,39],[]);
+		12 : SetNewMultiMessages([28,29,30,31],60,[29,30],[]);
+		13 : SetNewMultiMessages([46,387,388,389],100,[],[]);
+		14 : SetNewMultiMessages([48],60,[15],[]);
+		16 : SetNewMultiMessages([81],60,[],[]);
+		17 : SetNewMultiMessages([44,45],60,[],[]);
+		18 : SetNewMultiMessages([72],60,[21,22,23],[]);
+		19 : SetNewMultiMessages([65,66],60,[17,18,19,20],[]);
+		20 : SetNewMultiMessages([83],60,[24,25,26,27,28],[]);
+		21 :If HousesFirstBuilt[1].aType = 14 then 
+				SetNewMultiMessages([38,39],60,[],[])
+			else
+				SetNewMultiMessages([41,42,43],60,[40,17,18,19,20,36,37,38,39],[]);
+		24 : SetNewMultiMessages([16],60,[],[]);
+		25 : SetNewMultiMessages([85],60,[],[]);
+		27 : SetNewMultiMessages([47],60,[],[]);
+		28 : SetNewMultiMessages([60,61,62,63,64],60,[],[]);
+		29 : If States.HouseResourceAmount(MainStoreHouse[0],7) < 50 then 
+			begin
+				HousesFirstBuilt[aIndex].Once := false;				
+				SetNewMultiMessages([73,74,75,76,77,78],75,[],[]);
+			end	else 
+			If States.HouseResourceAmount(MainStoreHouse[0],7) >= 50 then
+			begin
+				
+				A.HouseTakeWaresFrom(MainStoreHouse[0],7, 50);
+				SetNewMultiMessages([73,74,75,76,77,79],75,[],[]);
+				GiveSpecialItem;
+			end;
+	end;
 	
 	case aIndex of 
 		0 : case aType of
@@ -68,8 +137,8 @@ begin
 			end;
 		1 : case aType of
 				6 : Actions.GiveWares(0,7,20);//fish
-				14 : GiveItemFromID(15);//querry
-				9 : GiveMultipleItems([14,48]);//wood
+				14 : ;//GiveItemFromID(15);//querry
+				9 : ;//GiveMultipleItems([14,48]);//wood
 			end;
 		2 : case aType of
 				17 : ;//
@@ -78,15 +147,13 @@ begin
 		3 : case aType of
 				8 : begin///
 						Actions.GroupOrderWalk(Actions.GiveGroup(0,25,24,186,3,12,4),57,198,1);
-						GiveItemFromID(16);
+						//GiveItemFromID(16);
 					end;//
 				28 :A.GiveWares(0, 8, 67);///
 				21 :If HousesFirstBuilt[1].aType = 14 then ///
-						WallBuildingTime2 := States.GameTime
-					else
-						GiveMultipleItems([40,17,18,19,20,36,37,38,39]);//
+						WallBuildingTime2 := States.GameTime;
 						
-				19 :GiveMultipleItems([17,18,19,20]);	///
+				19 :;//GiveMultipleItems([17,18,19,20]);	///
 			end;
 		4 : case aType of
 				4 :A.GroupOrderWalk(A.GiveGroup(0,26,163,101,5,10,5),70,183,5);//
@@ -94,7 +161,7 @@ begin
 			end;
 		5 : case aType of
 				29 :;//
-				18 :GiveMultipleItems([21,22,23]);//
+				18 :;//GiveMultipleItems([21,22,23]);//
 			end;
 		6 : case aType of
 				24 : HeroNotHungry := true;//
@@ -102,8 +169,8 @@ begin
 		7 : case aType of
 				16 : A.GiveWares(0,14,27);//
 				7 :	A.UnitHungerSet(Hero, 27000);//
-				20 :GiveMultipleItems([24,25,26,27,28]);//
-				12 :GiveMultipleItems([29,30]);//
+				20 :;//GiveMultipleItems([24,25,26,27,28]);//
+				12 :;//GiveMultipleItems([29,30]);//
 			end;
 		8 : case aType of
 				3 :A.GiveWares(0, 1, 134);//
@@ -126,49 +193,11 @@ begin
 				15 :;
 			end;
 		10 : case aType of
-				2 :	GiveMultipleItems([31,32,33,34]);
-				10 :GiveMultipleItems([35,36,37,38,39]);
+				2 :	;//GiveMultipleItems([31,32,33,34]);
+				10 : ;//GiveMultipleItems([35,36,37,38,39]);
 			end;
 
 
-	end;
-	case aType of 
-		2 : SetNewMultiMessages([86],60);
-		3 : SetNewMultiMessages([84],60);
-		4 : SetNewMultiMessages([69,70,71],60);
-		5 : SetNewMultiMessages([67,68],60);
-		6 : SetNewMultiMessages([35],60);
-		7 : SetNewMultiMessages([82],60);
-		8 : SetNewMultiMessages([32,33,34],60);
-		9 : SetNewMultiMessages([49,58,59],60);
-		10 : SetNewMultiMessages([87],60);
-		12 : SetNewMultiMessages([28,29,30,31],60);
-		13 : SetNewMultiMessages([46,387,388,389],100);
-		14 : SetNewMultiMessages([48],60);
-		16 : SetNewMultiMessages([81],60);
-		17 : SetNewMultiMessages([44,45],60);
-		18 : SetNewMultiMessages([72],60);
-		19 : SetNewMultiMessages([65,66],60);
-		20 : SetNewMultiMessages([83],60);
-		21 :If HousesFirstBuilt[1].aType = 14 then 
-				SetNewMultiMessages([38,39],60)
-			else
-				SetNewMultiMessages([41,42,43],60);
-		24 : SetNewMultiMessages([16],60);
-		25 : SetNewMultiMessages([85],60);
-		27 : SetNewMultiMessages([47],60);
-		28 : SetNewMultiMessages([60,61,62,63,64],60);
-		29 : If States.HouseResourceAmount(MainStoreHouse[0],7) < 50 then 
-			begin
-				HousesFirstBuilt[aIndex].Once := false;				
-				SetNewMultiMessages([73,74,75,76,77,78],75)
-			end	else 
-			If States.HouseResourceAmount(MainStoreHouse[0],7) >= 50 then
-			begin
-				A.HouseTakeWaresFrom(MainStoreHouse[0],7, 50);
-				GiveSpecialItem;
-				SetNewMultiMessages([73,74,75,76,77,79],75);
-			end;
 	end;
 end;
 
@@ -208,7 +237,7 @@ begin
 						HousesToBuild[6] := HousesToBuild[6]+5
 					end;
 				0 :	begin
-						UpgradeArmy(0);
+						UpgradeArmy(0,false);
 						HousesToBuild[6] := HousesToBuild[6]+2
 					end;
 			end;
@@ -229,7 +258,7 @@ begin
 						HousesToBuild[6] := HousesToBuild[6]+2
 					end;
 				21 :begin
-						UpgradeArmy(0);
+						UpgradeArmy(0,false);
 						HousesToBuild[6] := HousesToBuild[6]+3
 					end;
 				19 :begin
@@ -256,12 +285,12 @@ begin
 							else
 								Actions.GiveWares(0,I,8);
 						HousesToBuild[6] := HousesToBuild[6]+2
-						UpgradeArmy(5);
+						UpgradeArmy(5,false);
 					end;
 				18 :begin
 						Actions.GiveGroup(0,23,aPos.X,aPos.Y+4,4,12,4)
 						HousesToBuild[6] := HousesToBuild[6]+4
-						UpgradeArmy(4);
+						UpgradeArmy(4,false);
 					end;
 			end;
 		6 : case aType of
@@ -283,10 +312,10 @@ begin
 						HousesToBuild[6] := HousesToBuild[6]+2
 					end;
 				20 :begin
-						UpgradeArmy(0);
-						UpgradeArmy(0);
-						UpgradeArmy(6);
-						UpgradeArmy(6);
+						UpgradeArmy(0,false);
+						UpgradeArmy(0,false);
+						UpgradeArmy(6,false);
+						UpgradeArmy(6,false);
 						HousesToBuild[6] := HousesToBuild[6]+5
 					end;
 				12 :begin 
@@ -491,12 +520,8 @@ begin
 			Stores[aIndex]:=aHouse;
 		end;
 	end;
-	
-	If aOwner = 6 then 
-		case States.HouseType(aHouse) of 
-			3 : SetPlayerMines(6);
-			4 : SetPlayerMines(6);
-			5 : SetPlayerMines(6);
-		end;
+	If aOwner = 6 then 	
+		If States.HouseType(aHouse) = 18 then 
+			Player7TH := aHouse;
 end;
 

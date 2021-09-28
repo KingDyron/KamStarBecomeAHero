@@ -7,7 +7,7 @@ var	H:Integer;
 	
 
 Procedure OnHouseWareCountChanged(aHouse,aWare,aCNT,aChangeCnt:Integer);
-var Player:Integer;
+var Player,Random:Integer;
 begin
 	Player:=States.HouseOwner(aHouse);	
 	If Player = 0 then
@@ -23,7 +23,11 @@ begin
 		If States.StatArmyCount(12) < 96 then 
 			If States.HouseType(aHouse) = 9 then 
 				If States.KaMRandomI(100) > 97 then 
+				begin
+					Random := States.KamRandomI(5)
+					A.AIStartPosition(12, BarbarainsStartPositions[Random].X, BarbarainsStartPositions[Random].Y)
 					A.GiveGroup(12, 23, States.HousePositionX(aHouse),States.HousePositionY(aHouse)+1, 4, 1, 1);
+				end;
 end;
 Procedure ProductionOnMissionStart;
 var III:Integer;

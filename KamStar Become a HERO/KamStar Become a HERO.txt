@@ -4,3 +4,14 @@ SmallDescLIBX
 BigDescLIBX
 501
 
+SetSpecial
+
+BlockPeacetime
+
+BlockTeamSelection
+
+BlockColorSelection
+
+DifficultyLevels
+mdEasy2,mdNormal,mdHard2,mdHard3
+

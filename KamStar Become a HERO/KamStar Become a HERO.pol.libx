@@ -29,9 +29,9 @@
 12:Doradca: Nasi górnicy trafili na czystą rudę złota, która jest o wiele łatwiejsza przy wydobywaniu.
 
 //market
-13:Doradca: Targowisko dało nam dostęp do wszelkiego rodzaju surowców, jak i również do uzbrojenia. W tym miejscu zbierają się rozmaici kupcy.||Już widzę handlarza z uzbrojeniem. Przekonam go, aby za kilka sztuk złota, oddał to, co ma przy sobie.
+13:Doradca: Targowisko dało nam dostęp do wszelkiego rodzaju surowców, jak i również do uzbrojenia. W tym miejscu zbierają się rozmaici kupcy.|Już widzę handlarza z uzbrojeniem. Przekonam go, aby za kilka sztuk złota, oddał to, co ma przy sobie.|<Rozdzielenie historyczne>
 //townhall
-14:Doradca: Ratusz dał nam możliwość rekrutacji dzikich jednostek. Wyrekrutowaliśmy dwunastu drwali, aby mogli dać przykład potęgi siekania toporem.
+14:Doradca: Ratusz dał nam możliwość rekrutacji dzikich jednostek. Wyrekrutowaliśmy dwunastu drwali, aby mogli dać przykład potęgi siekania toporem.|<Rozdzielenie historyczne>
 
 
 //coal mine
@@ -226,6 +226,42 @@ Kolejna wiadomość:
 141:Książe Milin: Wiesz może do czego służy?
 142:Bohater: Nie jestem pewien, ale wiem kto może to wyjaśnić.
 
+143:GAME: Budynek został już odwiedzony.
+144:GAME: Brak działań przy tym budynku.
+145:Pracownik: Wybacz panie jestem zmęczony po pracy.
+146:Pracownik: Muszę dalej pracować, aby nasze miasto mogło się rozwijać.
+147:Pracownik: Jestem zajęty
+
+148:Doradca: Nasza wioska aktualnie jest bardzo mała, ale z czasem będzie się rozrastać przez co będą do nas przybywać nowi mieszkańcy, nie zapomnij zapukać do ich drzwi i zapytać co mają do powiedzenia.
+
+
+//market
+149:Groton: Sądziłem, że chciałeś sprostać moim oczekiwaniom. Takiego zrwotu akcji się nie spodziewałem. Chciałeś mnie pokonać targując się z innymi? Zamierzam zniszczyć te relacje.
+
+//townhall
+150:Groton: Ratusz może i pozwoli ci szybciej szkolić armię, ale i tak nie jest wstanie obronić cię przede mną. Armia już na ciebie idzie, niosąc ze sobą zagładę.
+
+151:Groton: Wygoniłeś barbarzyńców i wypleniłeś bandytów z tych ziem. Imponujące, ale oni byli tylko pionkami w tej grze. Przyszykuj sięna ataki, które nie będą tak łatwe do pokanania jak ci żołdacy na południu.
+
+152:Dowódca Garnizonów: Z rozkazu Króla Grotona, mam za zadanie spławić siły tworzące się na południu Artidram.
+153:Dowódca Garnizonów: Jesteście tylko pyłem w porównaniu do króla Grotona jeśli nie zaprzestacie działań, ostrzegam was, że król Groton nie będzie litościwy
+
+155:Nieznajomy: Truth kazał mi to ci przekazać.
+156:Bohater: Jakiś przedmiot?
+157:Nieznajomy: Narzędzie które ułatwi ci dojście do celu.
+158:Bohater: To miecz... Ma jakieś dziwne zdobienia
+159:Nieznajomy: Podobno sam meryton go zrobił.
+160:Nieznajomy: Będę wracał. Groton nie może się dowiedzieć, że tutaj byłem.
+
+161:[$ffff00] Otrzymałeś [$ffffff] : 
+
+162:Doradca: Panie. Z naszych wież zauważyliśmy kogoś na koniu. Sprawdziłem go i ta osoba chce się stobą widzieć na osobności.
+
+163:Baron Araton: Uporałeś się z garnizonami bez mojej pomocy, moi ludzie zamiast ginąć w walce mogli przeszukac pozostałości po budynkach wroga i znalezli mnóstwo uzbrojenia, użyjemy go w następnym naszym ataku!
+
+164:Książe Milin: Moi żołnierze przeszukali garnizony i znaleźli dużo uzbrojenia, które starczą dla nas wszystkich. Twój szpieg się mylił. Garnizony nie były tak słabo uzbrojone.
+
+164:Król Herin: Zaatakujemy niebawem. Przygotuj się dobrze. Ta bitwa może być naszą ostatnią.
 
 //emissary starting
 //_Emisariusz przed twierdzą:
@@ -641,6 +677,10 @@ Bohater: Możemy spróbować.
 389:Bohater: Idę trenować. Jeżeli mam go pokonać to muszę być w formie. || [$00ff00] + 40 Zdrowie Bohatera [$ffffff]
 
 390:Doradca: Pamiętaj że powinniśmy skypić się na garnizonach. Potem czysto wejdziemy do twierdzy.
+
+391:Groton: Widzę, że wybrałeś mądrze. U mego boku sporo osiągniesz, a razem zdobędziemy stolicę i w końcu kontynent. Nikt nam nie stawi oporu.
+
+392:-Gratulacje, sprzymierzyłeś się z wrogiem. Zrobiłeś to, co Groton planował od lat. :( (Zakończenie nr.2)
 
 //wstęp
 500:[$ffff00]Historia wielu wyborów

@@ -9,6 +9,12 @@ begin
 		A.UnitHPSetInvulnerable(AllGroups[LEA],aImmortality);
 end;
 
+function GiveGroupWithDifficulty(aPlayer,aType,aX,aY,aDir,aCount,aColumn : Integer) : Integer;
+begin
+	Result := -1;
+	Result := Actions.GiveGroup(aPlayer,aType,aX,aY,aDir,aCount * 100 / DifficultyMultipiers[2],aColumn);
+end;
+
 
 Procedure AllAttacks(AttackIndex : Integer);
 var I, DCount, LEA :Integer;
@@ -22,66 +28,70 @@ begin
 		//attack after watchtower or sawmill
 		0 : Case HousesFirstBuilt[2].aType of 
 				0:	begin
-						Actions.GroupOrderAttackHouse(Actions.GiveGroup(1,25,150,64,2,10,5),MainStoreHouse[0])
-						Actions.GroupOrderAttackHouse(Actions.GiveGroup(1,14,150,64,2,8,5),MainStoreHouse[0])
-						Actions.GroupOrderAttackHouse(Actions.GiveGroup(1,27,150,64,2,8,5),MainStoreHouse[0])
+						Actions.GroupOrderAttackHouse(GiveGroupWithDifficulty(1,25,150,64,2,10,5),MainStoreHouse[0])
+						Actions.GroupOrderAttackHouse(GiveGroupWithDifficulty(1,14,150,64,2,8,5),MainStoreHouse[0])
+						Actions.GroupOrderAttackHouse(GiveGroupWithDifficulty(1,27,150,64,2,8,5),MainStoreHouse[0])
 					end;
 				17:	begin
-						Actions.GroupOrderAttackHouse(Actions.GiveGroup(1,25,20,110,2,15,5),MainStoreHouse[0])
-						Actions.GroupOrderAttackHouse(Actions.GiveGroup(1,15,20,110,2,10,5),MainStoreHouse[0])
-						Actions.GroupOrderAttackHouse(Actions.GiveGroup(1,27,20,110,2,15,6),MainStoreHouse[0])
+						Actions.GroupOrderAttackHouse(GiveGroupWithDifficulty(1,25,20,110,2,15,5),MainStoreHouse[0])
+						Actions.GroupOrderAttackHouse(GiveGroupWithDifficulty(1,15,20,110,2,10,5),MainStoreHouse[0])
+						Actions.GroupOrderAttackHouse(GiveGroupWithDifficulty(1,27,20,110,2,15,6),MainStoreHouse[0])
 					end;
 			end;
 		//attack after townhall
 		1 : Case HousesFirstBuilt[5].aType of 
 				29:	begin
-						Actions.GroupOrderAttackHouse(Actions.GiveGroup(1,18,147,104,2,20,5),MainStoreHouse[0])
-						Actions.GroupOrderAttackHouse(Actions.GiveGroup(1,15,147,104,2,20,3),MainStoreHouse[0])
-						Actions.GroupOrderAttackHouse(Actions.GiveGroup(1,19,147,104,2,15,3),MainStoreHouse[0])
-						Actions.GroupOrderAttackHouse(Actions.GiveGroup(1,24,147,104,2,16,4),MainStoreHouse[0])
+						Actions.GroupOrderAttackHouse(GiveGroupWithDifficulty(1,18,147,104,2,20,5),MainStoreHouse[6])
+						Actions.GroupOrderAttackHouse(GiveGroupWithDifficulty(1,15,147,104,2,20,3),MainStoreHouse[6])
+						Actions.GroupOrderAttackHouse(GiveGroupWithDifficulty(1,19,147,104,2,10,3),MainStoreHouse[6])
+						Actions.GroupOrderAttackHouse(GiveGroupWithDifficulty(1,19,147,104,2,10,3),MainStoreHouse[6])
+						Actions.GroupOrderAttackHouse(GiveGroupWithDifficulty(1,19,147,104,2,10,3),MainStoreHouse[6])
+						Actions.GroupOrderAttackHouse(GiveGroupWithDifficulty(1,24,147,104,2,10,4),MainStoreHouse[6])
+						Actions.GroupOrderAttackHouse(GiveGroupWithDifficulty(1,24,147,104,2,10,4),MainStoreHouse[6])
+						Actions.GroupOrderAttackHouse(GiveGroupWithDifficulty(1,24,147,104,2,10,4),MainStoreHouse[6])
 					end;
 				18:	begin
-						Actions.GroupOrderAttackHouse(Actions.GiveGroup(1,17,115,115,2,20,2),MainStoreHouse[0])
-						Actions.GroupOrderAttackHouse(Actions.GiveGroup(1,16,115,115,2,20,3),MainStoreHouse[0])
-						Actions.GroupOrderAttackHouse(Actions.GiveGroup(1,20,115,115,2,20,3),MainStoreHouse[0])
-						Actions.GroupOrderAttackHouse(Actions.GiveGroup(1,21,115,115,2,20,4),MainStoreHouse[0])
+						Actions.GroupOrderAttackHouse(GiveGroupWithDifficulty(1,17,115,115,2,40,2),MainStoreHouse[0])
+						Actions.GroupOrderAttackHouse(GiveGroupWithDifficulty(1,16,115,115,2,40,3),MainStoreHouse[0])
+						Actions.GroupOrderAttackHouse(GiveGroupWithDifficulty(1,20,115,115,2,35,3),MainStoreHouse[0])
+						Actions.GroupOrderAttackHouse(GiveGroupWithDifficulty(1,21,115,115,2,35,4),MainStoreHouse[0])
 					end;
 			end;
 		//attack on the player 6
 		2 :begin
-				Actions.GroupOrderAttackHouse(Actions.GiveGroup(1,22,117,53,3,24,2),MainStoreHouse[5])
-				Actions.GroupOrderAttackHouse(Actions.GiveGroup(1,26,106,66,3,24,3),MainStoreHouse[5])
-				Actions.GroupOrderAttackHouse(Actions.GiveGroup(1,18,133,56,4,24,3),MainStoreHouse[5])
-				Actions.GroupOrderAttackHouse(Actions.GiveGroup(1,20,81,76,2,24,4),MainStoreHouse[5])
+				Actions.GroupOrderAttackHouse(GiveGroupWithDifficulty(1,22,117,53,3,24,2),MainStoreHouse[5])
+				Actions.GroupOrderAttackHouse(GiveGroupWithDifficulty(1,26,106,66,3,24,3),MainStoreHouse[5])
+				Actions.GroupOrderAttackHouse(GiveGroupWithDifficulty(1,18,133,56,4,24,3),MainStoreHouse[5])
+				Actions.GroupOrderAttackHouse(GiveGroupWithDifficulty(1,20,81,76,2,24,4),MainStoreHouse[5])
 				Actions.AIStartPosition(1,219,106)
 				Actions.AIAttackAdd(1,true,0,1,1,1,1,1,true,attClosestBuildingFromStartPos,U.KMPoint(213,106))
 			end;
 		//attack on the hero by player 2
 		3 :begin
-				Actions.GroupOrderAttackHouse(Actions.GiveGroup(1,22,117,53,3,24,2),MainStoreHouse[0])
-				Actions.GroupOrderAttackHouse(Actions.GiveGroup(1,26,106,66,3,24,6),MainStoreHouse[0])
-				Actions.GroupOrderAttackHouse(Actions.GiveGroup(1,18,133,56,4,18,6),MainStoreHouse[0])
-				Actions.GroupOrderAttackHouse(Actions.GiveGroup(1,18,133,56,4,18,6),MainStoreHouse[0])
-				Actions.GroupOrderAttackHouse(Actions.GiveGroup(1,20,81,76,2,24,6),MainStoreHouse[0])
-				Actions.GroupOrderAttackHouse(Actions.GiveGroup(1,16,81,76,2,12,6),MainStoreHouse[0])
-				Actions.GroupOrderAttackHouse(Actions.GiveGroup(1,16,81,76,2,12,6),MainStoreHouse[0])
+				Actions.GroupOrderAttackHouse(GiveGroupWithDifficulty(1,22,117,53,3,24,2),MainStoreHouse[0])
+				Actions.GroupOrderAttackHouse(GiveGroupWithDifficulty(1,26,106,66,3,24,6),MainStoreHouse[0])
+				Actions.GroupOrderAttackHouse(GiveGroupWithDifficulty(1,18,133,56,4,18,6),MainStoreHouse[0])
+				Actions.GroupOrderAttackHouse(GiveGroupWithDifficulty(1,18,133,56,4,18,6),MainStoreHouse[0])
+				Actions.GroupOrderAttackHouse(GiveGroupWithDifficulty(1,20,81,76,2,24,6),MainStoreHouse[0])
+				Actions.GroupOrderAttackHouse(GiveGroupWithDifficulty(1,16,81,76,2,12,6),MainStoreHouse[0])
+				Actions.GroupOrderAttackHouse(GiveGroupWithDifficulty(1,16,81,76,2,12,6),MainStoreHouse[0])
 				Actions.AIStartPosition(1,45,208)
 				Actions.AIAttackAdd(1,true,0,1,1,1,1,1,true,attClosestBuildingFromStartPos,U.KMPoint(213,106))
 			end;
 		//attack on the hero by player 2 and 5
 		4 :begin
 				//player 2
-				Actions.GroupOrderAttackHouse(Actions.GiveGroup(1,22,117,53,3,24,2),MainStoreHouse[0])
-				Actions.GroupOrderAttackHouse(Actions.GiveGroup(1,26,106,66,3,24,6),MainStoreHouse[0])
-				Actions.GroupOrderAttackHouse(Actions.GiveGroup(1,18,133,56,4,18,6),MainStoreHouse[0])
-				Actions.GroupOrderAttackHouse(Actions.GiveGroup(1,18,133,56,4,18,6),MainStoreHouse[0])
-				Actions.GroupOrderAttackHouse(Actions.GiveGroup(1,20,81,76,2,24,6),MainStoreHouse[0])
+				Actions.GroupOrderAttackHouse(GiveGroupWithDifficulty(1,22,117,53,3,24,2),MainStoreHouse[0])
+				Actions.GroupOrderAttackHouse(GiveGroupWithDifficulty(1,26,106,66,3,24,6),MainStoreHouse[0])
+				Actions.GroupOrderAttackHouse(GiveGroupWithDifficulty(1,18,133,56,4,18,6),MainStoreHouse[0])
+				Actions.GroupOrderAttackHouse(GiveGroupWithDifficulty(1,18,133,56,4,18,6),MainStoreHouse[0])
+				Actions.GroupOrderAttackHouse(GiveGroupWithDifficulty(1,20,81,76,2,24,6),MainStoreHouse[0])
 				//player 5
-				Actions.GroupOrderAttackHouse(Actions.GiveGroup(4,21,232,19,2,24,6),MainStoreHouse[0])
-				Actions.GroupOrderAttackHouse(Actions.GiveGroup(4,19,232,19,2,24,6),MainStoreHouse[0])
-				Actions.GroupOrderAttackHouse(Actions.GiveGroup(4,19,189,65,2,24,6),MainStoreHouse[0])
-				Actions.GroupOrderAttackHouse(Actions.GiveGroup(4,17,180,62,2,24,6),MainStoreHouse[0])
-				Actions.GroupOrderAttackHouse(Actions.GiveGroup(4,15,232,19,2,24,6),MainStoreHouse[0])
+				Actions.GroupOrderAttackHouse(GiveGroupWithDifficulty(4,21,232,19,2,24,6),MainStoreHouse[0])
+				Actions.GroupOrderAttackHouse(GiveGroupWithDifficulty(4,19,232,19,2,24,6),MainStoreHouse[0])
+				Actions.GroupOrderAttackHouse(GiveGroupWithDifficulty(4,19,189,65,2,24,6),MainStoreHouse[0])
+				Actions.GroupOrderAttackHouse(GiveGroupWithDifficulty(4,17,180,62,2,24,6),MainStoreHouse[0])
+				Actions.GroupOrderAttackHouse(GiveGroupWithDifficulty(4,15,232,19,2,24,6),MainStoreHouse[0])
 				Actions.AIStartPosition(1,45,208)
 				Actions.AIStartPosition(4,45,208)
 				Actions.AIAttackAdd(1,true,0,1,1,1,1,1,true,attClosestBuildingFromStartPos,U.KMPoint(213,106))
@@ -129,14 +139,14 @@ begin
 			
 		//attack on the player 7
 		7 :begin
-				Actions.GroupOrderAttackHouse(Actions.GiveGroup(1,22,16,88,3,24,2),MainStoreHouse[6])
-				Actions.GroupOrderAttackHouse(Actions.GiveGroup(1,22,16,88,3,24,2),MainStoreHouse[6])
-				Actions.GroupOrderAttackHouse(Actions.GiveGroup(1,26,16,93,3,24,3),MainStoreHouse[6])
-				Actions.GroupOrderAttackHouse(Actions.GiveGroup(1,26,16,93,3,24,3),MainStoreHouse[6])
-				Actions.GroupOrderAttackHouse(Actions.GiveGroup(1,18,20,90,4,24,3),MainStoreHouse[6])
-				Actions.GroupOrderAttackHouse(Actions.GiveGroup(1,18,20,90,4,24,3),MainStoreHouse[6])
-				Actions.GroupOrderAttackHouse(Actions.GiveGroup(1,20,25,88,2,24,4),MainStoreHouse[6])
-				Actions.GroupOrderAttackHouse(Actions.GiveGroup(1,20,25,88,2,24,4),MainStoreHouse[6])
+				Actions.GroupOrderAttackHouse(GiveGroupWithDifficulty(1,22,16,88,3,24,2),MainStoreHouse[6])
+				Actions.GroupOrderAttackHouse(GiveGroupWithDifficulty(1,22,16,88,3,24,2),MainStoreHouse[6])
+				Actions.GroupOrderAttackHouse(GiveGroupWithDifficulty(1,26,16,93,3,24,3),MainStoreHouse[6])
+				Actions.GroupOrderAttackHouse(GiveGroupWithDifficulty(1,26,16,93,3,24,3),MainStoreHouse[6])
+				Actions.GroupOrderAttackHouse(GiveGroupWithDifficulty(1,18,20,90,4,24,3),MainStoreHouse[6])
+				Actions.GroupOrderAttackHouse(GiveGroupWithDifficulty(1,18,20,90,4,24,3),MainStoreHouse[6])
+				Actions.GroupOrderAttackHouse(GiveGroupWithDifficulty(1,20,25,88,2,24,4),MainStoreHouse[6])
+				Actions.GroupOrderAttackHouse(GiveGroupWithDifficulty(1,20,25,88,2,24,4),MainStoreHouse[6])
 				Actions.AIStartPosition(1,190,202)
 				Actions.AIAttackAdd(1,true,0,1,1,1,1,1,true,attClosestBuildingFromStartPos,U.KMPoint(213,106))
 			end;
@@ -199,16 +209,14 @@ begin
 				begin					
 					DCount:= States.StatAIDefencePositionsCount(I);
 					Actions.AIStartPosition(I,97,73)	
-					Actions.AIAttackAdd(I,true,1,1,1,1,1,1,true,attClosestBuildingFromStartPos,U.KMPoint(213,106))
-					for LEA := DCount Downto 1 do
+					Actions.AIAttackAdd(I,true,1,20,1,1,1,1,true,attClosestBuildingFromArmy,U.KMPoint(213,106))
+					for LEA := DCount Downto DCount/2 do
 					begin
 						S.AIDefencePositionGet(I,LEA,aPos.X,aPos.Y,aGType,aRadius,aDefType);
 						A.AIDefencePositionRemove(I,aPos.X,aPos.Y);
 						A.AIDefencePositionAdd(I,aPos.X,aPos.Y,0,aGType,aRadius,1);
 					end;
 				end;
-				Actions.AIStartPosition(1,45,208)
-				Actions.AIStartPosition(4,45,208)
 			end;
 		//attack on 1 by 4 and 5
 		11 :begin	
@@ -216,16 +224,14 @@ begin
 				begin					
 					DCount:= States.StatAIDefencePositionsCount(I);
 					Actions.AIStartPosition(I,97,73)	
-					Actions.AIAttackAdd(I,true,1,1,1,1,1,1,true,attClosestBuildingFromStartPos,U.KMPoint(213,106))
-					for LEA := DCount Downto 1 do
+					Actions.AIAttackAdd(I,true,1,1,1,1,1,1,true,attClosestBuildingFromArmy,U.KMPoint(213,106))
+					for LEA := DCount Downto DCount/2 do
 					begin
 						S.AIDefencePositionGet(I,LEA,aPos.X,aPos.Y,aGType,aRadius,aDefType);
 						A.AIDefencePositionRemove(I,aPos.X,aPos.Y);
 						A.AIDefencePositionAdd(I,aPos.X,aPos.Y,0,aGType,aRadius,1);
 					end;
 				end;
-				Actions.AIStartPosition(1,45,208)
-				Actions.AIStartPosition(4,45,208)
 			end;
 			  
 		//attack  by player 18
@@ -253,10 +259,10 @@ var  DCount, LEA :Integer;
 	 WarriorsCount : array[0..3] of Integer;
 begin
 	
-	WarriorsCount[0] := S.StatHouseMultipleTypesCount(0, [11,13,18,21,27,29,0]) div 2;//warriors
-	WarriorsCount[1] := S.StatHouseMultipleTypesCount(0, [8,24,5,19,20,6,17]) div 2;//antihorse
-	WarriorsCount[2] := S.StatHouseMultipleTypesCount(0, [22,3,7,15,14,9,1]) div 2;//ranged
-	WarriorsCount[3] := S.StatHouseMultipleTypesCount(0, [12,16,4,2,10,28,25]) div 2;//horse
+	WarriorsCount[0] := S.StatHouseMultipleTypesCount(0, [11,13,18,21,27,29,0]) * 100 / DifficultyMultipiers[1];//warriors
+	WarriorsCount[1] := S.StatHouseMultipleTypesCount(0, [8,24,5,19,20,6,17]) * 100 / DifficultyMultipiers[1];//antihorse
+	WarriorsCount[2] := S.StatHouseMultipleTypesCount(0, [22,3,7,15,14,9,1]) * 100 / DifficultyMultipiers[1];//ranged
+	WarriorsCount[3] := S.StatHouseMultipleTypesCount(0, [12,16,4,2,10,28,25]) * 100 / DifficultyMultipiers[1];//horse
 	for LEA := 0 to 3 do
 		begin
 			WarriorsCount[LEA] := WarriorsCount[LEA]+ BiggerEnemyAttacks;//extra count

@@ -1,0 +1,5 @@
+2021.09.28 12:27:47.262   Script compile errors:
+
+[Error] Unknown identifier 'HouseTiles'
+in 'D:\Remake\KaM Remake Beta r13651\Maps\KamStar Become a HERO\AIBuilding.script' at [109:6]
+
