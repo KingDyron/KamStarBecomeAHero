@@ -49,17 +49,15 @@ begin
 		arrayLength := 0;
 		RoadLength := 0;
 		aHouses := States.PlayerGetAllHouses(I);
-		for LEA := 1 to length(aHouses)-1 do
+		SetLength(aHousesData[I], length(aHouses)-1)
+		for LEA := 1 to length(aHouses)-1  do
 		begin
-			
 			aType := States.HouseType(aHouses[LEA])
-			arrayLength:=length(aHousesData[I])
-			SetLength(aHousesData[I], arrayLength+1)
 			PosX:= States.HousePositionX(aHouses[LEA]);
 			PosY:= States.HousePositionY(aHouses[LEA]);
-			aHousesData[I][arrayLength][0] := PosX;
-			aHousesData[I][arrayLength][1] := PosY;
-			aHousesData[I][arrayLength][2] := aType;
+			aHousesData[I][LEA-1][0] := PosX;
+			aHousesData[I][LEA-1][1] := PosY;
+			aHousesData[I][LEA-1][2] := aType;
 			{
 			for aX := 0 to 8 do
 				for aY := 0 to 8 do
@@ -215,6 +213,8 @@ begin
 	for LEA := high(aHouses) downto 0 do
 	begin
 		aType := States.HouseType(aHouses[LEA]);
+		If HouseTiles[aType].Usable then 
+			Exit;
 		HouseTiles[aType].Usable := true;
 		aPos := States.HousePosition(aHouses[LEA]);
 		If aType <= 29 then

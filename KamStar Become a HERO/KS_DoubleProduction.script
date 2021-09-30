@@ -22,7 +22,7 @@ begin
 	If Player = 12 then 
 		If States.StatArmyCount(12) < 96 then 
 			If States.HouseType(aHouse) = 9 then 
-				If States.KaMRandomI(100) > 97 then 
+				If States.KaMRandomI(100) > 95 then 
 				begin
 					Random := States.KamRandomI(5)
 					A.AIStartPosition(12, BarbarainsStartPositions[Random].X, BarbarainsStartPositions[Random].Y)

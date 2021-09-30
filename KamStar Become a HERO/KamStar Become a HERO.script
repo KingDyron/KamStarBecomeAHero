@@ -103,11 +103,16 @@ type KS_WinSet = record
 	WinTime : Integer;
 	WinType : KS_WinType;
 end;
+
 type KS_MultiMessages = record
 	aIndex, aModTime : Integer;
 	aShowArray : array of AnsiString;
 	ItemAtLastMessage : array of Integer;
 	GroupsToKill : array of Integer;
+end;
+type KS_UnitData = record
+	aType, aCount,ToPlayer : Integer;
+	Added : Boolean;
 end;
 
 
@@ -143,9 +148,9 @@ var StartUnitCount : array[0..18] of KS_StartArmy;
 	aResourceString : String;
 	BarbariansVisited : Boolean;
 	Player7TH : integer;
-	
+	aHeroPos : TKMPoint;
 	BarbarainsStartPositions : array of TKMPoint;
-	
+	BarrackVillageHelp : KS_UnitData;
 //event times variables
 var	AttacksTime : array[0..11] of Integer;
 	EmissaryTime : array[0..8] of integer;
@@ -194,7 +199,15 @@ var VillageQuestGiver : array[0..5] of KS_VillageQuest;
 
 Procedure EquipWarrior;
 var I :Integer;
+	aPos : TKMPoint;
 begin
+	If Player7TH > 0 then 
+		If States.HouseResourceAmount(Player7TH, 7) > 8 then 
+		begin
+			aPos := States.HousePosition(Player7TH);
+			A.GiveGroup(6,26,aPos.X,aPos.Y, 4,1,1);
+			A.HouseTakeWaresFrom(Player7TH,7,8)			
+		end;
 	If States.HouseAt(THPos.X,THPos.Y) > 0 then
 		If States.HouseResourceAmount(States.HouseAt(THPos.X,THPos.Y), 7) > 8 then 
 			If (States.StatUnitTypeCount(1,16)+States.StatUnitTypeCount(1,26)) < StartUnitCount[1].Warr then
@@ -262,6 +275,7 @@ Procedure AutoFeed;
 begin
 	PlayerFeed(7);
 	PlayerFeed(8);
+	PlayerFeed(9);
 	PlayerFeed(12);
 	PlayerFeed(13);
 end;
@@ -289,10 +303,11 @@ var LEA : Integer;
 	AllHouses : array of Integer;
 begin
 	AllHouses := States.PlayerGetAllHouses(aPlayer);
-	for LEA := 0 to high(AllHouses) do
-		If S.HouseType(AllHouses[LEA]) = 17 then
-			If S.HouseResourceAmount(AllHouses[LEA],1) < 4 then	
-				A.HouseAddWaresTo(AllHouses[LEA],1,1);
+	If length(AllHouses) > 0 then 
+		for LEA := 0 to high(AllHouses) do
+			If S.HouseType(AllHouses[LEA]) = 17 then
+				If S.HouseResourceAmount(AllHouses[LEA],1) < 4 then	
+					A.HouseAddWaresTo(AllHouses[LEA],1,1);
 end;
 
 
@@ -860,8 +875,6 @@ begin
 		
 	If States.GameTime = AttacksTime[11] then
 		AllAttacks(12);
-	If States.GameTime = AttacksTime[11] + 1500 then
-		AllAttacks(12);
 		
 	If States.GameTime = PlayersAttacked[5].AttackedTime then 
 		AttackAfterAttack(5);
@@ -946,6 +959,8 @@ begin
 				
 		begin
 			aHouse := States.HouseAt(aPos.X,apos.Y-1);
+			If aHouse = -1 then
+				Exit;
 			SetBonusNearHouse(aHouse);
 		end;
 						
@@ -1075,6 +1090,7 @@ Procedure OnHouseDestroyed(aHouse,aDestroyer : Integer);
 var aOwner : Integer;
 begin	
 	aOwner := States.HouseOwner(aHouse);
+	If aOwner = -1 then Exit;
 	If (aDestroyer <> 0) and (aDestroyer <> 16) and (aOwner=0) then 
 		PlayerBuildingsDestroyed := PlayerBuildingsDestroyed+1;
 		
@@ -1194,8 +1210,8 @@ begin
 						StartCinematic(0,States.UnitDirection(Hero));
 						StartCinematic(1,States.UnitDirection(Hero));
 					end;
-	If S.HouseAt(X,Y) > 0 then
-		A.HouseDestroy(S.HouseAt(X,Y), false);
+	//If S.HouseAt(X,Y) > 0 then
+	//	A.HouseDestroy(S.HouseAt(X,Y), false);
 	//If States.GroupAt(X,Y) > 0 then
 	//	Actions.GroupKillAll(States.GroupAt(X,Y),false);
 	//Actions.GiveGroup(6,15,X,Y,0,1,1)
@@ -1324,7 +1340,10 @@ begin
 			
 	//covering the world at start 
 	If States.GameTime mod 600 = 0 then
+	begin
 		AddStoneToTowers(8);
+		AddStoneToTowers(9);
+	end;
 		
 	If States.GameTime mod 50 = 0 then 
 	begin
@@ -1350,7 +1369,7 @@ begin
 		Actions.FogRevealCircle(0,190,203,10);
 		Actions.FogRevealCircle(0,51,207,10);
 		Actions.FogRevealRect(0,3,244,18,252);
-		Actions.FogRevealAll(0);
+		//Actions.FogRevealAll(0);
 		HeroStats[0].Health := HPmax;
 	end;
 		

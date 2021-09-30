@@ -75,8 +75,9 @@ dodaæ opisy przy podejœciu do zadania, jak to zadanie wykonaæ
 
 
 //wioska koszar
- - Patrole które jecha³y do Aratona nie wracaj¹, mam siê dowiedzieæ czemu tak jest. - wsparcie ¿o³dakami.
- -  - otrzymanie wie¿y pomocniczej wrogo nastawionej dla naszych wrogów.
+ - Patrole które jecha³y do Aratona nie wracaj¹, mam siê dowiedzieæ czemu tak jest. - wsparcie ¿o³dakami.//
+ za ka¿de zadanie + lepszy typ jednostki//
+ - sama rozmowa - otrzymanie wie¿y pomocniczej wrogo nastawionej dla naszych wrogów.//
 
 //gracz 7
  - póŸno - znajduje artefakt, którego nie wie jak u¿yæ//

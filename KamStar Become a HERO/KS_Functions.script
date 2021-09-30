@@ -1,4 +1,9 @@
-
+{$EVENT evtTick:OnTickFunction}
+procedure OnTickFunction;
+begin
+	If not States.UnitDead(Hero) then 
+		aHeroPos := States.UnitPosition(Hero);
+end;
 procedure GroupHpInvulnerableSet(aGroupID : array of Integer; aInvulnerable : Boolean);
 var I, K : Integer;
 begin
@@ -17,7 +22,7 @@ begin
 	case aType of
 		14 : Result := 15;
 		15 : Result := 16;
-		16 : Result := 23;
+		16 : Result := 26;
 		17 : Result := 18;
 		19 : Result := 20;
 		21 : Result := 22;
@@ -50,7 +55,7 @@ var AUnits:array of integer;
 	LEA,GroupLeader:Integer;
 begin	
 	AUnits:=States.PlayerGetAllGroups(aPlayer);
-	For LEA := 0 to length(AUnits)-1 do begin
+	For LEA := length(AUnits)-1 downto 0 do begin
 		GroupLeader:=States.GroupMember(AUnits[LEA],0);
 		If GroupLeader <>Hero then begin
 			If not aMax then 
@@ -382,13 +387,28 @@ begin
 end;
 
 Procedure GiveHouseMultipleTimes(aPlayer,aType:Integer; WithUnits, WithRoad:Boolean; aPoses:array of TKMPoint);
-var I : Integer;
-	aPos : TKMPoint;
+var I , aX, aY, aUType, aUnit, aOwner : Integer;
+	aPos, aUPos : TKMPoint;
 begin
 	aPos := States.HousePosition(MainStoreHouse[aPlayer]);
 	for I := low(aPoses) to high(aPoses) do 
 	begin
-		
+		for aX := 0 to 3 do 
+			for aY := 0 to 3 do 
+				If States.UnitAt(aPoses[I].X-HouseTiles[aType].X + aX,aPoses[I].Y-3 + aY) > 0 then 
+					If HouseTiles[aType].HouseOnTile[aX][aY] then 					
+					begin
+						aUnit := States.UnitAt(aPos.X-HouseTiles[aType].X + aX,aPos.Y-3 + aY)
+						aOwner := States.UnitOwner(aUnit);
+						aUPos := States.UnitPosition(aUnit);
+						aUType := States.UnitType(aUnit);
+						A.UnitKill(aUnit,true);
+						If aUType < 14 then 
+							A.GiveUnit(aOwner,aUType,aUPos.X,aUPos.Y+4,0)
+						else
+							A.GiveGroup(aOwner,aUType,aUPos.X,aUPos.Y+4,0,1,1);
+					end;
+					
 		A.GiveHouse(aPlayer,aType,aPoses[I].X,aPoses[I].Y);
 		If WithUnits then
 			A.GiveUnit(aPlayer,0,aPoses[I].X,aPoses[I].Y+1,4);	
@@ -416,6 +436,7 @@ begin
 		1 : A.GiveWares(0,5,10);
 		2 : A.GiveWares(0,7,10);
 		3 : A.GiveWares(0,0,10);
+		5 : A.GiveWares(0,20,43);
 	end;
 end;
 

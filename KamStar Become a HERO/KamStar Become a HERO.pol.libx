@@ -694,8 +694,8 @@ Bohater: Możemy spróbować.
 600:Rybak: O dzielny Wędrowcze. zawsze chciałem więcej chat rybackich w naszej wiosce, ale potrzebuję materiałów aby je wybudować. Mógłbyś pójść po słomę i drewno do innych wiosek? Chętnie cie wynagrodzę.
 
 601: Zaakceptuj : sygnał na zleceniodawcę|| Odrzuć : sygnał na bohatera
-602:Bohater: Chętnie pomagam ludziom w potrzebie.
-603:Bohater: Zawsze mogę pomóc.
+602:Bohater: Jasne.
+603:Bohater: Nie ma problemu.
 604:Bohater: Oczywiście.
 605:Bohater: Wybacz, nie mogę teraz.
 606:Bohater: Muszę dalej planować.
@@ -765,4 +765,49 @@ Bohater: Możemy spróbować.
 652: Drzewa do ścięcia : %d
 653:GAME : Zadanie odrzucone.
 
-654:GAME : W każdej chwili możesz porzucić aktualny quest stawiając sygnał na zleceniodawcę.
+654:GAME : W każdej chwili możesz porzucić aktualne zadanie stawiając sygnał na zleceniodawcę.
+
+
+655:Rekrut: Od dawna już tutaj dowodzę. Zbieramy informacje na temat terenu. Do tego wysyłam patrole w niektóre miejsca.
+656:Bohater: A więc w czym problem.
+657:Rekrut: W tym rzecz, że do końca nie wiemy. Wysłałem tydzień temu patrol do Barona i do dzisiaj nie wrócił, a powininien być 2 dni temu.
+658:Bohater: Nie mam za bardzo czasu, ale mogę to sprawdzić.
+
+659:Bohater: Jego obozowisko jest zniszczone. Stało się to niedawno, kłody w ognisku są jeszcze ciepłe.
+660:Bohater: Ślady walki. Najwyraźniej los nie sprzyjał zwiadowcy. Czyli go napadnięto i zabito lub porwano.
+
+661:Rekrut: Nie sprawdziłeś jeszcze sytuacji z patrolem.
+
+662:Rekrut: A więc jaka sytuacja?
+663:Bohater: Obozowisko zwiadowcy było zniszczone, ognisko jeszcze ciepłe, sądzę że Baron zatrzymał go na chwilę u siebie, ale w drodze powrotnej został napadnięty.
+664:Rekrut: I co dalej się z nim stało?
+665:Bohater: Nie wiem. Było widać ślady walki, ale żadnych martwych ciał. Zabito go i ukryto gdzieś ciało lub w najgorszym wypadku porwano go i był doprowadzony do Grotona.
+666:Rekrut: Mam nadzieję, że ta druga opcja. Jeżeli jeszcze żyje to postaramy się go odbić.
+667:Bohater: Chcesz ryzykować życie, aby uratować posłańcia?
+668:Rekrut: Na wojnie każde życie ma znaczenie
+669:Bohater: Dobrze... Jeżeli żyje to go uratujemy, ale nie jeśli koszta będą zbyt duże.
+670:Rekrut: ...|Będziemy ci pomagać z rekrutacją wojska. Każda pomoc się przyda. |Bywaj przyjacielu.
+
+671:GAME : Pomoc wojskowa.
+672:GAME : Sprawdź drogę do Barona Aratona. Znajdź nietypowe miejsca.
+
+673:Rekrut: Możemy porozmawiać?
+
+674:Rekrut: Więc tak. Dowiedziałem się, że Groton szykuje armię.
+675:Bohater: Cóż za nowość...
+676:Rekrut: Proszę nie przerywaj. 
+677:Rekrut: Więzienie, w którym prawdopodobnie jest mój zwiadowca znajduje się w przejściu między górami z żelazem.
+678:Bohater: Chcesz, żebyśmy zaatakowali więzienie Grotona?
+679:Rekrut: Najpierw postaram się zrobić zwiady i uwierzytelnić informacje. Kiedy będziemy znali pozycje armii, które tam stacjonują oraz to jak się przemieszczają...
+680:Bohater: Będziemy wiedzieć kiedy zaatakować.
+681:Rekrut: Dokładnie.|Groton i tak będzie nas atakował, więc póki co będę cię wspierał. Wybudujemy nieopodal wieże strażnicze. Będą osłabiały nacierające wojska.
+682:Bohater: Będą bardzo przydatne. Dzięki.
+683:Rekrut: Jak dowiem się o czymś to się odezwę.
+
+
+684:GAME : Nowe zadanie u rybaka dostępne.
+685:GAME : Nowe zadanie u górnika dostępne.
+686:GAME : Nowe zadanie u rolnika dostępne.
+687:GAME : Nowe zadanie u drwala dostępne.
+687:GAME : Nowe zadanie u Księcia dostępne.
+689:GAME : Nowe zadanie u rekruta dostępne.

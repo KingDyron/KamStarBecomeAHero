@@ -321,7 +321,7 @@ begin
 	case aPlayer of
 		5 : begin
 				DefensesCount := States.StatAIDefencePositionsCount(aPlayer);
-				for I := 0 to DefensesCount do
+				for I := 0 to DefensesCount-1 do
 				begin
 					States.AIDefencePositionGet(aPlayer,I,aX,aY,aGType,aRadius,aDefType);
 					If aDefType = 1 then

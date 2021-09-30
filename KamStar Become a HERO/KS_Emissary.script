@@ -33,45 +33,53 @@ Procedure EmisOnUnitDied(aUnit,aKiller:Integer);
 begin	
 	//If aKiller >= 0 then 
 	begin
+		
 		//emissary1 after kill
-		If aUnit = States.GroupMember(Emissary1,0) then	
-			If (EmissaryStats[1]=eTalkEnd) or (EmissaryStats[1]=eArrived) then 
-			begin
-				SetImmortality2(1,false);
-				Actions.ShowMSG(0,'<$204>');
-				Actions.PlayerAllianceChange(0, 1,true, false)
-				EmissaryStats[1] := eNotAllied;
-				AttacksTime[2] := States.GameTime + 1200;
-			end;
+		If (Emissary1 > 0) and not States.GroupDead(Emissary1) then 
+			If aUnit = States.GroupMember(Emissary1,0) then	
+				If (EmissaryStats[1]=eTalkEnd) or (EmissaryStats[1]=eArrived) then 
+				begin
+					SetImmortality2(1,false);
+					Actions.ShowMSG(0,'<$204>');
+					Actions.PlayerAllianceChange(0, 1,true, false)
+					EmissaryStats[1] := eNotAllied;
+					AttacksTime[2] := States.GameTime + 1200;
+				end;
 		//emissary4 after kill
-		If aUnit = States.GroupMember(Emissary4,0) then	
-			If ((EmissaryStats[4]=eTalkEnd) or (EmissaryStats[4]=eArrived)) and (EmissaryStats[1]=eNotArrived) and (EmissaryStats[6]=eNotArrived) then 
-			begin
-				EmissaryStats[4] := eKilled;
-				Actions.ShowMSG(0,'<$208>');
-				Actions.PlayerAllianceChange(0, 4,true, false)
-				Actions.PlayerAllianceChange(4, 1,true, true)
-			end;
+		If (Emissary4 > 0) and not States.GroupDead(Emissary4) then 
+			If aUnit = States.GroupMember(Emissary4,0) then	
+				If ((EmissaryStats[4]=eTalkEnd) or (EmissaryStats[4]=eArrived)) and (EmissaryStats[1]=eNotArrived) and (EmissaryStats[6]=eNotArrived) then 
+				begin
+					EmissaryStats[4] := eKilled;
+					Actions.ShowMSG(0,'<$208>');
+					Actions.PlayerAllianceChange(0, 4,true, false)
+					Actions.PlayerAllianceChange(4, 1,true, true)
+				end;
 			
 			
 		//three
 		if (EmissaryStats[1]=eAllied) then 
 		begin
-			If (aUnit = States.GroupMember(Emissary4,0)) then	
-				If (EmissaryStats[4]=eArrived) then 
-				begin
-					EmissaryStats[4] := eKilled;
-				end;
-			If (aUnit = States.GroupMember(Emissary5,0)) then	
-				If (EmissaryStats[5]=eArrived) then 
-				begin
-					EmissaryStats[5] := eKilled;
-				end;
-			If (aUnit = States.GroupMember(Emissary6,0)) then	
-				If (EmissaryStats[6]=eArrived) then 
-				begin
-					EmissaryStats[6] := eKilled;
-				end;
+			If (Emissary4 > 0) and not States.GroupDead(Emissary4) then 
+				If (aUnit = States.GroupMember(Emissary4,0)) then	
+					If (EmissaryStats[4]=eArrived) then 
+					begin
+						EmissaryStats[4] := eKilled;
+					end;
+			
+			If (Emissary5 > 0) and not States.GroupDead(Emissary5) then 
+				If (aUnit = States.GroupMember(Emissary5,0)) then	
+					If (EmissaryStats[5]=eArrived) then 
+					begin
+						EmissaryStats[5] := eKilled;
+					end;
+			
+			If (Emissary6 > 0) and not States.GroupDead(Emissary6) then 
+				If (aUnit = States.GroupMember(Emissary6,0)) then	
+					If (EmissaryStats[6]=eArrived) then 
+					begin
+						EmissaryStats[6] := eKilled;
+					end;
 		end;
 		If QuestNow.QType = qServes then
 			If aKiller > 0 then 
@@ -248,7 +256,7 @@ begin
 	
 	//check if emissary is nearby
 	If States.GameTime > HousesFirstBuilt[5].aTime + DifficultyMultipiers[0] then 
-		if States.GameTime mod 50 = 0 then
+		if States.GameTime mod 100 = 0 then
 			for I := 1 to 6 do
 				If EmissaryTime[I] = 9999999 then 
 					If HeroNearbyEmissary(States.UnitPosition(Hero),I) then

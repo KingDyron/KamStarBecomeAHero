@@ -2,22 +2,29 @@
 
 {$EVENT evtBeacon:VillOnBeacon}
 
-procedure OnTaskCompleted(aAddHouses : Integer; aWares,aCount : array of Integer; aMessage : AnsiString; DeliveryOn : Boolean);
+procedure OnTaskCompleted(aAddHouses : Integer; aWares,aCount : array of Integer; DeliveryOn : Boolean);
 var I ,aVill : integer;
 begin
-	QuestNow.QVVillageType := aVill;
+	aVill := QuestNow.QVVillageType;
+	
 	VillageQuestGiver[aVill].QEventType := VillageQuestGiver[aVill].QEventType + 1;
 	VillageQuestGiver[aVill].QEndTime := States.GameTime+NextQuestTime;
+	
 	QuestNow.QVOnQuest := false;
 	QuestNow.QVVillageType := -1;
 	HousesToBuild[6] := HousesToBuild[6]+aAddHouses;
-	Actions.ShowMSG(0,aMessage);
+	
 	VillageQuestGiver[aVill].DTrue := DeliveryOn;
 	
-	for I := low(aWares) to High(aWares) do
-		A.GiveWares(0,aWares[I],aCount[I]);
+	If length(aWares) > 0 then 
+		for I := low(aWares) to High(aWares) do
+			A.GiveWares(0,aWares[I],aCount[I]);
+	
+	for I := 0 to high(QuestTasks[aVill]) do
+		QuestTasks[aVill][I] := false;
 end;
 procedure AcceptTask(aVill,aQVNow : Integer);
+var I : Integer;
 begin
 	If aVill = 4 then 
 		Exit;
@@ -53,6 +60,9 @@ begin
 					end;
 			end;
 	end;
+	
+	for I := 0 to high(QuestTasks[aVill]) do
+		QuestTasks[aVill][I] := false;
 end;
 procedure AbandonTask(aVill,aQVNow : Integer);
 var I : Integer;
@@ -185,7 +195,8 @@ begin
 							
 						If QuestTasks[0][0] and QuestTasks[0][1] then
 						begin	
-							OnTaskCompleted(2,[7],[23],'<$609>',true);
+							Actions.ShowMSG(0,'<$609>');
+							OnTaskCompleted(2,[7],[23],true);
 						end;
 						
 					end;
@@ -212,7 +223,7 @@ begin
 						end;
 				end;
 	//Building Houses
-	If VillageQuestGiver[0].QEventType = 2 then 
+	If VillageQuestGiver[0].QEventType = 3 then 
 		If States.GameTime = VillageQuestGiver[0].QEndTime - 600 then
 			GiveHouseMultipleTimes(13,6, true,true,[Point(160,234),Point(150,234),Point(134,230)]);
 end;
@@ -241,13 +252,9 @@ begin
 							MessageDelay := States.GameTime + 1200;
 						end;
 					If QuestTasks[1][0] then
-					begin
-						QuestNow.QVOnQuest := false;
-						QuestNow.QVVillageType := -1;
-						HousesToBuild[6] := HousesToBuild[6]+3;
+					begin						
 						Actions.ShowMSG(0,'<$621>');
-						VillageQuestGiver[1].QEventType := 3;
-						VillageQuestGiver[1].QEndTime := States.GameTime+NextQuestTime;
+						OnTaskCompleted(3,[],[],false);
 						A.PlanAddHouse(5,15,209,104);
 						A.PlanAddHouse(5,15,224,102);
 						A.PlanConnectRoad(5,224,103,224,106,false);
@@ -327,13 +334,8 @@ begin
 		If QuestTasks[1][1] then
 			If States.UnitPosition(Hero) = VillageQuestGiver[1].QPos then 
 			begin
-				QuestNow.QVOnQuest := false;
-				QuestNow.QVVillageType := -1;
-				A.GiveWares(0, 5, 200);
-				HousesToBuild[6] := HousesToBuild[6]+2;
 				SetNewMultiMessages([636,637],70,[],[]);
-				VillageQuestGiver[1].QEventType := 6;
-				VillageQuestGiver[1].QEndTime := States.GameTime+NextQuestTime;
+				OnTaskCompleted(2,[5],[200],false);
 			end;
 	end;
 end;
@@ -383,13 +385,8 @@ begin
 						end;
 					If QuestTasks[2][0] then
 					begin
-						QuestNow.QVOnQuest := false;
-						QuestNow.QVVillageType := -1;
-						Actions.GiveWares(0,9,55);
-						HousesToBuild[6] := HousesToBuild[6]+4;
+						OnTaskCompleted(4,[9],[55],false);
 						Actions.ShowMSG(0,'<$641>');
-						VillageQuestGiver[2].QEventType := 3;
-						VillageQuestGiver[2].QEndTime := States.GameTime+NextQuestTime;
 					end;
 				end;
 			end;
@@ -416,14 +413,8 @@ begin
 					
 				If QuestTasks[2][1] = true then 
 				begin
-					QuestNow.QVOnQuest := false;
-					QuestNow.QVVillageType := -1;
-					Actions.GiveWares(0,9,31);
-					Actions.GiveWares(0,7,12);
-					HousesToBuild[6] := HousesToBuild[6]+3;
+					OnTaskCompleted(3,[9,7,8,13],[31,12,24,17],false);
 					Actions.ShowMSG(0,'<$644>');
-					VillageQuestGiver[2].QEventType := 6;
-					VillageQuestGiver[2].QEndTime := States.GameTime+NextQuestTime;
 				end;
 			end;
 	end;
@@ -454,12 +445,8 @@ begin
 						end;
 					If QuestTasks[3][0] then
 					begin
-						QuestNow.QVVillageType := -1;
-						HousesToBuild[6] := HousesToBuild[6]+4;
+						OnTaskCompleted(4,[],[],false);
 						Actions.ShowMSG(0,'<$650>');
-						VillageQuestGiver[3].QEventType := 3;
-						VillageQuestGiver[3].QEndTime := States.GameTime+NextQuestTime;
-						QuestNow.QVOnQuest := false;
 					end;
 				end;
 		If QuestNow.QVOnQuest and not QuestTasks[3][0] then 
@@ -498,20 +485,80 @@ end;
 
 Procedure OnTickBarracksVillage;
 begin
-	
+	If States.GameTime mod 6000 = 0 then 
+		If BarrackVillageHelp.Added then 
+			begin
+				If BarrackVillageHelp.ToPlayer = 0 then 
+					BarrackVillageHelp.ToPlayer := 6 
+				else
+					BarrackVillageHelp.ToPlayer := 0;
+					
+				A.GroupOrderWalk(A.GiveGroup(BarrackVillageHelp.ToPlayer, BarrackVillageHelp.aType, 61,125,0, BarrackVillageHelp.aCount, 3),81,170,4);
+			end;
+		
 	if VillageQuestGiver[5].QEventType = 1 then 
-		If States.GameTime = VillageQuestGiver[3].QTime + 10 then
-			Actions.ShowMSG(0,'');
+		If States.GameTime = VillageQuestGiver[5].QTime + 10 then
+			SetNewMultiMessages([655,656,657,658, 601],70,[],[]);
 
 		
-	//first quest
-	
+	//first quest	
 	if VillageQuestGiver[5].QEventType = 2 then
 	begin
-		VillageQuestGiver[5].QEventType := 0;
-		VillageQuestGiver[5].QEndTime := States.GameTime + NextQuestTime;
-		StartCinematic(1,0);
+		If States.GameTime mod 100 = 0 then 
+		begin
+		If States.GameTime = VillageQuestGiver[5].QTime + 100 then 
+			A.ShowMSG(0,'<$672>');
+			
+			If not QuestTasks[5][0] then 
+				If  PosInRadius(aHeroPos, Point(142,126), 1) then
+				begin
+					QuestTasks[5][0] := true;
+					A.ShowMSG(0, '<$659>');	
+				end;
+			If QuestTasks[5][0] and not QuestTasks[5][1] then 
+				If  PosInRadius(aHeroPos, Point(140,119), 2) then
+				begin
+					QuestTasks[5][1] := true;	
+					A.ShowMSG(0, '<$660>');	
+					A.ShowMSG(0, '<$631>');		
+				end;
+				
+			If  PosInRadius(aHeroPos, VillageQuestGiver[5].QPos, 0) then
+				If QuestTasks[5][0] and QuestTasks[5][1] then 
+				begin
+					SetNewMultiMessages([662,663,664,665,666,667,668,669,670,671],70,[],[]);
+					
+					OnTaskCompleted(0,[],[],false);
+					
+					BarrackVillageHelp.Added := true;
+					BarrackVillageHelp.aCount := 1;
+					BarrackVillageHelp.aType := 14;
+				end else
+					A.ShowMSG(0, '<$661>');			
+					
+		end;
 	end;
+	
+	//second
+	if VillageQuestGiver[5].QEventType = 4 then
+		If States.GameTime = VillageQuestGiver[5].QTime + 10 then
+			SetNewMultiMessages([673, 601],70,[],[]);
+		
+	if VillageQuestGiver[5].QEventType = 5 then
+	begin
+		If States.GameTime = VillageQuestGiver[5].QTime + 10 then
+		begin
+			StartCinematic(0,0);
+			StartCinematic(1,0);
+			BarrackVillageHelp.aType := 15;
+			SetNewMultiMessages([674,675,676,677,678,679,680,681,682,683],70,[],[]);
+			OnTaskCompleted(0,[],[],false);
+		end;	
+	end;
+	if VillageQuestGiver[5].QEventType = 6 then
+		If States.GameTime = VillageQuestGiver[5].QTime + 800 then 
+			GiveHouseMultipleTimes(9,17, true,false,[Point(92,141),Point(100,153)]);
+	
 end;
 Procedure OnTickPlayer7;
 begin
@@ -523,7 +570,7 @@ begin
 		begin
 			If VillageQuestGiver[4].QEventType = 1 then 
 			begin
-				If PosInRadius(States.UnitPosition(Hero), VillageQuestGiver[4].QPos, 2) then	
+				If PosInRadius(aHeroPos, VillageQuestGiver[4].QPos, 2) then	
 				begin
 					If States.GameTime > MessageDelay then 
 						If not QuestTasks[4][0] then
@@ -631,7 +678,6 @@ begin
 	OnTickWoodVillage;
 	OnTickBarracksVillage;
 	OnTickPlayer7;
-	
 	If States.GameTime mod 10000 = 0 then 
 		for I := 0 to 5 do 
 			If VillageQuestGiver[I].DTrue then 
@@ -667,7 +713,11 @@ begin
 					end;
 				end;	
 	
-	
+	for I := 0 to 5 do
+		If I <> 4 then 
+			If States.GameTime = VillageQuestGiver[I].QEndTime then 
+				A.ShowMSG(0, '<$' + IntToStr(684 + I) + '>');
+
 	//visiting villager
 	If not QuestNow.QVOnQuest then 
 	begin

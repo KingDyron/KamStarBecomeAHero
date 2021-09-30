@@ -51,6 +51,7 @@ procedure SetBonusNearHouse(aHouse:Integer);
 var aType, I, K, aIndex, aType2 : Integer;
 	aPos : TKMPoint;
 begin
+
 	If States.HouseOwner(aHouse) <> 0 then
 		Exit;
 	aIndex := -1;
@@ -522,6 +523,9 @@ begin
 	end;
 	If aOwner = 6 then 	
 		If States.HouseType(aHouse) = 18 then 
+		begin
 			Player7TH := aHouse;
+			A.HouseTownHallMaxGold(Player7TH,999);
+		end;
 end;
 

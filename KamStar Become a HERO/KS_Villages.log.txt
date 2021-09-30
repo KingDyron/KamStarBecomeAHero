@@ -1,0 +1,5 @@
+2021.09.28 15:52:30.816   Script compile errors:
+
+[Error] Unknown identifier 'QuestNow'
+in 'D:\Remake\KaM Remake Beta r13651\Maps\KamStar Become a HERO\KS_Villages.script' at [8:2]
+
