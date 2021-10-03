@@ -21,6 +21,7 @@ begin
 	If States.FogRevealed(aPlayer,X,Y) then 
 		If States.MapTileOwner(X,Y)<>-1 then 
 			If States.MapTileOwner(X,Y) <> aPlayer then 
+			If U.ArrayHasElementI(States.MapTileOwner(X,Y),[4,5,6]) then 
 			begin    
 				Gracz:=States.MapTileOwner(X,Y);  
 				Actions.ShowMSGFormatted(aPlayer, '<$131>',[States.PlayerColorText(Gracz),'<$' + IntToStr(Gracz+96)+'>']);// to dodałem żeby sprawdzić czy wszystko działa, jak sprwdziłem to działa.

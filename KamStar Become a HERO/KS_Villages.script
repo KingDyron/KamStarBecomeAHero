@@ -158,15 +158,42 @@ begin
 end;
 
 Procedure OnHouseBuiltCornVillage(aHouse:Integer);
+var aPos : TKMPoint;
+	aOwner : Integer;
 begin
-	CornVillageHousesBuilt := CornVillageHousesBuilt + 1;
-	Actions.GiveUnit(13,States.HouseTypeToOccupantType(States.HouseType(aHouse)),States.HousePositionX(aHouse),States.HousePositionY(aHouse)+2,4);
-	If CornVillageHousesBuilt = 4 then 
-	begin		
-		Actions.ShowMSG(0,'<$629>');
-		QuestTasks[2][0] := true;	
-	end;
+	aOwner := States.HouseOwner(aHouse);
+	If aOwner = 13 then 
+	begin
+		CornVillageHousesBuilt := CornVillageHousesBuilt + 1;
+		Actions.GiveUnit(13,States.HouseTypeToOccupantType(States.HouseType(aHouse)),States.HousePositionX(aHouse),States.HousePositionY(aHouse)+2,4);
+		If CornVillageHousesBuilt = 4 then 
+		begin	
+			CornVillageHousesBuilt := 0;
+			Actions.ShowMSG(0,'<$629>');
+			QuestTasks[2][0] := true;	
+		end;
 	//A.ShowMsG(0,'Built : ' + States.HouseTypeName(States.HouseType(aHouse)) );
+	end;
+	If VillageQuestGiver[2].QEventType = 8 then 
+		IF aOwner = 0 then 
+		begin
+			aPos := States.HousePosition(aHouse);			
+			If U.InAreaI(aPos.X,aPos.Y,107,114,133,134) then 
+			begin				
+				CornVillageHousesBuilt := CornVillageHousesBuilt + 1;
+				HouseDestroyedByScript := True;
+				A.HouseDestroy(aHouse,true);
+				A.GiveHouse(13,28,aPos.X,aPos.Y);
+				Actions.GiveUnit(13,States.HouseTypeToOccupantType(States.HouseType(aHouse)),States.HousePositionX(aHouse),States.HousePositionY(aHouse)+2,4);
+				If CornVillageHousesBuilt = 2 then 
+				begin	
+					CornVillageHousesBuilt := 0;
+					QuestTasks[2][0] := true;
+					If QuestTasks[2][1] and QuestTasks[2][0] then
+						A.ShowMSG(0, '<$629>');	
+				end;
+			end;
+		end;
 end;
 
 Procedure OnTickFishVillage;
@@ -416,6 +443,33 @@ begin
 				begin
 					OnTaskCompleted(3,[9,7,8,13],[31,12,24,17],false);
 					Actions.ShowMSG(0,'<$644>');
+				end;
+			end;
+	end;
+	//give corn vine fields
+	If VillageQuestGiver[2].QEventType = 7 then 
+		If States.GameTime = VillageQuestGiver[2].QTime + 10 then 
+			SetNewMultiMessages([691, 601],70,[],[]);
+		
+	If VillageQuestGiver[2].QEventType = 8 then 
+	begin			
+		If States.GameTime = VillageQuestGiver[2].QTime + 40 then 
+			Actions.ShowMSG(0,'<$692>');
+		If States.GameTime mod 100 = 0 then 
+			If aHeroPos = VillageQuestGiver[2].QPos then 
+			begin		
+					
+				If States.GameTime > MessageDelay then 
+					If not QuestTasks[2][1] then
+					begin
+						Actions.ShowMSG(0,'<$640>');
+						MessageDelay := States.GameTime + 1200;
+					end;
+					
+				If QuestTasks[2][1] and QuestTasks[2][0] then 
+				begin
+					OnTaskCompleted(3,[],[],true);
+					Actions.ShowMSG(0,'<$693>');
 				end;
 			end;
 	end;
@@ -681,7 +735,7 @@ begin
 			begin	
 				aSecPos := VillageQuestGiver[I].QPos;
 				aToPos := U.KMPoint(51,208);
-				VillageQuestGiver[I].DMan := Actions.GiveGroup(FromIToPL(I),27,aSecPos.X,aSecPos.Y+2,4,1,1)
+				VillageQuestGiver[I].DMan := Actions.GiveGroup(13,27,aSecPos.X,aSecPos.Y+2,4,1,1)
 				Actions.GroupOrderWalk(VillageQuestGiver[I].DMan,aToPos.X,aToPos.Y+1,4);
 			end;
 			
@@ -755,8 +809,9 @@ begin
 				If States.HouseAt(States.UnitPositionX(Hero),States.UnitPositionY(Hero)-1) > 0 then 
 				begin
 					aHouseID := States.HouseAt(States.UnitPositionX(Hero),States.UnitPositionY(Hero)-1);
-					If S.HouseBuildingProgress(aHouseID) < S.HouseTypeMaxHealth(States.HouseType(aHouseID)) then 
-						Actions.HouseAddBuildingProgress(aHouseID);
+					for I := 0 to 5 do 
+						If S.HouseBuildingProgress(aHouseID) < S.HouseTypeMaxHealth(States.HouseType(aHouseID)) then 
+							Actions.HouseAddBuildingProgress(aHouseID);
 				end;
 				
 	If VillageQuestGiver[3].QEndTime <> 9999999 then 
@@ -796,7 +851,8 @@ end;
 
 Procedure OnMissionStartVillages;
 var I : Integer;
-begin			
+begin	
+	//VillageQuestGiver[2].QEventType := 6; 		
 	for I := 0 to 5 do
 	begin
 		VillageQuestGiver[I].QEndTime := 9999999;

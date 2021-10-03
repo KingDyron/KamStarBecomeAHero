@@ -71,7 +71,7 @@ dodaæ opisy przy podejœciu do zadania, jak to zadanie wykonaæ
 
 //wioska gospodarstw
  - postawienie kolejnych pól//
- - zbudowanie winnic
+ - zbudowanie winnic + pól winogron - dostawa ¿ywnoœci//
 
 
 //wioska koszar

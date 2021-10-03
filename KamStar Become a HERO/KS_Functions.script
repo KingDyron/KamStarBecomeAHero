@@ -366,10 +366,10 @@ begin
 	If States.GameTime > VillageQuestGiver[4].QEndTime then 
 		If VillageQuestGiver[4].QEventType = 2 then 
 				Actions.OverlayTextAppendFormatted(-1,'|<$632>',[30-QuestInteger[4]]);
-				
-	If States.GameTime > VillageQuestGiver[2].QEndTime then 
-		If VillageQuestGiver[2].QEventType = 5 then
-				Actions.OverlayTextAppendFormatted(-1,'|<$633>',[20-QuestInteger[5]]);
+	If not QuestTasks[2][1] then 			
+		If States.GameTime > VillageQuestGiver[2].QEndTime then 
+			If VillageQuestGiver[2].QEventType = 5 then
+					Actions.OverlayTextAppendFormatted(-1,'|<$633>',[20-QuestInteger[5]]);
 				
 	If States.GameTime > VillageQuestGiver[3].QTime then 
 		if VillageQuestGiver[3].QEventType = 2 then
@@ -417,15 +417,6 @@ begin
 	end;
 end;
 
-function FromIToPL(I:Integer):Integer;
-begin
-	case I of 
-		0:Result := 13;
-		1:Result := 14;
-		2:Result := 12;
-		3:Result := 12;
-	end;
-end;
 
 procedure GiveResourcesFromVillage(aPlayer:Integer);
 begin

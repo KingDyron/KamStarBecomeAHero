@@ -34,7 +34,7 @@ end;
 
 const 
 	QT_MAX = 16;
-	NextQuestTime = 6000;
+	NextQuestTime = 1200;
 	
 	
 type KS_QuestTypeTime = record
@@ -186,7 +186,7 @@ var VillageQuestGiver : array[0..5] of KS_VillageQuest;
 	Patrolls : array of KS_PatrolData;
 	
 	DifficultyMultipiers : array[0..5] of Integer;
-	
+	HouseDestroyedByScript : Boolean;
 
 {$I KS_Functions.script}
 {$I AIBuilding.script}
@@ -1082,15 +1082,27 @@ end;
 //rebuilding houses after destroing them, only worst enemy
 Procedure OnHouseAfterDestroyed(aType,aOwner,X,Y : Integer);
 begin
-	
+	If not HouseDestroyedByScript then 
+		If aOwner = 0 then 		
+			If VillageQuestGiver[2].QEventType = 8 then
+				If aType = 28 then
+					If U.InAreaI(X,Y,107,114,133,134) then 
+						If States.HouseAt(X,Y) = -1 then 
+							A.GiveHouseSite(0,28,X,Y,true);
+				
 	If aOwner = 1 then Actions.PlanAddHouse(aOwner,aType,X,Y);
+	
+	If HouseDestroyedByScript then 
+		HouseDestroyedByScript := false;
 end;
 
 //rebuilding houses after destroing them, only worst enemy
 Procedure OnHouseDestroyed(aHouse,aDestroyer : Integer);
 var aOwner : Integer;
+	aPos : TKMPoint;
 begin	
 	aOwner := States.HouseOwner(aHouse);
+	aPos := States.HousePosition(aHouse);
 	If aOwner = -1 then Exit;
 	If (aDestroyer <> 0) and (aDestroyer <> 16) and (aOwner=0) then 
 		PlayerBuildingsDestroyed := PlayerBuildingsDestroyed+1;
@@ -1105,6 +1117,7 @@ begin
 				QuestNow.QMadeTime[12] := States.GameTime+18000;
 			end;
 end;
+
 
 //you can place road at player 7 location
 Procedure OnPlanFieldPlaced(aPlayer,X,Y :Integer);
@@ -1134,10 +1147,12 @@ begin
 						If QuestInteger[5] = 20 then 
 						begin
 							A.ShowMSG(0,'<$629>');
-							QuestTasks[2][1] := true;					
+							QuestTasks[2][1] := true;	
+							QuestInteger[5] := 0;
 						end;
 					end;
 end;
+
 Procedure OnPlanRoadPlaced(aPlayer,X,Y :Integer);
 var aOutIndex : Integer;
 begin
@@ -1218,19 +1233,60 @@ end;
 Procedure OnPlanWinefieldPlaced(aPlayer,X,Y :Integer);
 begin
 	If aPlayer = 0 then	
+	begin
 		If not U.InAreaI(X,Y,0,150,94,255) then
 		begin
 			Actions.PlanRemove(0,X,Y);
 		end;
+		If not QuestTasks[2][1] then 
+			If VillageQuestGiver[2].QEventType = 8 then
+				If QuestInteger[5] < 16 then 
+					If U.InAreaI(X,Y,107,114,133,134) then 
+					begin
+						QuestInteger[5] := QuestInteger[5] + 1;
+						A.PlanAddWineField(0,X,Y);
+					end;
+	end; 
 end; 
+
+Procedure OnWinefieldBuilt(aPlayer,X,Y :Integer);
+begin
+	
+	If VillageQuestGiver[2].QEventType = 8 then
+		If aPlayer = 0 then	
+				If U.InAreaI(X,Y,107,114,133,134) then 
+					If QuestInteger[3] < 16 then 
+					begin					
+						QuestInteger[3] := QuestInteger[3] + 1;
+						If QuestInteger[3] = 16 then 
+						begin
+							QuestTasks[2][1] := true;	
+							QuestInteger[3] := 0;
+							If QuestTasks[2][1] and QuestTasks[2][0] then
+								A.ShowMSG(0, '<$629>');
+						end;
+					end;
+end;
 //place road on specific area
 Procedure OnHousePlanPlaced(aPlayer,X,Y, aType :Integer);
 begin
 	If aPlayer = 0 then	
+	begin
 		If not U.InAreaI(X,Y,0,139,94,255) then
 		begin
 			Actions.PlanRemove(0,X,Y);
 		end;
+	
+		If VillageQuestGiver[2].QEventType = 8 then
+			If aType = 28 then
+				If QuestInteger[4] < 2 then 
+					If U.InAreaI(X,Y,107,114,133,134) then 
+					begin
+						QuestInteger[4] := QuestInteger[4] + 1;
+						A.GiveHouseSite(0,28,X,Y,true);
+						A.PlanConnectRoad(13, X,Y+1, 121,127,true);
+					end;
+	end; 
 end; 
 
 //debug, killing group for testing

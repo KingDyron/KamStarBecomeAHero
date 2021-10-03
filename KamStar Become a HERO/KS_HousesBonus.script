@@ -458,8 +458,7 @@ var aOwner, aType, I : Integer;
 	aIndex:Integer;
 begin
 	aOwner := States.HouseOwner(aHouse);
-	If aOwner = 13 then 
-		OnHouseBuiltCornVillage(aHouse);
+	OnHouseBuiltCornVillage(aHouse);
 		
 	if aOwner = 0 then
 	begin
