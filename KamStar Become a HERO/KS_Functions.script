@@ -1,9 +1,102 @@
 {$EVENT evtTick:OnTickFunction}
+{$EVENT evtMissionStart:OnMissionStartSetAllItems}
 procedure OnTickFunction;
 begin
 	If not States.UnitDead(Hero) then 
 		aHeroPos := S.UnitPosition(Hero);
 end;
+		
+	
+function SetKS_Item(Name : String;	Attack,	Defense, Health, aTypeTo, Haste, ID, Slot,Cost : Integer) : KS_Item;
+begin
+	Result.Name := Name;
+	Result.Attack := Attack;
+	Result.Defense := Defense;
+	Result.Health := Health;
+	Result.aTypeTo := aTypeTo;
+	Result.Haste := Haste;
+	Result.ID := ID;
+	Result.Slot := Slot;
+	Result.Cost := Cost;
+end;
+	
+Procedure OnMissionStartSetAllItems;
+begin
+	AllItems := [
+		SetKS_Item('Hand',3,0,0,14,0, 0,0,999),
+		SetKS_Item('Hand',3,0,0,14,0, 1,1,999),
+	
+		SetKS_Item('None',0,0,0,-1,0, 2,2,999),
+		SetKS_Item('None',0,0,0,-1,0, 3,3,999),
+		SetKS_Item('None',0,0,0,-1,0, 4,4,999),
+		SetKS_Item('None',0,0,0,-1,0, 5,5,999),
+		SetKS_Item('None',0,0,0,-1,0, 6,6,999),
+		SetKS_Item('None',0,0,0,-1,0, 7,7,999),
+	
+		SetKS_Item('Hand Axe',10,0,0,14,3, 8,0,5),
+		SetKS_Item('Old Horse',1,2,48,27,1, 9,7,15),
+		//B class
+		SetKS_Item('The Ancient Sword',36,0,0,22,6, 10,0,999),
+		SetKS_Item('The Ancient Shield',0,7,18,-1,5, 11,1,999),
+		SetKS_Item('The Ancient Helmet',0,7,0,-1,4, 12,2,999),
+		SetKS_Item('The Ancient Chestplate',0,9,17,-1,4, 13,3,999),			
+		SetKS_Item('The Ancient Leggings',0,8,0,-1,3, 14,4,999),
+		SetKS_Item('The Ancient Boots',0,6,0,-1,3, 15,5,999),
+		
+		SetKS_Item('Stick',3,1,1,14,1, 16,1,1),//woodcutter
+		SetKS_Item('Pickaxe',12,1,1,14,6, 17,0,8),//querry
+		SetKS_Item('Fork',9,1,1,14,4, 18,0,6),//farm
+		SetKS_Item('Lance',20,0,0,19,4, 19,0,10),
+		SetKS_Item('Long Bow',35,0,1,17,4, 20,0,10),
+		SetKS_Item('Iron axe',14,0,0,15,7, 21,0,12),
+		SetKS_Item('Hand axe',10,0,0,-1,3, 22,1,5),
+		
+		SetKS_Item('Sword Xiphos',12,0,0,27,3, 23,0,37),
+		SetKS_Item('Sword Xiphos',12,0,0,27,3, 24,1,37),
+		SetKS_Item('Royal Horse',6,7,163,22,3, 25,7,999),
+		
+		SetKS_Item('Wooden Shield',0,2,3,-1,2, 26,1,20),
+		SetKS_Item('Wooden Helmet',0,2,0,-1,2, 27,2,23),
+		SetKS_Item('Leather Armor',0,5,1,-1,1, 28,3,25),
+		SetKS_Item('Leather Leggings',0,3,0,-1,1, 29,4,20),
+		SetKS_Item('Leather Boots',0,2,0,-1,1, 30,5,15),
+	
+		SetKS_Item('Iron Helmet',0,4,0,-1,3, 31,2,25),
+		SetKS_Item('Long Sword',26,0,0,16,6, 32,0,40),
+		SetKS_Item('Pike',24,0,0,20,5, 33,0,50),
+		SetKS_Item('Crossbow',60,1,2,18,5, 34,0,60),
+		SetKS_Item('Double Axe',33,6,16,26,14, 35,0,130),
+		
+		SetKS_Item('Long Shield',0,4,6,-1,4, 36,1,40),
+		SetKS_Item('Iron Helmet',0,4,0,-1,3, 37,2,46),
+		SetKS_Item('Iron Armor',0,6,2,-1,3, 38,3,52),
+		SetKS_Item('Iron Leggings',0,5,0,-1,2, 39,4,48),
+		SetKS_Item('Iron Boots',0,3,0,-1,2, 40,5,40),
+		
+		SetKS_Item('Mustang',4,5,99,21,2, 41,7,40),
+		
+		// A class
+		SetKS_Item('Ion Spear',65,5,17,22,14, 42,0,999),//right arm
+		SetKS_Item('Ion Shell',4,6,311,-1,0, 43,1,999),//left arm
+		SetKS_Item('Scanning Glasses',0,0,0,-1,1, 44,2,999),//helmet
+		SetKS_Item('Power Chest Belt',0,35,0,-1,1, 45,3,999),//chestplate
+		SetKS_Item('Multi Slots',0,0,0,-1,1, 46,4,999),//leggings
+		SetKS_Item('Boots of the Multigravitation',0,5,0,-1,1, 47,5,999),//feet
+		SetKS_Item('The Vial of Regeneration',0,0,0,-1,2, 48,6,999),//sakwa
+		
+		SetKS_Item('Woodcutter`s Axe',14,1,2,14,7, 49,0,22),	
+		
+		SetKS_Item('Medicinal Herbs',0,0,0,-1,1, 50,6,63),
+		SetKS_Item('Cart of Wood',0,0,0,-1,3, 51,6,75),
+		SetKS_Item('Cart of Coal',0,0,0,-1,3, 52,6,108),
+		SetKS_Item('Cart of Stone',0,0,0,-1,3, 53,6,96),
+		SetKS_Item('Cart of Gold',0,0,0,-1,3, 54,6,144),
+		
+		SetKS_Item('Meriton`s Sword',43,0,0,-1,3, 55,0,999)
+	];
+	
+end;
+
 procedure GroupHpInvulnerableSet(aGroupID : array of Integer; aInvulnerable : Boolean);
 var I, K : Integer;
 begin
@@ -384,11 +477,11 @@ begin
 	Result := U.KMPoint(X,Y);
 end;
 
-Procedure GiveHouseMultipleTimes(aPlayer,aType:Integer; WithUnits, WithRoad:Boolean; aPoses:array of TKMPoint);
+Procedure GiveHouseMultipleTimes(aPlayer,aType:Integer; WithUnits, WithRoad:Boolean; aPoses:array of TKMPoint; RoadTo : TKMPoint);
 var I , aX, aY, aUType, aUnit, aOwner : Integer;
 	aPos, aUPos : TKMPoint;
 begin
-	aPos := States.HousePosition(MainStoreHouse[aPlayer]);
+	aPos := RoadTo
 	for I := low(aPoses) to high(aPoses) do 
 	begin
 		for aX := 0 to 3 do 
@@ -421,9 +514,13 @@ end;
 procedure GiveResourcesFromVillage(aPlayer:Integer);
 begin
 	case aPlayer of
-		0 : A.GiveWares(0,27,10);
+		0 : A.GiveWares(0,27,5+ States.KamRandomI(10));
 		1 : A.GiveWares(0,5,10);
-		2 : A.GiveWares(0,7,10);
+		2 :begin 
+			A.GiveWares(0,8,5 + States.KamRandomI(10));
+			A.GiveWares(0,9,5 + States.KamRandomI(15));
+			A.GiveWares(0,10,5 + States.KamRandomI(20));
+			end;
 		3 : A.GiveWares(0,0,10);
 		5 : A.GiveWares(0,20,43);
 	end;
@@ -456,17 +553,6 @@ begin
 	for I := low(aArray) to high(aArray) do
 		If aID = aArray[I].ID then
 			Result := I;
-end;
-
-function SetKS_Item(Name : String;	Attack,	Defense, Health, aTypeTo, Haste, ID : Integer) : KS_Item;
-begin
-	Result.Name := Name;
-	Result.Attack := Attack;
-	Result.Defense := Defense;
-	Result.Health := Health;
-	Result.aTypeTo := aTypeTo;
-	Result.Haste := Haste;
-	Result.ID := ID;
 end;
 
 Procedure KillAllGroups(aPlayer:Integer);
@@ -678,10 +764,10 @@ begin
 				If U.ArrayHasElement(aItem[0].Name, ['Long Bow', 'Crossbow']) then 
 						SlotID[7] := 0;
 						
-			If (aItem[6].ID = 47) or ((aItem[4].ID = 45) and (GetItemIndex(47,HeroInventory[6]) <> -1 ) ) then  
+			If (aItem[6].ID = 48) or ((aItem[4].ID = 46) and (GetItemIndex(48,HeroInventory[6]) <> -1 ) ) then  
 				HeroSpecialReg := HeroSpecialReg + 4;
 			
-			If (aItem[6].ID = 51) or ((aItem[4].ID = 45) and (GetItemIndex(51,HeroInventory[6]) <> -1 ) )   then 
+			If (aItem[6].ID = 50) or ((aItem[4].ID = 46) and (GetItemIndex(50,HeroInventory[6]) <> -1 ) )   then 
 				HeroSpecialReg := HeroSpecialReg + 2;
 					
 			for I := 0 to 7 do
@@ -731,9 +817,11 @@ begin
 			aItem[I] := HeroInventory[I][SlotID[I]];
 end;
 
-Procedure AddInventoryItem(aIndex : Integer; Item : KS_Item);
-var I : Integer;
+Procedure AddInventoryItem(Item : KS_Item);
+var aIndex, I : Integer;
 begin
+	aIndex := Item.Slot;
+	
 	If GetItemIndex(Item.ID,HeroInventory[aIndex]) <> -1 then 
 		Exit;
 		
@@ -747,209 +835,17 @@ end;
 
 function GetItemCost(aIndex : Integer) : Integer;
 begin
-	case aIndex of 
-		8:	Result := 5;
-		9: 	Result := 15;
-		
-		14:	Result := 1;
-		15:	Result := 8;
-		16:	Result := 6;
-		17:	Result := 10;
-		18:	Result := 10;
-		19:	Result := 12;
-		20: Result := 5;
-		
-		21:	Result := 37;
-		22:	Result := 37;
-		
-		24:	Result := 20;
-		25:	Result := 23;
-		26:	Result := 25;
-		27:	Result := 20;
-		28:	Result := 15;
-		
-		30:	Result := 25;
-		31:	Result := 40;
-		32: Result := 50;
-		33:	Result := 60;
-		34:	Result := 130;
-		
-		35:	Result := 40;
-		36:	Result := 46;
-		37:	Result := 52;
-		38:	Result := 48;
-		39:	Result := 40;
-		
-		40:	Result := 40;
-		
-		48:	Result := 22;
-		
-		51:	Result := 63;
-		52:	Result := 75;
-		53:	Result := 108;
-		54: Result := 96;
-		55:	Result := 144;
-
-	end;
-	
+	Result := AllItems[aIndex].Cost;	
 end;
+
 function GetItemName(aIndex : Integer) : AnsiString;
 begin
-	case aIndex of 
-		0:	Result := 'Hand';
-		1:	Result := 'Hand';
-	
-		2:	Result := 'None';
-		3:	Result := 'None';
-		4:	Result := 'None';
-		5:	Result := 'None';
-		6:	Result := 'None';
-		7:	Result := 'None';
-	
-		8:	Result := 'Hand Axe';
-		9: 	Result := 'Old Horse';
-		//B class
-		10: Result := 'The Ancient Sword';
-		11:	Result := 'The Ancient Shield';
-		12:	Result := 'The Ancient Helmet';
-		13:	Result := 'The Ancient Chestplate';
-		
-		14:	Result := 'Stick';
-		15:	Result := 'Pickaxe';
-		16:	Result := 'Fork';
-		17:	Result := 'Lance';
-		18:	Result := 'Long Bow';
-		19:	Result := 'Iron axe';
-		20: Result := 'Hand axe';
-		
-		21:	Result := 'Sword Xiphos [Right]';
-		22:	Result := 'Sword Xiphos [Left]';
-		23:	Result := '[$FFFF00]Royal Horse [$FFFFFF]';
-		
-		24:	Result := 'Wooden Shield';
-		25:	Result := 'Wooden Helmet';
-		26:	Result := 'Leather Armor';
-		27:	Result := 'Leather Leggings';
-		28:	Result := 'Leather Boots';
-		
-		29:	Result := '[$FFFF00]Royal Horse [$FFFFFF]';
-		30:	Result := 'Iron Helmet';
-		31:	Result := 'Long Sword';
-		32: Result := 'Pike';
-		33:	Result := 'Crossbow';
-		34:	Result := 'Double Axe';
-		
-		35:	Result := 'Long Shield';
-		36:	Result := 'Iron Helmet';
-		37:	Result := 'Iron Armor';
-		38:	Result := 'Iron Leggings';
-		39:	Result := 'Iron Boots';
-		
-		40:	Result := 'Mustang';
-		
-		// A class
-		41:	Result := 'Ion Spear';
-		42:	Result := 'Ion Shell';
-		43:	Result := 'Scanning Glasses';
-		44:	Result := 'Power Chest Belt';
-		45:	Result := 'Multi Slots';
-		46:	Result := 'Boots of the Multigravitation';
-		47:	Result := 'The Vial of Regeneration';
-		
-		48:	Result := 'Woodcutter`s Axe';
-		
-		49:	Result := 'The Ancient Leggings';
-		50:	Result := 'The Ancient Boots';
-		
-		51:	Result := 'Medicinal Herbs';
-		52:	Result := 'Cart of Wood';
-		53:	Result := 'Cart of Coal';
-		54: Result := 'Cart of Stone';
-		55:	Result := 'Cart of Gold';
-		
-		56:	Result := 'Meryton`s Sword';
-
-	end;
-	
+	Result := AllItems[aIndex].Name;	
 end;
-Procedure GiveItemFromID(aIndex : Integer);
-begin
-	case aIndex of 
-		0:	AddInventoryItem(0,SetKS_Item('Hand',3,0,0,14,0, aIndex));
-		1:	AddInventoryItem(1,SetKS_Item('Hand',3,0,0,14,0, aIndex));
-	
-		2:	AddInventoryItem(2,SetKS_Item('None',0,0,0,-1,0, aIndex));
-		3:	AddInventoryItem(3,SetKS_Item('None',0,0,0,-1,0, aIndex));
-		4:	AddInventoryItem(4,SetKS_Item('None',0,0,0,-1,0, aIndex));
-		5:	AddInventoryItem(5,SetKS_Item('None',0,0,0,-1,0, aIndex));
-		6:	AddInventoryItem(6,SetKS_Item('None',0,0,0,-1,0, aIndex));
-		7:	AddInventoryItem(7,SetKS_Item('None',0,0,0,-1,0, aIndex));
-	
-		8:	AddInventoryItem(0,SetKS_Item('Hand Axe',10,0,0,14,3, aIndex));
-		9: 	AddInventoryItem(7,SetKS_Item('Old Horse',1,2,48,27,1, aIndex));
-		//B class
-		10: AddInventoryItem(0,SetKS_Item('The Ancient Sword',36,0,0,22,6, aIndex));
-		11:	AddInventoryItem(1,SetKS_Item('The Ancient Shield',0,7,18,-1,5, aIndex));
-		12:	AddInventoryItem(2,SetKS_Item('The Ancient Helmet',0,7,0,-1,4, aIndex));
-		13:	AddInventoryItem(3,SetKS_Item('The Ancient Chestplate',0,9,17,-1,4, aIndex));	
-		
-		14:	AddInventoryItem(1,SetKS_Item('Stick',3,1,1,14,1, aIndex));//woodcutter
-		15:	AddInventoryItem(0,SetKS_Item('Pickaxe',12,1,1,14,6, aIndex));//querry
-		16:	AddInventoryItem(0,SetKS_Item('Fork',9,1,1,14,4, aIndex));//farm
-		17:	AddInventoryItem(0,SetKS_Item('Lance',20,0,0,19,4, aIndex));
-		18:	AddInventoryItem(0,SetKS_Item('Long Bow',35,0,1,17,4, aIndex));
-		19:	AddInventoryItem(0,SetKS_Item('Iron axe',14,0,0,15,7, aIndex));
-		20:	AddInventoryItem(1,SetKS_Item('Hand axe',10,0,0,-1,3, aIndex));
-		
-		21:	AddInventoryItem(0,SetKS_Item('Sword Xiphos',12,0,0,27,3, aIndex));
-		22:	AddInventoryItem(1,SetKS_Item('Sword Xiphos',12,0,0,27,3, aIndex));
-		23:	AddInventoryItem(7,SetKS_Item('[$FFFF00]Royal Horse [$FFFFFF]',6,7,163,22,3, aIndex));
-		
-		24:	AddInventoryItem(1,SetKS_Item('Wooden Shield',0,2,3,-1,2, aIndex));
-		25:	AddInventoryItem(2,SetKS_Item('Wooden Helmet',0,2,0,-1,2, aIndex));
-		26:	AddInventoryItem(3,SetKS_Item('Leather Armor',0,5,1,-1,1, aIndex));
-		27:	AddInventoryItem(4,SetKS_Item('Leather Leggings',0,3,0,-1,1, aIndex));
-		28:	AddInventoryItem(5,SetKS_Item('Leather Boots',0,2,0,-1,1, aIndex));
-		
-		29:	AddInventoryItem(7,SetKS_Item('[$FFFF00]Royal Horse [$FFFFFF]',6,7,163,22,3, aIndex));
-		30:	AddInventoryItem(2,SetKS_Item('Iron Helmet',0,4,0,-1,3, aIndex));
-		31:	AddInventoryItem(0,SetKS_Item('Long Sword',26,0,0,16,6, aIndex));
-		32:	AddInventoryItem(0,SetKS_Item('Pike',24,0,0,20,5, aIndex));
-		33:	AddInventoryItem(0,SetKS_Item('Crossbow',60,1,2,18,5, aIndex));
-		34:	AddInventoryItem(0,SetKS_Item('Double Axe',33,6,16,26,14, aIndex));
-		
-		35:	AddInventoryItem(1,SetKS_Item('Long Shield',0,4,6,-1,4, aIndex));
-		36:	AddInventoryItem(2,SetKS_Item('Iron Helmet',0,4,0,-1,3, aIndex));
-		37:	AddInventoryItem(3,SetKS_Item('Iron Armor',0,6,2,-1,3, aIndex));
-		38:	AddInventoryItem(4,SetKS_Item('Iron Leggings',0,5,0,-1,2, aIndex));
-		39:	AddInventoryItem(5,SetKS_Item('Iron Boots',0,3,0,-1,2, aIndex));
-		
-		40:	AddInventoryItem(7,SetKS_Item('Mustang',4,5,99,21,2, aIndex));
-		
-		// A class
-		41:	AddInventoryItem(0,SetKS_Item('Ion Spear',65,5,17,22,14, aIndex));//right arm
-		42:	AddInventoryItem(1,SetKS_Item('Ion Shell',4,6,311,-1,0, aIndex));//left arm
-		43:	AddInventoryItem(2,SetKS_Item('Scanning Glasses',0,0,0,-1,1, aIndex));//helmet
-		44:	AddInventoryItem(3,SetKS_Item('Power Chest Belt',0,35,0,-1,1, aIndex));//chestplate
-		45:	AddInventoryItem(4,SetKS_Item('Multi Slots',0,0,0,-1,1, aIndex));//leggings
-		46:	AddInventoryItem(5,SetKS_Item('Boots of the Multigravitation',0,5,0,-1,1, aIndex));//feet
-		47:	AddInventoryItem(6,SetKS_Item('The Vial of Regeneration',0,0,0,-1,2, aIndex));//sakwa
-		
-		48:	AddInventoryItem(0,SetKS_Item('Woodcutter`s Axe',14,1,2,14,7, aIndex));	
-		
-		49:	AddInventoryItem(4,SetKS_Item('The Ancient Leggings',0,8,0,-1,3, aIndex));
-		50:	AddInventoryItem(5,SetKS_Item('The Ancient Boots',0,6,0,-1,3, aIndex));
-		
-		51:	AddInventoryItem(6,SetKS_Item('Medicinal Herbs',0,0,0,-1,3, aIndex));
-		52:	AddInventoryItem(6,SetKS_Item('Cart of Wood',0,0,0,-1,3, aIndex));
-		53:	AddInventoryItem(6,SetKS_Item('Cart of Coal',0,0,0,-1,3, aIndex));
-		54:	AddInventoryItem(6,SetKS_Item('Cart of Stone',0,0,0,-1,3, aIndex));
-		55:	AddInventoryItem(6,SetKS_Item('Cart of Gold',0,0,0,-1,3, aIndex));
-		
-		56:	AddInventoryItem(0,SetKS_Item('Meriton`s Sword',43,0,0,-1,3, aIndex));
 
-	end;
-	
+Procedure GiveItemFromID(aIndex : Integer);
+begin	
+	AddInventoryItem(AllItems[aIndex]);	
 end;
 
 procedure AddMultiMessages(aArrayI: array of AnsiString ; ItemsToGive : array of Integer);
@@ -999,7 +895,7 @@ begin
 		Exit;
 		
 	for I := 0 to high(aArray) do
-		finString := finString + '|  ' + GetItemName(aArray[I]);
+		finString := finString + ', ' + GetItemName(aArray[I]);
 		
 	AddMultiMessages(['<$161>' + finString], [])
 end;
@@ -1010,9 +906,9 @@ var Random, aTrue : Integer;
 	aName : AnsiString;
 begin
 	aTrue := -1;
-	Random := U.RandomRangeI(41,47);	
+	Random := U.RandomRangeI(42,48);	
 	
-	If GetItemIndex(Random,HeroInventory[Random-41]) = -1 then 
+	If GetItemIndex(Random,HeroInventory[Random-42]) = -1 then 
 	begin
 		AddMultiMessages([], [Random])
 		aTrue := 0;

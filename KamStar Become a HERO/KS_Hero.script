@@ -172,39 +172,39 @@ begin
 	If not AncientFound[4] then 
 		If aHeroPos = Point(190,31) then
 		begin
-			GiveItemFromID(49);
+			GiveItemFromID(14);
 			A.ShowMSG(0, 'You found The Ancient Leggings. Good job!');
 			AncientFound[4] := not AncientFound[4];
 		end;
 	If not AncientFound[5] then 
 		If aHeroPos = Point(119,241) then
 		begin
-			GiveItemFromID(50);
+			GiveItemFromID(15);
 			A.ShowMSG(0, 'You found The Ancient Boots. Good job!');
 			AncientFound[5] := not AncientFound[5];
 		end;
 	//Hero Bonuses - sakwa
 	If States.GameTime mod 9000 = 0 then
 	begin
-		If aItem[4].ID = 45 then 
+		If aItem[4].ID = 46 then 
 		begin
-			If GetItemIndex(52,HeroInventory[6]) <> -1 then 
+			If GetItemIndex(51,HeroInventory[6]) <> -1 then 
 				A.GiveWares(0,0,10);
-			If GetItemIndex(53,HeroInventory[6]) <> -1 then 
+			If GetItemIndex(52,HeroInventory[6]) <> -1 then 
 				A.GiveWares(0,5,10);
-			If GetItemIndex(54,HeroInventory[6]) <> -1 then 
+			If GetItemIndex(53,HeroInventory[6]) <> -1 then 
 				A.GiveWares(0,1,10);
-			If GetItemIndex(55,HeroInventory[6]) <> -1 then 
+			If GetItemIndex(54,HeroInventory[6]) <> -1 then 
 				A.GiveWares(0,4,10);
 		end else 
 		begin
-			If aItem[6].ID = 52 then 
+			If aItem[6].ID = 51 then 
 				A.GiveWares(0,0,10);
-			If aItem[6].ID = 53 then 
+			If aItem[6].ID = 52 then 
 				A.GiveWares(0,5,10);
-			If aItem[6].ID = 54 then 
+			If aItem[6].ID = 53 then 
 				A.GiveWares(0,1,10);
-			If aItem[6].ID = 55 then 
+			If aItem[6].ID = 54 then 
 				A.GiveWares(0,4,10);		
 		end;
 	end;
@@ -226,41 +226,4 @@ begin
 	GiveItemFromID(7);
 	GiveItemFromID(8);
 	GiveItemFromID(9);
-	{
-	AddInventoryItem(0,SetKS_Item('Hand',4,0,0,14));
-	AddInventoryItem(1,SetKS_Item('Hand',4,0,0,14));	
-	AddInventoryItem(2,SetKS_Item('None',0,0,0,-1));
-	AddInventoryItem(3,SetKS_Item('None',0,0,0,-1));
-	AddInventoryItem(4,SetKS_Item('None',0,0,0,-1));
-	AddInventoryItem(5,SetKS_Item('None',0,0,0,-1));
-	AddInventoryItem(6,SetKS_Item('None',0,0,0,-1));
-	AddInventoryItem(7,SetKS_Item('None',0,0,0,-1));	
-	AddInventoryItem(0,SetKS_Item('Hand Axe',10,0,0,14));
-	AddInventoryItem(7,SetKS_Item('Old Horse',1,2,48,27));
-	}
-	//AddInventoryItem(0,'Iron axe');
-	//AddInventoryItem(0,'Lance');
-	//AddInventoryItem(0,'Pike');
-	//AddInventoryItem(0,'Double Axe');
-	{AddInventoryItem(7,SetKS_Item('[$FFFF00]Royal Horse [$FFFFFF]',10,10,113,22));
-			
-	AddInventoryItem(0,SetKS_Item('The Ancient Sword',90,0,0,22));
-	AddInventoryItem(1,SetKS_Item('The Ancient Shield',0,20,0,22));
-	AddInventoryItem(2,SetKS_Item('The Ancient Helmet',0,20,0,22));
-	AddInventoryItem(3,SetKS_Item('The Ancient Chestplate',0,20,40,22));
-	AddInventoryItem(4,SetKS_Item('The Ancient Leggings',0,20,0,-1));
-	AddInventoryItem(5,SetKS_Item('The Ancient Boots',0,20,0,-1));
-	
-	{
-	AddInventoryItem(0,'The Sword of the God');
-	AddInventoryItem(1,'The Shield of the God');
-	AddInventoryItem(2,'The Helmet of the God');
-	AddInventoryItem(3,'The Gods Chestplate' );
-	AddInventoryItem(4,'The Leggings of the God');
-	AddInventoryItem(5,'The Boots of the God' );
-	}
-	//AddInventoryItem(7,'[$FFFF00]Royal Horse [$FFFFFF]');	
-	//AddInventoryItem(0,'Sword Xiphos');
-	//AddInventoryItem(1,'Sword Xiphos');
-	//AddInventoryItem(0,SetKS_Item('Long Bow',35,0,1,17));
 end;

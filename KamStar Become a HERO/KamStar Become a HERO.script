@@ -34,7 +34,7 @@ end;
 
 const 
 	QT_MAX = 16;
-	NextQuestTime = 1200;
+	NextQuestTime = 6000;
 	
 	
 type KS_QuestTypeTime = record
@@ -54,7 +54,9 @@ type KS_Item = record
 	Health,
 	aTypeTo,
 	Haste,
-	ID: Integer;
+	ID,
+	Slot,
+	Cost: Integer;
 	Name : String;
 end;
 
@@ -171,6 +173,7 @@ var aHeroAttackTime:Integer;// special variables
 	SlotID : array[0..7] of integer;
 	HeroInventory : array[0..7] of array of KS_Item;
 	aItem : array[0..7] of KS_Item; 
+	AllItems : array of KS_Item; 
 	HeroStats :array[0..1] of KS_HeroStats;
 	RandomItems : array[0..5] of Integer;
 var HeroSpecialPoints, HeroSpecialHPPoints, HeroSpecialReg : Integer;
@@ -204,11 +207,11 @@ var I :Integer;
 	aPos : TKMPoint;
 begin
 	If Player7TH > 0 then 
-		If States.HouseResourceAmount(MainStoreHouse[6], 7) > 8 then 
+		If States.HouseResourceAmount(Player7TH, 7) > 8 then 
 		begin
 			aPos := States.HousePosition(Player7TH);
-			A.GiveGroup(6,26,aPos.X,aPos.Y, 4,1,1);
-			A.HouseTakeWaresFrom(MainStoreHouse[6],7,8)			
+			A.GiveGroup(6,26,aPos.X,aPos.Y+1, 4,1,1);
+			A.HouseTakeWaresFrom(Player7TH,7,8)			
 		end;
 	If States.HouseAt(THPos.X,THPos.Y) > 0 then
 		If States.HouseResourceAmount(States.HouseAt(THPos.X,THPos.Y), 7) > 8 then 
@@ -724,9 +727,8 @@ begin
 			AttacksTime[6] := 9999999
 			Actions.AIAttackRemoveAll(1);
 			DefAttack[6] := true;
-			A.ShowMSG(0, 'Defended' );
+			SetNewMultiMessages([294,295],60,[],[])
 			QuestNow.QType := qFormation1;
-			QuestNow.QMadeTime[12] := States.GameTime+9000;
 		end;
 		
 	//remove attack on player 7 after player defeat
@@ -737,7 +739,6 @@ begin
 			Actions.AIAttackRemoveAll(1);
 			A.ShowMSG(0, '<$274>' );
 			QuestNow.QType := qFormation2;
-			QuestNow.QMadeTime[12] := States.GameTime+9000;
 			EmissaryTime[7] := States.GameTime + 600;
 		end;
 	
@@ -1362,7 +1363,7 @@ Procedure OnTick;
 var I : Integer;
 begin
 	OnTickBonuses;
-	//OnTickAttacks;
+	OnTickAttacks;
 	OnTickTesting;
 	OnTickBuildAWall;
 	OnTickVillageReaveling;
@@ -1655,7 +1656,7 @@ begin
 			A.ShowMSG(0,'<$390>');
 	If States.GameTime = PlayersAttacked[11].DefeatedTime then 
 	begin
-		SetNewMultiMessages([152],60,[52,55],[]);
+		SetNewMultiMessages([152],60,[51,54],[]);
 		
 		A.AIEquipRate(2,1,S.AIEquipRate(2,1) - 100);
 		A.AIEquipRate(3,1,S.AIEquipRate(3,1) - 100);
@@ -1664,7 +1665,7 @@ begin
 	
 	If States.GameTime = PlayersAttacked[14].DefeatedTime then 
 	begin
-		SetNewMultiMessages([153],60,[53],[]);
+		SetNewMultiMessages([153],60,[52,53],[]);
 		
 		A.AIEquipRate(2,1,S.AIEquipRate(2,1) - 200);
 		A.AIEquipRate(3,1,S.AIEquipRate(3,1) - 200);
@@ -1692,7 +1693,7 @@ begin
 							Meriton := true;
 							StartCinematic(0,0);
 							StartCinematic(1,0);
-							SetNewMultiMessages([155,156,157,158,159,160],60,[56],[MeritonSword]);					
+							SetNewMultiMessages([155,156,157,158,159,160],60,[55],[MeritonSword]);					
 						end;
 			end;
 		
@@ -1745,20 +1746,15 @@ var I, K :Integer;
 begin
 	Actions.PlayerAllianceChange(13, 0,false, true)
 	
-	for I := 1 to 14 do 
-		for K := 1 to 14 do 			
+	for I := 1 to 17 do 
+		for K := 1 to 17 do 			
 			Actions.PlayerShareFogCompliment(I, K, false);
-	for I := 0 to 14 do 
-		If I <> 6 then 			
+	for I := 0 to 17 do 	
 			Actions.PlayerShareFogCompliment(I, 0, false);
 			
 	Actions.PlayerAllianceChange(5, 0,false, true);
 	
-	Actions.PlayerShareFogCompliment(4, 0, false);
-	Actions.PlayerShareFogCompliment(5, 0, false);
-	Actions.PlayerShareFogCompliment(6, 0, true);
-	
-	for I := 1 to 14 do
+	for I := 1 to 17 do
 		A.FogCoverAll(I);
 		
 	Actions.PlayerAllianceChange(0,13,false,true);	

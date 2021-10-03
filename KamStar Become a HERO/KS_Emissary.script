@@ -734,7 +734,7 @@ begin
 				QuestNow.QType := qEscort;
 				
 				SetMultipleAlliances([0], [4,5,6], true);
-				SetMultipleAlliances([1,2,3,7,8,9,10], [4,5,6], false);
+				SetMultipleAlliances([1,2,3,7,8], [4,5,6], false);
 				
 				GroupHpInvulnerableSet(TheChoice,false);
 				A.GroupKillAll(TheChoice[0],true);
@@ -755,7 +755,7 @@ begin
 				A.UnitKill(TheChoice[3],true);
 				
 				SetMultipleAlliances([0], [4,5,6], true);
-				SetMultipleAlliances([1,2,3,7,8,9,10], [4,5,6], false);
+				SetMultipleAlliances([1,2,3,7,8], [4,5,6], false);
 				
 				QuestNow.QType := qLeftGarrison;
 				QuestNow.QMadeTime[5] := States.GameTime;
@@ -776,7 +776,7 @@ begin
 				A.UnitKill(TheChoice[3],true);
 				
 				SetMultipleAlliances([0], [4,5,6], true);
-				SetMultipleAlliances([1,2,3,7,8,9,10], [4,5,6], false);
+				SetMultipleAlliances([1,2,3,7,8], [4,5,6], false);
 				
 				A.PlayerAllianceChange(0,6,true,true);
 				A.PlayerAllianceChange(1,6,true,false);
@@ -1073,7 +1073,7 @@ begin
 			StartCinematic(1,2);
 			EmissaryStats[8] := eTalkEnd;
 			QuestNow.QType := qTheKing1;
-			QuestNow.QMadeTime[14] := States.GameTime + 3000;
+			QuestNow.QMadeTime[14] := States.GameTime + 6000;
 			for K := 4 to 6 do
 				for I := 17 to 26 do
 					A.GiveWeapons(K,I,1000);
@@ -1138,7 +1138,7 @@ begin
 		begin
 			AttacksTime[11] := States.GameTime + 80;
 			A.PlayOGGFadeMusic(0, '', 1);
-			SetMultipleAlliances([1,2,3,7,8,9,10],[17],false);
+			SetMultipleAlliances([1,2,3,7,8],[17],false);
 			SetMultipleAlliances([0,4,5,6],[17],true);
 		end;
 		If States.GameTime = QuestNow.QMadeTime[15]+30 then 
@@ -1184,7 +1184,7 @@ begin
 		begin
 			AttacksTime[11] := States.GameTime + 70;
 			A.PlayOGGFadeMusic(0, '', 1);
-			SetMultipleAlliances([1,2,3,7,8,9,10],[17],false);
+			SetMultipleAlliances([1,2,3,7,8],[17],false);
 			SetMultipleAlliances([0,4,5,6],[17],true);
 		end;
 		If States.GameTime = QuestNow.QMadeTime[14]+30 then 

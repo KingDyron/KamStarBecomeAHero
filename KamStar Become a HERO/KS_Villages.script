@@ -45,6 +45,11 @@ begin
 						A.GiveHouseSite(13,22,130,125,true);
 						A.GiveHouseSite(13,24,121,118,true);				
 					end;
+				8: 	begin
+						QuestInteger[3] := 0;			
+						QuestInteger[4] := 0;			
+						QuestInteger[5] := 0;			
+					end;
 			end;
 		3: 	Case aQVNow of
 				2: 	begin
@@ -253,7 +258,7 @@ begin
 	//Building Houses
 	If VillageQuestGiver[0].QEventType = 3 then 
 		If States.GameTime = VillageQuestGiver[0].QEndTime - 600 then
-			GiveHouseMultipleTimes(13,6, true,true,[Point(160,234),Point(150,234),Point(134,230)]);
+			GiveHouseMultipleTimes(13,6, true,true,[Point(160,234),Point(150,234),Point(134,230)],Point(143,243));
 end;
 
 Procedure OnTickCoalVillage;
@@ -608,7 +613,7 @@ begin
 	end;
 	if VillageQuestGiver[5].QEventType = 6 then
 		If States.GameTime = VillageQuestGiver[5].QTime + 800 then 
-			GiveHouseMultipleTimes(9,17, true,false,[Point(92,141),Point(100,153)]);
+			GiveHouseMultipleTimes(9,17, true,false,[Point(92,141),Point(100,153)],Point(0,0));
 	
 end;
 Procedure OnTickPlayer7;
@@ -809,9 +814,9 @@ begin
 				If States.HouseAt(States.UnitPositionX(Hero),States.UnitPositionY(Hero)-1) > 0 then 
 				begin
 					aHouseID := States.HouseAt(States.UnitPositionX(Hero),States.UnitPositionY(Hero)-1);
-					for I := 0 to 5 do 
-						If S.HouseBuildingProgress(aHouseID) < S.HouseTypeMaxHealth(States.HouseType(aHouseID)) then 
-							Actions.HouseAddBuildingProgress(aHouseID);
+					//for I := 0 to 5 do 
+					If S.HouseBuildingProgress(aHouseID) < S.HouseTypeMaxHealth(States.HouseType(aHouseID)) then 
+						Actions.HouseAddBuildingProgress(aHouseID);
 				end;
 				
 	If VillageQuestGiver[3].QEndTime <> 9999999 then 

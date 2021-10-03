@@ -56,28 +56,46 @@ dodaæ opisy przy podejœciu do zadania, jak to zadanie wykonaæ
 
 
 //wioska rybacka
- - zrobiæ quest, w ktorym rybak mówi, ¿e gdzieœ znajduj¹ siê pradawne bronie, ale jest to tylko legenda - póŸno
+ - - otrzymanie zió³ pobudzaj¹cych
  - - dodanie ma³ej wioski przy ruinach do której mo¿emy podchodziæ ¿eby najeœæ jednostki
+ - zrobiæ quest, w ktorym rybak mówi, ¿e gdzieœ znajduj¹ siê pradawne bronie, ale jest to tylko legenda - póŸno
 
 //wioska wêgla
  - quest we wiosce wêgla o zbójcach - napad na wioskê//
  - quest, w którym musisz dogadaæ siê z wiosk¹ rybaków ¿eby wysy³ali jedzenie do nich.
+ - quest, w którym musisz dogadaæ siê z wiosk¹ rybaków ¿eby wysy³ali jedzenie do nich.
 
 
 //wioska drwala
- - zadania, w którym trzeba uratowaæ syna drwala, bo bandyci go porwali.
+ - zadanie, w którym trzeba uratowaæ syna drwala, bo bandyci go porwali - otrzymanie du¿o drewna i z³ota
  - póŸno - quest, który ka¿e znaleŸæ ciêzko do œciêcia drzewo - a on z niego zrobi szybki podwójny topór.
 
 
 //wioska gospodarstw
  - postawienie kolejnych pól//
  - zbudowanie winnic + pól winogron - dostawa ¿ywnoœci//
+ - wys³anie bohatera do koszar - dodanie pozycji obronnych przy wiosce rolników - otrzymanie zió³ leczniczych
 
 
 //wioska koszar
  - Patrole które jecha³y do Aratona nie wracaj¹, mam siê dowiedzieæ czemu tak jest. - wsparcie ¿o³dakami.//
  za ka¿de zadanie + lepszy typ jednostki//
  - sama rozmowa - otrzymanie wie¿y pomocniczej wrogo nastawionej dla naszych wrogów.//
+ - wys³anie bohatera przed garnizon/y - dodatkowa jednostka do wysy³ania
+ - wys³anie bohatera przed wiêzienie - informacje - dodatkowa jednostka do wysy³ania + wie¿a.
+ - zebranie armii i przes³anie ich do koszar - otrzymywanie ca³ego oddzia³u lekko uzbrojonych jednostek.
+ - atak na patrole Grotona - zabicie Patroli - armia zostanie zwabiona w miejsce patroli co da nam ³atwe wejœcie do wiêzienia 
+ - atak na wiêzienie - odbicie wiêŸnia - otrzymywanie kolejnych wie¿ + ma³e oddzia³y chroni¹ce bohatera
+ - rozmowa - mo¿liwoœæ przesy³ania wojska sojusznikom + ataki grotona na sojuszników
+ - przes³anie wêgla/stali/zbroi/mieczy/tarcz do koszar - wioska ma mo¿liwoœæ szkolenia mieczników oraz wysy³a ich do nas
+ - rozmowa - wioska stawia armie chroni¹ce w wielu punktach, m.in ko³o ksiêcia Milina i barona aratona i wiosek.
 
 //gracz 7
+ - prosi o przys³anie armii aby wzmocniæ pozycje obronne
+ - prosi aby wyjechaæ do Barona Aratona, postaraæ siê z nim dogadaæ - losowo baron siê zgadza lub nie - wp³yw na wiadomoœci - szkolenie wojowników ksi¹¿e milin
+ - prosi aby wyjechaæ do Króla Herina, postaraæ siê z nim dogadaæ - ksi¹¿e zwiêksza swoje ataki
+ -  - ksi¹¿e dodaje pozycje obronne bli¿ej nas aby nas chroniæ
+ - 
+
  - póŸno - znajduje artefakt, którego nie wie jak u¿yæ//
+ - póŸno - wysy³a dla nas nadmiar jedzenia jedzenia 
