@@ -127,7 +127,7 @@ begin
 				AcceptTask(QuestNow.QVVillageType, VillageQuestGiver[QuestNow.QVVillageType].QEventType);
 				VillageQuestGiver[QuestNow.QVVillageType].QTime := States.GameTime;
 			end else
-			If U.KMPoint(X,Y) = States.UnitPosition(Hero) then
+			If U.KMPoint(X,Y) = aHeroPos then
 			begin
 				QuestNow.QVOnQuest := false;
 				SetNewMultiMessages([605 + States.KaMRandomI(3)],70,[],[]);
@@ -142,6 +142,7 @@ begin
 		If U.KMPoint(X,Y) = States.UnitPosition(VillageQuestGiver[QuestNow.QVVillageType].QGiver) then
 			AbandonTask(QuestNow.QVVillageType, VillageQuestGiver[QuestNow.QVVillageType].QEventType);
 end;
+
 Procedure OnUnitTrainedCoalVillage(aUnit : Integer);
 var aPos : TKMPoint;
 begin	
@@ -184,7 +185,7 @@ begin
 		If States.GameTime > VillageQuestGiver[0].QTime + 200 then 
 			If States.GameTime mod 100 = 0 then 
 				begin
-					If States.UnitPosition(Hero) = VillageQuestGiver[0].QPos then 
+					If aHeroPos = VillageQuestGiver[0].QPos then 
 					begin
 						If States.GameTime > MessageDelay then 
 							If not QuestTasks[0][0] and not QuestTasks[0][1] then
@@ -201,7 +202,7 @@ begin
 						
 					end;
 					If not QuestTasks[0][0] then
-						If States.UnitPosition(Hero) = VillageQuestGiver[3].QPos then 
+						If aHeroPos = VillageQuestGiver[3].QPos then 
 						begin
 							If QuestTasks[0][0] then
 								SetNewMultiMessages([610,611,614],70,[],[])
@@ -212,7 +213,7 @@ begin
 						end;
 					
 					If not QuestTasks[0][1] then	
-						If States.UnitPosition(Hero) = VillageQuestGiver[2].QPos then 
+						If aHeroPos = VillageQuestGiver[2].QPos then 
 						begin
 							If QuestTasks[0][0] then
 								SetNewMultiMessages([612,613,614],70,[],[])
@@ -243,7 +244,7 @@ begin
 		If States.GameTime > VillageQuestGiver[1].QTime + 200 then 
 			If States.GameTime mod 100 = 0 then 
 			begin
-				If States.UnitPosition(Hero) = VillageQuestGiver[1].QPos then 
+				If aHeroPos = VillageQuestGiver[1].QPos then 
 				begin
 					If States.GameTime > MessageDelay then 
 						If not QuestTasks[1][0] then
@@ -332,7 +333,7 @@ begin
 				end;
 			
 		If QuestTasks[1][1] then
-			If States.UnitPosition(Hero) = VillageQuestGiver[1].QPos then 
+			If aHeroPos = VillageQuestGiver[1].QPos then 
 			begin
 				SetNewMultiMessages([636,637],70,[],[]);
 				OnTaskCompleted(2,[5],[200],false);
@@ -375,7 +376,7 @@ begin
 		If States.GameTime > VillageQuestGiver[2].QTime + 200 then 
 			If States.GameTime mod 100 = 0 then 
 			begin
-				If States.UnitPosition(Hero) = VillageQuestGiver[2].QPos then 
+				If aHeroPos = VillageQuestGiver[2].QPos then 
 				begin
 					If States.GameTime > MessageDelay then 
 						If not QuestTasks[2][0] then
@@ -401,7 +402,7 @@ begin
 		If States.GameTime = VillageQuestGiver[2].QTime + 40 then 
 			Actions.ShowMSG(0,'<$643>');
 		If States.GameTime mod 100 = 0 then 
-			If States.UnitPosition(Hero) = VillageQuestGiver[2].QPos then 
+			If aHeroPos = VillageQuestGiver[2].QPos then 
 			begin		
 					
 				If States.GameTime > MessageDelay then 
@@ -421,9 +422,7 @@ begin
 end;
 
 Procedure OnTickWoodVillage;
-var HPos : TKMPoint;
-begin
-			
+begin			
 	if VillageQuestGiver[3].QEventType = 1 then 
 		If States.GameTime = VillageQuestGiver[3].QTime + 10 then
 			SetNewMultiMessages([645,646,647,648, 601],70,[],[]);
@@ -435,7 +434,7 @@ begin
 	begin
 		If States.GameTime > VillageQuestGiver[3].QTime + 200 then 
 			If States.GameTime mod 100 = 0 then 
-				If States.UnitPosition(Hero) = VillageQuestGiver[3].QPos then 
+				If aHeroPos = VillageQuestGiver[3].QPos then 
 				begin
 					If States.GameTime > MessageDelay then 
 						If not QuestTasks[3][0] then
@@ -454,9 +453,8 @@ begin
 			If States.GameTime > TreesToTime then 
 				If States.GameTime mod 100 = 0 then 
 				begin
-					HPos := States.UnitPosition(Hero);
-					If U.InAreaI(HPos.X,HPos.Y,10,65,44,120) then 
-						If U.InRangeI(States.MapTileObject(HPos.X,HPos.Y),190,194) then 
+					If U.InAreaI(aHeroPos.X,aHeroPos.Y,10,65,44,120) then 
+						If U.InRangeI(States.MapTileObject(aHeroPos.X,aHeroPos.Y),190,194) then 
 						begin
 							A.ShowMSG(0,'<$651>')
 							TreesToTime := States.GameTime + 200;
@@ -465,13 +463,12 @@ begin
 				end;
 			If States.GameTime = TreesToTime then 		
 			begin
-				HPos := States.UnitPosition(Hero);
-				If U.InAreaI(HPos.X,HPos.Y,10,65,44,120) then 
-					If U.InRangeI(States.MapTileObject(HPos.X,HPos.Y),190,194) then 
+				If U.InAreaI(aHeroPos.X,aHeroPos.Y,10,65,44,120) then 
+					If U.InRangeI(States.MapTileObject(aHeroPos.X,aHeroPos.Y),190,194) then 
 					begin
 						A.ShowMSG(0,'<$90>')
 						TreesToChop := TreesToChop + 1;
-						Actions.MapTileObjectSet(HPos.X,HPos.Y,255);
+						Actions.MapTileObjectSet(aHeroPos.X,aHeroPos.Y,255);
 						If TreesToChop = 5 then 
 						begin
 							A.ShowMSG(0,'<$630>');						
@@ -595,12 +592,12 @@ begin
 		end;
 		If not QuestTasks[4][0] then
 			If States.GameTime mod 100 = 0 then 
-				If PosInRadius(States.UnitPosition(Hero), U.KMPoint(197,251), 1) then	
+				If PosInRadius(aHeroPos, U.KMPoint(197,251), 1) then	
 				begin
 					QuestTasks[4][0] := true;
 					A.ShowMSG(0,'<$124>')
 				end;
-				//If States.UnitPosition(Hero) = U.KMPoint(197,251) then 
+				//If aHeroPos = U.KMPoint(197,251) then 
 	end;
 	
 	//second quest
@@ -650,15 +647,15 @@ begin
 						Actions.ShowMSG(0,'<$137>');
 						MessageDelay := States.GameTime + 1200;
 					end;
-				If PosInRadius(States.UnitPosition(Hero), VillageQuestGiver[4].QPos, 1) 	or
-					PosInRadius(States.UnitPosition(Hero), U.KMPoint(182,206), 1) 	then
+				If PosInRadius(aHeroPos, VillageQuestGiver[4].QPos, 1) 	or
+					PosInRadius(aHeroPos, U.KMPoint(182,206), 1) 	then
 						QuestTasks[4][2] := true;
 					
 				If QuestTasks[4][2] then
 				begin
 					HousesToBuild[6] := HousesToBuild[6]+3;
-					GiveSpecialItem;
 					SetNewMultiMessages([138,139,140,141,142],70,[],[]);
+					GiveSpecialItem;
 					VillageQuestGiver[4].QEventType := 4;
 					VillageQuestGiver[4].QEndTime := States.GameTime + 6000;
 				end;
@@ -725,7 +722,7 @@ begin
 			for I := 0 to 5 do
 				If I <> 4 then
 					If (VillageQuestGiver[I].QEndTime = 9999999) or (States.GameTime >VillageQuestGiver[I].QEndTime) then 
-						If States.UnitPosition(Hero) = VillageQuestGiver[I].QPos then 
+						If aHeroPos = VillageQuestGiver[I].QPos then 
 						begin		
 							VillageQuestGiver[I].QTime := States.GameTime;
 							VillageQuestGiver[I].QEventType := VillageQuestGiver[I].QEventType+1;
@@ -744,7 +741,7 @@ begin
 					If (I <> 4) and (I <> QuestNow.QVVillageType) then
 						If not U.ArrayHasElementI(I,[2,3]) and not(VillageQuestGiver[0].QEventType <> 2) then 
 							If (VillageQuestGiver[I].QEndTime = 9999999) or (States.GameTime >VillageQuestGiver[I].QEndTime) then 
-								If States.UnitPosition(Hero) = VillageQuestGiver[I].QPos then 
+								If aHeroPos = VillageQuestGiver[I].QPos then 
 								begin
 									A.ShowMSG(0, '<$'+IntToStr(106+I) + '>');
 									MessageDelay2 := States.GameTime + 600;

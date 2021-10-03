@@ -2,7 +2,7 @@
 procedure OnTickFunction;
 begin
 	If not States.UnitDead(Hero) then 
-		aHeroPos := States.UnitPosition(Hero);
+		aHeroPos := S.UnitPosition(Hero);
 end;
 procedure GroupHpInvulnerableSet(aGroupID : array of Integer; aInvulnerable : Boolean);
 var I, K : Integer;
@@ -278,8 +278,6 @@ var I, K : Integer;
 	aPos,aPos2 : TKMPoint;
 	finString : Ansistring;
 begin
-	aPos := States.UnitPosition(Hero);
-	aPos2 := VillageQuestGiver[5].QPos;
 	//Actions.UnitHungerSet(Hero,27000)
 	If length(HeroInventory[7]) = 0 then 
 		Exit;
@@ -308,7 +306,7 @@ begin
 			end;
 			for I := low(HeroInventory)to high(HeroInventory) do
 			begin
-				K := HeroInventoryString[I]
+				K := SlotID[I]
 				Actions.OverlayTextAppend(-1,'<$'+IntToStr(50+I)+'>' + HeroInventory[I][K].Name);
 			end;
 		end;
@@ -376,8 +374,8 @@ begin
 	If States.GameTime > VillageQuestGiver[3].QTime then 
 		if VillageQuestGiver[3].QEventType = 2 then
 				Actions.OverlayTextAppendFormatted(-1,'|<$652>',[5-TreesToChop]);
-	If Player2Attacks then 
-		Actions.OverlayTextAppend(-1,'|'+IntToStr(HeroStats[0].MultiHealth));	
+	
+	//Actions.OverlayTextAppend(-1,'|'+IntToStr(HeroSpecialReg));	
 	//Actions.OverlayTextAppend(-1,'|'+IntToStr(HeroStats[1].MultiHealth));	
 end;
 
@@ -460,12 +458,12 @@ begin
 			Result := I;
 end;
 
-function ItemsArrayElementIndex(aElement : String; aArray : array of KS_Item) : Integer;
+function GetItemIndex(aID : Integer; aArray : array of KS_Item) : Integer;
 var I : Integer;
 begin
 	Result := -1;	
 	for I := low(aArray) to high(aArray) do
-		If aElement = aArray[I].Name then
+		If aID = aArray[I].ID then
 			Result := I;
 end;
 
@@ -477,6 +475,7 @@ begin
 	Result.Health := Health;
 	Result.aTypeTo := aTypeTo;
 	Result.Haste := Haste;
+	Result.ID := ID;
 end;
 
 Procedure KillAllGroups(aPlayer:Integer);
@@ -599,7 +598,7 @@ Procedure ChangeHeroTo(aPos : TKMPoint; aType : Integer);
 var aDir, aHunger : Integer;
 begin
 	If U.ArrayHasElementI(aType, [21,27]) then 
-		case HeroInventory[0][HeroInventoryString[0]].Name of													
+		case HeroInventory[0][SlotID[0]].Name of													
 			'Iron axe' 							: aType := 21;	
 			'The Ancient Sword' 				: aType := 22;	
 			'The Sword of the God' 				: aType := 22;		
@@ -621,29 +620,33 @@ Procedure ChangeHeroWithNoHorse;
 var K , I : Integer;
 begin
 	
-	K := HeroInventoryString[0];
-	I:= HeroInventoryString[7];
+	K := SlotID[0];
+	I:= SlotID[7];
 	If HeroInventory[7][I].Name <> 'None' then 
-		ChangeHeroTo(States.UnitPosition(Hero),HeroInventory[7][I].aTypeTo)
+		ChangeHeroTo(aHeroPos,HeroInventory[7][I].aTypeTo)
 	else 
 	case HeroInventory[0][K].Name of
-		'Hand' 							:	ChangeHeroTo(States.UnitPosition(Hero),14);
+		'Hand' 							:	ChangeHeroTo(aHeroPos,14);
 		
-		'Hand axe' 							:	If U.ArrayHasElement(HeroInventory[3][HeroInventoryString[3]].Name,['The Ancient Chestplate','The Gods Chestplate']) then 
-													ChangeHeroTo(States.UnitPosition(Hero),HeroInventory[0][K].aTypeTo)
+		'Hand axe' 							:	If U.ArrayHasElement(HeroInventory[3][SlotID[3]].Name,['The Ancient Chestplate','The Gods Chestplate']) then 
+													ChangeHeroTo(aHeroPos,HeroInventory[0][K].aTypeTo)
 												else
-													ChangeHeroTo(States.UnitPosition(Hero),HeroInventory[0][K].aTypeTo);
+													ChangeHeroTo(aHeroPos,HeroInventory[0][K].aTypeTo);
 		'Sword Xiphos' 						: begin
-													ChangeHeroTo(States.UnitPosition(Hero),HeroInventory[0][K].aTypeTo);
-													HeroInventoryString[7] := ItemsArrayElementIndex('Old Horse',HeroInventory[7]);
+													ChangeHeroTo(aHeroPos,HeroInventory[0][K].aTypeTo);
+													SlotID[7] := GetItemIndex(9,HeroInventory[7]);
 											end;
-		else ChangeHeroTo(States.UnitPosition(Hero),HeroInventory[0][K].aTypeTo);
+		else ChangeHeroTo(aHeroPos,HeroInventory[0][K].aTypeTo);
 	end;
 end;
 
 Procedure SetInventoryStats(aIndex : Integer);
 var I , K: Integer;
 begin
+	If length(HeroInventory[7]) > 0 then
+		for I := 0 to 7 do
+			aItem[I] := HeroInventory[I][SlotID[I]];
+			
 	HeroStats[1].Attack := HeroStats[0].Attack;
 	HeroStats[1].Defense := HeroStats[0].Defense;
 	HeroStats[1].Haste := HeroStats[0].Haste;
@@ -657,6 +660,7 @@ begin
 		HeroStats[0].Attack := 0;
 		HeroStats[0].Defense := 0;
 		HeroStats[0].Haste := 0;
+		HeroSpecialReg := 0;
 		//Attack2 := 0;
 		//Defense2 := 1;
 		//Iloczyn2 := 0;
@@ -664,56 +668,55 @@ begin
 		If length(HeroInventory[7]) > 0 then
 		begin
 
-			If HeroInventory[5][HeroInventoryString[5]].Name <> 'Boots of the Multigravitation'then 
+			If aItem[5].Name <> 'Boots of the Multigravitation'then 
 			begin
 				
-				If HeroInventoryString[7] <> 0 then
+				If aItem[7].ID <> 7 then
 				begin
-					If U.ArrayHasElement(HeroInventory[0][HeroInventoryString[0]].Name, ['Lance','Pike','Double Axe', 'Long Bow', 'Crossbow']) then 
-							HeroInventoryString[7] := 0;
+					If U.ArrayHasElement(aItem[0].Name, ['Lance','Pike','Double Axe', 'Long Bow', 'Crossbow']) then 
+							SlotID[7] := 0;
 					
-					If U.ArrayHasElement(HeroInventory[0][HeroInventoryString[0]].Name, ['Double Axe']) then 
-							HeroInventoryString[7] := 0;
+					If U.ArrayHasElement(aItem[0].Name, ['Double Axe']) then 
+							SlotID[7] := 0;
 				end;
 			
-				If U.ArrayHasElementI(HeroInventory[0][HeroInventoryString[0]].ID, [10,34,56]) then  
-					HeroInventoryString[1] := 0;
+				If U.ArrayHasElementI(aItem[0].ID, [10,34,56]) then
+					If aItem[1].ID <> 11 then 
+						SlotID[1] := 0;
 			end else	
-				If U.ArrayHasElement(HeroInventory[0][HeroInventoryString[0]].Name, ['Long Bow', 'Crossbow']) then 
-						HeroInventoryString[7] := 0;
+				If U.ArrayHasElement(aItem[0].Name, ['Long Bow', 'Crossbow']) then 
+						SlotID[7] := 0;
 						
-			If HeroInventory[6][HeroInventoryString[6]].Name = 'The Vial of Regeneration' then  
-				HeroSpecialReg := 4
-			else	
-				HeroSpecialReg := 0;
+			If (aItem[6].ID = 47) or ((aItem[4].ID = 45) and (GetItemIndex(47,HeroInventory[6]) <> -1 ) ) then  
+				HeroSpecialReg := HeroSpecialReg + 4;
 			
+			If (aItem[6].ID = 51) or ((aItem[4].ID = 45) and (GetItemIndex(51,HeroInventory[6]) <> -1 ) )   then 
+				HeroSpecialReg := HeroSpecialReg + 2;
+					
 			for I := 0 to 7 do
 				If length(HeroInventory[I]) > 0 then
 				begin						
-					K := HeroInventoryString[I];
-					HeroStats[0].Attack := HeroStats[0].Attack + HeroInventory[I][K].Attack;
-					HeroStats[0].Defense := HeroStats[0].Defense + HeroInventory[I][K].Defense;
-					HeroStats[0].Haste := HeroStats[0].Haste + HeroInventory[I][K].Haste
+					aItem[I] := HeroInventory[I][SlotID[I]];
+					HeroStats[0].Attack := HeroStats[0].Attack + aItem[I].Attack;
+					HeroStats[0].Defense := HeroStats[0].Defense + aItem[I].Defense;
+					HeroStats[0].Haste := HeroStats[0].Haste + aItem[I].Haste
 				end;
 			If States.GameTime > 10 then 
 				ChangeHeroWithNoHorse;				
 			
-			If HeroInventory[5][HeroInventoryString[5]].Name = 'Boots of the Multigravitation'then 
+			If aItem[5].Name = 'Boots of the Multigravitation'then 
 				HeroStats[0].Haste := 3;
 
 		end;
 		
-		If HeroInventory[0][HeroInventoryString[0]].Name = 'Sword Xiphos' then 
-			If HeroInventory[1][HeroInventoryString[1]].Name = 'Sword Xiphos' then 
+		If aItem[0].Name = 'Sword Xiphos' then 
+			If aItem[1].Name = 'Sword Xiphos' then 
 				HeroStats[0].Attack := HeroStats[0].Attack + 7;
 				
 	end;
 	for I := 0 to 7 do
 		If length(HeroInventory[I]) > 0 then
-		begin						
-			K := HeroInventoryString[I];
-			HeroStats[0].MultiHealth := HeroStats[0].MultiHealth + HeroInventory[I][K].Health;
-		end;
+			HeroStats[0].MultiHealth := HeroStats[0].MultiHealth + aItem[I].Health;
 		
 	HeroStats[0].MultiHealth := 50 + HeroStats[0].MultiHealth + HeroSpecialHPPoints;
 	
@@ -731,22 +734,74 @@ begin
 	
 	If HeroStats[0].Health > HPmax then 
 		HeroStats[0].Health := HPmax;
+	
+	If length(HeroInventory[7]) > 0 then
+		for I := 0 to 7 do
+			aItem[I] := HeroInventory[I][SlotID[I]];
 end;
 
 Procedure AddInventoryItem(aIndex : Integer; Item : KS_Item);
 var I : Integer;
 begin
-	If ItemsArrayElementIndex(Item.Name,HeroInventory[aIndex]) <> -1 then 
+	If GetItemIndex(Item.ID,HeroInventory[aIndex]) <> -1 then 
 		Exit;
 		
 	I := length(HeroInventory[aIndex]);
 	SetLength(HeroInventory[aIndex], I+1);
 	HeroInventory[aIndex][I] := Item;	
-	HeroInventoryString[aIndex] := I;	
+	SlotID[aIndex] := I;	
 	SetInventoryStats(aIndex);
 	
 end;
 
+function GetItemCost(aIndex : Integer) : Integer;
+begin
+	case aIndex of 
+		8:	Result := 5;
+		9: 	Result := 15;
+		
+		14:	Result := 1;
+		15:	Result := 8;
+		16:	Result := 6;
+		17:	Result := 10;
+		18:	Result := 10;
+		19:	Result := 12;
+		20: Result := 5;
+		
+		21:	Result := 37;
+		22:	Result := 37;
+		
+		24:	Result := 20;
+		25:	Result := 23;
+		26:	Result := 25;
+		27:	Result := 20;
+		28:	Result := 15;
+		
+		30:	Result := 25;
+		31:	Result := 40;
+		32: Result := 50;
+		33:	Result := 60;
+		34:	Result := 130;
+		
+		35:	Result := 40;
+		36:	Result := 46;
+		37:	Result := 52;
+		38:	Result := 48;
+		39:	Result := 40;
+		
+		40:	Result := 40;
+		
+		48:	Result := 22;
+		
+		51:	Result := 63;
+		52:	Result := 75;
+		53:	Result := 108;
+		54: Result := 96;
+		55:	Result := 144;
+
+	end;
+	
+end;
 function GetItemName(aIndex : Integer) : AnsiString;
 begin
 	case aIndex of 
@@ -776,8 +831,8 @@ begin
 		19:	Result := 'Iron axe';
 		20: Result := 'Hand axe';
 		
-		21:	Result := 'Sword Xiphos';
-		22:	Result := 'Sword Xiphos';
+		21:	Result := 'Sword Xiphos [Right]';
+		22:	Result := 'Sword Xiphos [Left]';
 		23:	Result := '[$FFFF00]Royal Horse [$FFFFFF]';
 		
 		24:	Result := 'Wooden Shield';
@@ -842,10 +897,10 @@ begin
 		8:	AddInventoryItem(0,SetKS_Item('Hand Axe',10,0,0,14,3, aIndex));
 		9: 	AddInventoryItem(7,SetKS_Item('Old Horse',1,2,48,27,1, aIndex));
 		//B class
-		10: AddInventoryItem(0,SetKS_Item('The Ancient Sword',34,0,0,22,6, aIndex));
-		11:	AddInventoryItem(1,SetKS_Item('The Ancient Shield',0,9,18,-1,5, aIndex));
-		12:	AddInventoryItem(2,SetKS_Item('The Ancient Helmet',0,8,0,-1,3, aIndex));
-		13:	AddInventoryItem(3,SetKS_Item('The Ancient Chestplate',0,9,0,-1,3, aIndex));	
+		10: AddInventoryItem(0,SetKS_Item('The Ancient Sword',36,0,0,22,6, aIndex));
+		11:	AddInventoryItem(1,SetKS_Item('The Ancient Shield',0,7,18,-1,5, aIndex));
+		12:	AddInventoryItem(2,SetKS_Item('The Ancient Helmet',0,7,0,-1,4, aIndex));
+		13:	AddInventoryItem(3,SetKS_Item('The Ancient Chestplate',0,9,17,-1,4, aIndex));	
 		
 		14:	AddInventoryItem(1,SetKS_Item('Stick',3,1,1,14,1, aIndex));//woodcutter
 		15:	AddInventoryItem(0,SetKS_Item('Pickaxe',12,1,1,14,6, aIndex));//querry
@@ -867,10 +922,10 @@ begin
 		
 		29:	AddInventoryItem(7,SetKS_Item('[$FFFF00]Royal Horse [$FFFFFF]',6,7,163,22,3, aIndex));
 		30:	AddInventoryItem(2,SetKS_Item('Iron Helmet',0,4,0,-1,3, aIndex));
-		31:	AddInventoryItem(0,SetKS_Item('Long Sword',26,0,0,16,4, aIndex));
+		31:	AddInventoryItem(0,SetKS_Item('Long Sword',26,0,0,16,6, aIndex));
 		32:	AddInventoryItem(0,SetKS_Item('Pike',24,0,0,20,5, aIndex));
 		33:	AddInventoryItem(0,SetKS_Item('Crossbow',60,1,2,18,5, aIndex));
-		34:	AddInventoryItem(0,SetKS_Item('Double Axe',33,6,16,26,9, aIndex));
+		34:	AddInventoryItem(0,SetKS_Item('Double Axe',33,6,16,26,14, aIndex));
 		
 		35:	AddInventoryItem(1,SetKS_Item('Long Shield',0,4,6,-1,4, aIndex));
 		36:	AddInventoryItem(2,SetKS_Item('Iron Helmet',0,4,0,-1,3, aIndex));
@@ -891,16 +946,16 @@ begin
 		
 		48:	AddInventoryItem(0,SetKS_Item('Woodcutter`s Axe',14,1,2,14,7, aIndex));	
 		
-		49:	AddInventoryItem(4,SetKS_Item('The Ancient Leggings',0,8,0,-1,2, aIndex));
-		50:	AddInventoryItem(5,SetKS_Item('The Ancient Boots',0,7,0,-1,2, aIndex));
+		49:	AddInventoryItem(4,SetKS_Item('The Ancient Leggings',0,8,0,-1,3, aIndex));
+		50:	AddInventoryItem(5,SetKS_Item('The Ancient Boots',0,6,0,-1,3, aIndex));
 		
-		51:	AddInventoryItem(6,SetKS_Item('Medicinal Herbs',0,0,0,-1,0, aIndex));
-		52:	AddInventoryItem(6,SetKS_Item('Cart of Wood',0,0,0,-1,0, aIndex));
-		53:	AddInventoryItem(6,SetKS_Item('Cart of Coal',0,0,0,-1,0, aIndex));
-		54:	AddInventoryItem(6,SetKS_Item('Cart of Stone',0,0,0,-1,0, aIndex));
-		55:	AddInventoryItem(6,SetKS_Item('Cart of Gold',0,0,0,-1,0, aIndex));
+		51:	AddInventoryItem(6,SetKS_Item('Medicinal Herbs',0,0,0,-1,3, aIndex));
+		52:	AddInventoryItem(6,SetKS_Item('Cart of Wood',0,0,0,-1,3, aIndex));
+		53:	AddInventoryItem(6,SetKS_Item('Cart of Coal',0,0,0,-1,3, aIndex));
+		54:	AddInventoryItem(6,SetKS_Item('Cart of Stone',0,0,0,-1,3, aIndex));
+		55:	AddInventoryItem(6,SetKS_Item('Cart of Gold',0,0,0,-1,3, aIndex));
 		
-		56:	AddInventoryItem(0,SetKS_Item('Meriton`s Sword',43,0,0,-1,7, aIndex));
+		56:	AddInventoryItem(0,SetKS_Item('Meriton`s Sword',43,0,0,-1,3, aIndex));
 
 	end;
 	
@@ -964,19 +1019,9 @@ var Random, aTrue : Integer;
 	aName : AnsiString;
 begin
 	aTrue := -1;
-	Random := U.RandomRangeI(41,47);
-	case Random of
-		41 : aName := 'Ion Spear';
-		42 : aName := 'Ion Shell';
-		43 : aName := 'Scanning Glasses';
-		44 : aName := 'Power Chest Belt';
-		45 : aName := 'Multi Slots';
-		46 : aName := 'Boots of the Multigravitation';
-		47 : aName := 'The Vial of Regeneration';
-	end;
+	Random := U.RandomRangeI(41,47);	
 	
-	
-	If ItemsArrayElementIndex(aName,HeroInventory[Random-41]) = -1 then 
+	If GetItemIndex(Random,HeroInventory[Random-41]) = -1 then 
 	begin
 		AddMultiMessages([], [Random])
 		aTrue := 0;

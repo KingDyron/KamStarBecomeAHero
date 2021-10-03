@@ -6,6 +6,8 @@
 {$COMMAND instant_kill:SetInstantKill}
 {$COMMAND house_bonus:AddHouses}
 {$COMMAND give_item:GiveItem}
+{$COMMAND give_set_a:GiveSetA}
+{$COMMAND give_set_b:GiveSetB}
 
 
 procedure AllowBuilding(aHandID : Integer; aType : Integer);
@@ -48,6 +50,17 @@ Procedure GiveItem(aHandID,aID:Integer);
 begin
 	GiveItemFromID(aID);
 end;
+
+Procedure GiveSetA(aHandID:Integer);
+begin
+	GiveMultipleItems([10,11,12,13,49,50]);
+end;
+
+Procedure GiveSetB(aHandID:Integer);
+begin
+	GiveMultipleItems([41,42,43,44,45,46,47]);
+end;
+
 Procedure SetInstantKill(aHandID,aPlayer:Integer);
 begin
 	InstantKill[aPlayer] := true;

@@ -57,9 +57,9 @@
 24:Doradca: Wprowadziliśmy podadatek od każdego budynku w tym mieście.
 
 //Weapon Smithy
-25:Groton: Miałem nadzieję, że sobie darujesz, jednak twój upór jest niesamowicie wysoki. Jak sobie życzysz, nie będziesz miał łatwo.
+25:Doradca: Wyślę trochę uzbrojenia do Ksiecia Milina. Na pewno przyda mu się w nadchodzących starciach.
 //Armor Smithy
-26:Doradca: Myślę że zbieranie armii idzie ci bardzo dobrze. Nie wiele czasu brakuje abyśmy umieli się obronić przed atakami Grotona. Postarałem się znaleźć najlepszego kowala jaki żyje. |Pomoże nam w szybszym zbrojeniu się jednostek.
+26:Doradca: Myślę że szkolenie armii idzie ci bardzo dobrze. Nie wiele czasu brakuje abyśmy umieli się obronić przed atakami Grotona. Postarałem się znaleźć najlepszego kowala jaki żyje. |Pomoże nam w szybszym zbrojeniu się jednostek.
 
 //Stables
 27:Doradca: Hmmm, Ciekawe posunięcie mój panie
@@ -262,6 +262,17 @@ Kolejna wiadomość:
 164:Książe Milin: Moi żołnierze przeszukali garnizony i znaleźli dużo uzbrojenia, które starczą dla nas wszystkich. Twój szpieg się mylił. Garnizony nie były tak słabo uzbrojone.
 
 164:Król Herin: Zaatakujemy niebawem. Przygotuj się dobrze. Ta bitwa może być naszą ostatnią.
+
+165:Groton: Miałem nadzieję, że sobie darujesz, jednak twój upór jest niesamowicie wysoki. Jak sobie życzysz, nie będziesz miał łatwo. ||Dodatkowa ilość wież przy twierdzy.
+166:Groton: Miałem nadzieję, że sobie darujesz, jednak twój upór jest niesamowicie wysoki. Jak sobie życzysz, nie będziesz miał łatwo. ||Zwiększone nacierające armie.
+
+167:GAME: Handlujesz z kupcem.
+
+168:GAME: Postaw plan drogi na jednej z płytek bruku/ścierzki, aby wybrać przydmiot który chcesz kupić. Możesz odrzucić oferty stawiając drogę na pustynnej płytce i wrócić ponownie później.
+
+169:GAME: Odrzucono ofertę.
+170:GAME: Kupiłeś : 
+171:GAME: Za mało pieniędzy.
 
 //emissary starting
 //_Emisariusz przed twierdzą:
@@ -811,3 +822,5 @@ Bohater: Możemy spróbować.
 687:GAME : Nowe zadanie u drwala dostępne.
 687:GAME : Nowe zadanie u Księcia dostępne.
 689:GAME : Nowe zadanie u rekruta dostępne.
+
+690:GAME : Ostrzeżenie. Gra po trzech godzinach może zacząć lekko ścinać. Warto wtedy wyłączyć autozapis i zapisywać grę manualnie co kilka minut.

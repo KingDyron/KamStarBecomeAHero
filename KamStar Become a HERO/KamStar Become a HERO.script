@@ -80,6 +80,7 @@ type KS_HousesDATA = record
 	VisTime : Integer;//visiting time
 	Pos : TKMPoint;
 	Once : Boolean;
+	Trading : Boolean;
 end;
 
 type KS_PlayerAll = record
@@ -125,7 +126,7 @@ var StartUnitCount : array[0..18] of KS_StartArmy;
 	Hero, Emissary1, Emissary4, Emissary5, Emissary6, PlayerBuildingsDestroyed, MeritonSword : Integer;
 	EmissaryStats : array[0..8] of KS_EmissaryType;
 	VisitedLastVillage, UnlimitedFishes, HeroNotHungry, HeroImmortal,
-	GoldDoubleProduction	: Boolean;
+	GoldDoubleProduction, ArmorDoubleProduction	: Boolean;
 	PlayersAttacked : array[0..18] of KS_PlayerAll;
 	DefAttack : array[0..8] of boolean;
 	CavarlyGroup, FreeUnitsToEquip, duckIndex,
@@ -167,10 +168,11 @@ const 	POOL_X1 = 27;
 
 var aHeroAttackTime:Integer;// special variables
 	HPmax:Integer;//constant variables
-	HeroInventoryString : array[0..7] of integer;
+	SlotID : array[0..7] of integer;
 	HeroInventory : array[0..7] of array of KS_Item;
+	aItem : array[0..7] of KS_Item; 
 	HeroStats :array[0..1] of KS_HeroStats;
-
+	RandomItems : array[0..5] of Integer;
 var HeroSpecialPoints, HeroSpecialHPPoints, HeroSpecialReg : Integer;
 	AncientFound : array[0..7] of Boolean;
 	
@@ -202,11 +204,11 @@ var I :Integer;
 	aPos : TKMPoint;
 begin
 	If Player7TH > 0 then 
-		If States.HouseResourceAmount(Player7TH, 7) > 8 then 
+		If States.HouseResourceAmount(MainStoreHouse[6], 7) > 8 then 
 		begin
 			aPos := States.HousePosition(Player7TH);
 			A.GiveGroup(6,26,aPos.X,aPos.Y, 4,1,1);
-			A.HouseTakeWaresFrom(Player7TH,7,8)			
+			A.HouseTakeWaresFrom(MainStoreHouse[6],7,8)			
 		end;
 	If States.HouseAt(THPos.X,THPos.Y) > 0 then
 		If States.HouseResourceAmount(States.HouseAt(THPos.X,THPos.Y), 7) > 8 then 
@@ -892,9 +894,7 @@ end;
 
 Procedure OnTickBonuses;
 var I, aHouse : Integer;
-	aPos : TKMPoint;
 begin
-	aPos := States.UnitPosition(Hero);
 	If ((EmissaryStats[4] = eNone) and (EmissaryStats[5] = eNone) and (EmissaryStats[6] = eNone)) then 
 	If not HousesFirstBuilt[0].Once then 
 		If (HousesFirstBuilt[0].aType = -1) then 
@@ -938,7 +938,7 @@ begin
 	If (HousesFirstBuilt[1].aType = 6) then 
 		If States.GameTime mod 300 = 0 then
 			If duckIndex <= high(Ducks) then 
-				If U.InAreaI(aPos.X,aPos.Y,28,202,40,215) then 
+				If U.InAreaI(aHeroPos.X,aHeroPos.Y,28,202,40,215) then 
 				begin
 					If duckIndex = 0 then 
 						SetNewMultiMessages([36],60,[],[]);
@@ -958,16 +958,17 @@ begin
 				SetBonus(I);
 				
 		begin
-			aHouse := States.HouseAt(aPos.X,apos.Y-1);
+			aHouse := States.HouseAt(aHeroPos.X,aHeroPos.Y-1);
 			If aHouse = -1 then
 				Exit;
 			SetBonusNearHouse(aHouse);
+			SetTradingMode(aHouse);
 		end;
 						
 	end;
 	
 	If UnlimitedFishes then 
-		If States.GameTime mod 600 = 0 then
+		If States.GameTime mod 100 = 0 then
 			If States.UnitAt(33,209)  <=0 then 
 			begin
 				Actions.GiveAnimal(31,33,209);
@@ -1172,10 +1173,44 @@ begin
 			Actions.PlanRemove(0,X,Y);
 			Actions.PlanAddRoad(6,X,Y);
 		end;
+		
 		If not U.InAreaI(X,Y,0,139,109,255) and not U.InAreaI(X,Y,110,151,242,243) then
 		begin
 			Actions.PlanRemove(0,X,Y);
 		end;
+		
+		If HousesFirstBuilt[5].Trading then 
+			If  U.InAreaI(X,Y,6,237,19,243) then
+			begin	
+				If States.MapTileType(X,Y) = 28 then 
+				begin
+					A.ShowMSG(0, '<$169>');
+				end else
+				begin
+					case X of
+						6 : aOutIndex := 0;
+						8 : aOutIndex := 1;
+						10 : aOutIndex := 2;
+						12 : aOutIndex := 3;
+						14 : aOutIndex := 4;
+						16 : aOutIndex := 5;
+					end;		
+					If States.HouseResourceAmount(MainStoreHouse[0],7) > GetItemCost(RandomItems[aOutIndex]) then
+					begin
+						A.ShowMSG(0, '<$170>' + GetItemName(RandomItems[aOutIndex]));
+						GiveItemFromID(RandomItems[aOutIndex]);
+						A.HouseTakeWaresFrom(MainStoreHouse[0],7,GetItemCost(RandomItems[aOutIndex]));
+					end else
+						A.ShowMSG(0, '<$171>');
+						
+				end;	
+				for aOutIndex := 0 to 5 do
+					RandomItems[aOutIndex] := 0;	
+					
+				HousesFirstBuilt[5].Trading := false;
+				HousesFirstBuilt[5].aDelay := States.GameTime + 12000;
+				Actions.PlanRemove(0,X,Y);
+			end;
 	end;
 end;
 
@@ -1269,11 +1304,9 @@ end;
 
 Procedure OnTick;
 var I : Integer;
-	aPos:TKMPoint;
 begin
-	aPos := States.UnitPosition(Hero);
 	OnTickBonuses;
-	OnTickAttacks;
+	//OnTickAttacks;
 	OnTickTesting;
 	OnTickBuildAWall;
 	OnTickVillageReaveling;
@@ -1314,26 +1347,26 @@ begin
 	If length(Ruins) > 0 then 
 		If States.GameTime mod 1200 = 0 then 
 			for I := 0 to high(Ruins) do
-			If U.InAreaI(aPos.X,aPos.Y, Ruins[I].X-1, Ruins[I].Y-1, Ruins[I].X+1, Ruins[I].Y+1) then 
+			If U.InAreaI(aHeroPos.X,aHeroPos.Y, Ruins[I].X-1, Ruins[I].Y-1, Ruins[I].X+1, Ruins[I].Y+1) then 
 			begin
 				GiveRandomFromRuins;
 				Ruins := PointArrayRemoveIndex(Ruins, [I]);
 			end;
 	
-	If HeroInventory[0][HeroInventoryString[0]].Name = 'Pickaxe' then  
+	If HeroInventory[0][SlotID[0]].Name = 'Pickaxe' then  
 		If States.GameTime mod 600 = 0 then 
-			If U.ArrayHasElementI(States.MapTileObject(aPos.X,aPos.Y-1),[8,9]) then
+			If U.ArrayHasElementI(States.MapTileObject(aHeroPos.X,aHeroPos.Y-1),[8,9]) then
 			begin
-				A.MapTileObjectSet(aPos.X,aPos.Y-1,255);
+				A.MapTileObjectSet(aHeroPos.X,aHeroPos.Y-1,255);
 				A.GiveWares(0, 1, States.KaMRandomI(3)+1);
 				A.ShowMSG(0, '<$88>');
 			end;
 	
-	If HeroInventory[0][HeroInventoryString[0]].Name = 'Woodcutter`s Axe' then  
+	If HeroInventory[0][SlotID[0]].Name = 'Woodcutter`s Axe' then  
 		If States.GameTime mod 600 = 0 then 
-			If U.InRangeI(States.MapTileObject(aPos.X,aPos.Y), 88, 206) then
+			If U.InRangeI(States.MapTileObject(aHeroPos.X,aHeroPos.Y), 88, 206) then
 			begin
-				A.MapTileObjectSet(aPos.X,aPos.Y,255);
+				A.MapTileObjectSet(aHeroPos.X,aHeroPos.Y,255);
 				A.GiveWares(0, 0, States.KaMRandomI(3)+1);
 				A.ShowMSG(0, '<$90>');
 			end;
@@ -1348,14 +1381,14 @@ begin
 	If States.GameTime mod 50 = 0 then 
 	begin
 		If ScannerOn = false then
-			If HeroInventory[2][HeroInventoryString[2]].Name = 'Scanning Glasses' then  
+			If HeroInventory[2][SlotID[2]].Name = 'Scanning Glasses' then  
 			begin
 				ScannerOn := true;
 				A.HouseAllowAllyToSelectAll(-1,true);
 			end;
 			
 		If ScannerOn = true then
-			If HeroInventory[2][HeroInventoryString[2]].Name <> 'Scanning Glasses' then  
+			If HeroInventory[2][SlotID[2]].Name <> 'Scanning Glasses' then  
 			begin
 				ScannerOn := false;
 				A.HouseAllowAllyToSelectAll(-1,false);
@@ -1386,6 +1419,9 @@ begin
 		
 	If States.GameTime = 600 then 
 		A.ShowMSG(0,'<$120>');
+		
+	If States.GameTime = 18000 then 
+		A.ShowMSG(0,'<$690>');
 		
 	If States.GameTime = 800 then 
 	begin
@@ -1595,7 +1631,7 @@ begin
 					A.ShowMSGGoTo(0, 38,172,'<$162>');
 				end;
 				If States.GameTime mod 100 = 0 then 
-					If aPos = Point(38,174) then 
+					If aHeroPos = Point(38,174) then 
 						begin
 							Meriton := true;
 							StartCinematic(0,0);

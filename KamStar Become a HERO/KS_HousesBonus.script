@@ -45,7 +45,71 @@ begin
 	Actions.PlanConnectRoad(4,207,53,210,66,false);
 
 end;
+Procedure SetRandomItems;
+var Random, I, aIndex : integer;
+begin
+	for I := 5 downto 0 do 
+		If RandomItems[I] = 0 then 
+			aIndex := I;
+			
+	Random := U.RandomRangeI(8, 56);
+	If U.ArrayHasElementI(Random, [41,42,43,44,45,46,47,49,50,56,23,10,11,12,13,29]) then 
+	begin
+		SetRandomItems;
+		Exit;
+	end else
+	If U.ArrayHasElementI(Random, RandomItems) then 
+	begin
+		SetRandomItems;
+		Exit;
+	end else 
+	begin
+		RandomItems[aIndex] := Random;
+		If RandomItems[5] = 0 then 
+			SetRandomItems;
+	end;
+end;
 
+procedure SetTradingMode(aHouse:Integer);
+var aType, I, K, aIndex, aType2 : Integer;
+	FinString : Ansistring;
+begin
+	aType2 := States.HouseType(aHouse);
+	If aType2 <> 29 then 
+		Exit;
+	If not HousesFirstBuilt[5].Once then 
+		Exit;
+		
+	If States.HouseOwner(aHouse) <> 0 then
+		Exit;
+		
+	if HousesFirstBuilt[5].aType <> 29 then 
+		Exit;
+		
+	If aHouse <=0 then
+		Exit;
+		
+	If States.GameTime < HousesFirstBuilt[5].aDelay then 
+		Exit;
+		
+	If MultiMessages.aIndex <= high(MultiMessages.aShowArray) then 
+		Exit;
+		
+	SetRandomItems;
+	
+	HousesFirstBuilt[5].aDelay := States.GameTime + 6000;
+	HousesFirstBuilt[5].Trading := true;
+	
+	A.CinematicStart(0);
+	A.CinematicPanTo(0,11,240,0);
+	A.CinematicEnd(0);
+	FinString := '<$167>';
+	for I := 0 to 5 do
+		FinString := FinString + '|' + GetItemName(RandomItems[I])+' : ' + IntToStr(GetItemCost(RandomItems[I]));
+	
+	A.ShowMSG(0, FinString);	
+	A.ShowMSG(0, '<$168>');	
+end;
 
 procedure SetBonusNearHouse(aHouse:Integer);
 var aType, I, K, aIndex, aType2 : Integer;
@@ -63,13 +127,14 @@ begin
 	for I := 0 to 10 do
 		If HousesFirstBuilt[I].aType = aType2 then 
 			aIndex := I;
-			
 	If aIndex = -1 then
 	begin
 		A.ShowMSG(0,'<$' + IntToStr(144 + States.KamRandomI(4) ) + '>')
 		Exit;
 	end;
-	
+	if (HousesFirstBuilt[aIndex].aType = 29) and HousesFirstBuilt[aIndex].Once then 
+		Exit;
+		
 	If States.GameTime < HousesFirstBuilt[aIndex].aDelay then 
 		Exit;
 		
@@ -78,6 +143,9 @@ begin
 	
 	If aIndex <> -1 then 
 		HousesFirstBuilt[aIndex].aDelay := States.GameTime + 1200;
+		
+	If aIndex = 5 then 
+		HousesFirstBuilt[aIndex].aDelay := States.GameTime + 6000;
 		
 	If HousesFirstBuilt[aIndex].Once then
 	begin
@@ -359,13 +427,14 @@ begin
 			end;
 		10 : case aType of
 				2 :	begin
-						GiveHouseMultipleTimes(1,17, true,true,[Point(88,65),Point(100,65),Point(108,55),Point(114,49),Point(122,51),Point(131,52),Point(133,42)]);
+						GiveHouseMultipleTimes(8,17, true,true,[Point(88,65),Point(100,65),Point(108,55),Point(114,49),Point(122,51),Point(131,52),Point(133,42)]);
 						GiveHouseMultipleTimes(8,17, true,true,[Point(191,22),Point(197,33),Point(196,12),Point(9,52),Point(18,60),Point(36,66),Point(69,71)]);
 						HousesToBuild[6] := HousesToBuild[6]+14
 					end;
 				10 :begin
-						BiggerEnemyAttacks := 4;
-						HousesToBuild[6] := HousesToBuild[6]+7
+						BiggerEnemyAttacks := 10;
+						ArmorDoubleProduction := true;
+						HousesToBuild[6] := HousesToBuild[6]+7;
 					end;
 			end;
 	end;

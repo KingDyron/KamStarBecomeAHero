@@ -103,7 +103,7 @@ begin
 			EmissaryStats[1] := eAccepted;
 			EmissaryTime[1] := States.GameTime ;
 		end else
-		If U.KMPoint(X,Y) = States.UnitPosition(Hero) then 
+		If U.KMPoint(X,Y) = aHeroPos then 
 		begin
 			EmissaryStats[1] := eDenied;
 			EmissaryTime[1] := States.GameTime ;	
@@ -115,7 +115,7 @@ begin
 			EmissaryStats[4] := eAccepted;
 			EmissaryTime[4] := States.GameTime + 10 ;
 		end else
-		If U.KMPoint(X,Y) = States.UnitPosition(Hero) then 
+		If U.KMPoint(X,Y) = aHeroPos then 
 		begin
 			EmissaryStats[4] := eDenied;
 			EmissaryTime[4] := States.GameTime + 10;	
@@ -132,7 +132,7 @@ begin
 				EmissaryStats[6] := eAccepted;
 				EmissaryTime[0] := States.GameTime ;
 			end else
-			If U.KMPoint(X,Y) = States.UnitPosition(Hero) then 
+			If U.KMPoint(X,Y) = aHeroPos then 
 			begin
 				EmissaryStats[4] := eDenied;
 				EmissaryStats[5] := eDenied;
@@ -173,13 +173,21 @@ Procedure EmisOnTick;
 var I,K : Integer;
 	aPos : TKMPoint;
 	QComplete : Boolean;
-begin	
-	aPos := States.UnitPosition(Hero);
+begin
+	If States.GameTime = HousesFirstBuilt[5].aTime + 600 then
+		If HousesFirstBuilt[5].aType = 29 then 
+			A.FogRevealRect(0, 4, 236, 18, 252);
+			
 	If States.GameTime = HousesFirstBuilt[5].aTime + 600 then
 		If HousesFirstBuilt[5].aType = 29 then 
 			A.ShowMSG(0, '<$149>')
 		else
 			A.ShowMSG(0, '<$150>');
+	If States.GameTime = HousesFirstBuilt[10].aTime + 600 then
+		If HousesFirstBuilt[5].aType = 2 then 
+			A.ShowMSG(0, '<$165>')
+		else
+			A.ShowMSG(0, '<$166>');
 			
 	//emissary 1 and 4
 	If States.GameTime = HousesFirstBuilt[5].aTime + DifficultyMultipiers[0] then
@@ -213,8 +221,8 @@ begin
 			end;
 			EmissaryStats[4] := eNotArrived;
 			Actions.GroupBlockOrders(Emissary1,true)
-			Actions.FogRevealCircle(0,114,55,3)
-			Actions.ShowMSGGoTo(0,114,53,'<$200>');
+			Actions.FogRevealCircle(0,114,65,3)
+			Actions.ShowMSGGoTo(0,114,63,'<$200>');
 		end;	
 		
 		
@@ -259,7 +267,7 @@ begin
 		if States.GameTime mod 100 = 0 then
 			for I := 1 to 6 do
 				If EmissaryTime[I] = 9999999 then 
-					If HeroNearbyEmissary(States.UnitPosition(Hero),I) then
+					If HeroNearbyEmissary(aHeroPos,I) then
 					begin
 						EmissaryTime[I] := States.GameTime;
 					end;
@@ -280,12 +288,12 @@ begin
 		begin
 			Actions.ShowMSG(0,'<$203>');
 			EmissaryStats[1] := eTalkEnd;
-			LastHeroPos := States.UnitPosition(Hero);
+			LastHeroPos := aHeroPos;
 			StartCinematic(1,0);
 		end;
 	end;
 	If EmissaryStats[1] = eTalkEnd then 
-		If States.UnitPosition(hero) <> LastHeroPos then 
+		If aHeroPos <> LastHeroPos then 
 		begin
 			EmissaryStats[1] := eDenied;
 			EmissaryTime[1] := States.GameTime;		
@@ -346,11 +354,11 @@ begin
 		begin
 			StartCinematic(1,0);
 			EmissaryStats[4] := eTalkEnd;
-			LastHeroPos := States.UnitPosition(Hero);
+			LastHeroPos := aHeroPos;
 		end;
 	end;
 	If EmissaryStats[4] = eTalkEnd then 
-		If States.UnitPosition(hero) <> LastHeroPos then 
+		If aHeroPos <> LastHeroPos then 
 		begin
 			EmissaryStats[4] := eDenied;
 			EmissaryTime[4] := States.GameTime;		
@@ -398,7 +406,7 @@ begin
 			Actions.FogRevealCircle(0,148,139,5)		
 		end;
 			
-		If aPos = U.KMPoint(145,140) then 
+		If aHeroPos = U.KMPoint(145,140) then 
 			If States.GameTime mod 50 = 0 then
 			begin
 				If (EmissaryStats[6] = eArrived) and (EmissaryStats[0] = eNone) then
@@ -406,7 +414,7 @@ begin
 					A.ShowMSG(0,'<$213>');
 					EmissaryStats[0] := eTalkStart;
 					StartCinematic(0,2);
-					LastHeroPos := States.UnitPosition(Hero);
+					LastHeroPos := aHeroPos;
 					EmissaryTime[0] := States.GameTime;
 				end;
 		end;
@@ -444,7 +452,7 @@ begin
 		end;
 		
 		If (EmissaryStats[4] = eWaiting) and (EmissaryStats[5] = eWaiting) and (EmissaryStats[6] = eWaiting) then 
-			If States.UnitPosition(hero) <> LastHeroPos then 
+			If aHeroPos <> LastHeroPos then 
 			begin
 				EmissaryStats[0] := eDenied;
 				EmissaryStats[4] := eDenied;
@@ -671,7 +679,7 @@ begin
 	If EmissaryStats[7] = eNone then 
 		If QuestNow.QType = qTheChoice then 
 			If States.GameTime mod 50 = 0 then 
-				If States.UnitPosition(Hero) = U.KMPoint(45,246) then 
+				If aHeroPos = U.KMPoint(45,246) then 
 				begin
 					EmissaryStats[7] := eTalkStart;
 					EmissaryTime[7] := States.GameTime;
@@ -838,7 +846,7 @@ begin
 			If States.GameTime > QuestNow.QMadeTime[9] + 600 then 
 				If States.GameTime mod 50 = 0 then 
 				Begin
-					If States.UnitPosition(Hero) = U.KMPoint(224,112) then 
+					If aHeroPos = U.KMPoint(224,112) then 
 					begin
 						QuestNow.QMadeTime[9] := 99999999;
 						EmissaryTime[7] := States.GameTime;	
@@ -846,7 +854,7 @@ begin
 						StartCinematic(0,0);
 						A.ShowMSG(0,'<$266>');
 					end;
-					If States.UnitPosition(Hero) = U.KMPoint(182,206) then 
+					If aHeroPos = U.KMPoint(182,206) then 
 					begin
 						QuestNow.QMadeTime[9] := 99999999;
 						EmissaryTime[7] := States.GameTime;	
@@ -1035,7 +1043,7 @@ begin
 		end;
 		If EmissaryStats[8] = eNone then 
 			If States.GameTime > QuestNow.QMadeTime[12] + 100 then 
-				If States.UnitPosition(Hero) = U.KMPoint(157,105) then
+				If aHeroPos = U.KMPoint(157,105) then
 				begin
 					EmissaryTime[8] := States.GameTime;
 					EmissaryStats[8] := eTalkStart;
@@ -1089,7 +1097,7 @@ begin
 			GroupHpInvulnerableSet(TheLast,true)
 		end;
 		If EmissaryStats[8] = eNone then
-			If States.UnitPosition(Hero) = U.KMPoint(157,105) then
+			If aHeroPos = U.KMPoint(157,105) then
 			begin
 				EmissaryTime[8] := States.GameTime;
 				EmissaryStats[8] := eTalkStart;

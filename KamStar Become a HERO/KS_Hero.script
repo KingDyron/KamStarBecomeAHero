@@ -10,15 +10,15 @@ begin
 	If high(HeroInventory[aIndex]) = 0 then
 		Exit;
 		
-	HeroInventoryString[aIndex] := HeroInventoryString[aIndex] + 1;
+	SlotID[aIndex] := SlotID[aIndex] + 1;
 	
 	//If not U.ArrayHasElementI(aIndex, [0,1,7]) then 
-	//	If HeroInventoryString[aIndex] >= length(HeroInventory[aIndex]) then
-	//		HeroInventoryString[aIndex] := 1;
+	//	If SlotID[aIndex] >= length(HeroInventory[aIndex]) then
+	//		SlotID[aIndex] := 1;
 			
 	//If U.ArrayHasElementI(aIndex, [0,1,7]) then 
-		If HeroInventoryString[aIndex] >= length(HeroInventory[aIndex]) then
-			HeroInventoryString[aIndex] := 0;
+		If SlotID[aIndex] >= length(HeroInventory[aIndex]) then
+			SlotID[aIndex] := 0;
 		
 	SetInventoryStats(aIndex);
 end;
@@ -26,11 +26,29 @@ end;
 
 
 Procedure OnUnitWoundedHero(aUnit,aKiller:Integer);
+var Random : Integer;
 begin	
 	If aUnit = Hero then 
 	begin
+		case States.UnitType(aKiller) of 
+			13 : Random := 130;
+			14 : Random := 45;
+			15 : Random := 75;
+			16 : Random := 85;
+			17 : Random := 70;
+			18 : Random := 75;
+			19 : Random := 75;
+			20 : Random := 80;
+			21 : Random := 78;
+			22 : Random := 85;
+			23 : Random := 90;
+			24 : Random := 40;
+			25 : Random := 30;
+			26 : Random := 100;
+			27 : Random := 50;
+		end;
 		If HeroStats[0].Health>0 then 
-			If U.RandomRangeI(1,100)> HeroStats[0].Defense then 
+			If U.RandomRangeI(1,Random)> HeroStats[0].Defense then 
 			begin
 				Actions.UnitHpSetInvulnerable(Hero,true);
 				If not HeroImmortal then
@@ -121,7 +139,7 @@ begin
 	end;
 	
 	If not AncientFound[0] then
-		If States.UnitPosition(Hero) = Point(50,129) then
+		If aHeroPos = Point(50,129) then
 		begin
 			
 			GiveItemFromID(10);
@@ -130,7 +148,7 @@ begin
 		end;
 	
 	If not AncientFound[1] then		
-		If States.UnitPosition(Hero) = Point(255,78) then
+		If aHeroPos = Point(255,78) then
 		begin
 			GiveItemFromID(11);
 			A.ShowMSG(0, 'You found The Ancient Shield. Good job!');
@@ -138,19 +156,58 @@ begin
 		end;
 		
 	If not AncientFound[2] then
-		If States.UnitPosition(Hero) = Point(126,93) then
+		If aHeroPos = Point(126,93) then
 		begin
 			GiveItemFromID(12);
 			A.ShowMSG(0, 'You found The Ancient Helmet. Good job!');
 			AncientFound[2] := not AncientFound[2];
 		end;
 	If not AncientFound[3] then 
-		If States.UnitPosition(Hero) = Point(228,2) then
+		If aHeroPos = Point(228,2) then
 		begin
 			GiveItemFromID(13);
 			A.ShowMSG(0, 'You found The Ancient Chestplate. Good job!');
 			AncientFound[3] := not AncientFound[3];
 		end;
+	If not AncientFound[4] then 
+		If aHeroPos = Point(190,31) then
+		begin
+			GiveItemFromID(49);
+			A.ShowMSG(0, 'You found The Ancient Leggings. Good job!');
+			AncientFound[4] := not AncientFound[4];
+		end;
+	If not AncientFound[5] then 
+		If aHeroPos = Point(119,241) then
+		begin
+			GiveItemFromID(50);
+			A.ShowMSG(0, 'You found The Ancient Boots. Good job!');
+			AncientFound[5] := not AncientFound[5];
+		end;
+	//Hero Bonuses - sakwa
+	If States.GameTime mod 9000 = 0 then
+	begin
+		If aItem[4].ID = 45 then 
+		begin
+			If GetItemIndex(52,HeroInventory[6]) <> -1 then 
+				A.GiveWares(0,0,10);
+			If GetItemIndex(53,HeroInventory[6]) <> -1 then 
+				A.GiveWares(0,5,10);
+			If GetItemIndex(54,HeroInventory[6]) <> -1 then 
+				A.GiveWares(0,1,10);
+			If GetItemIndex(55,HeroInventory[6]) <> -1 then 
+				A.GiveWares(0,4,10);
+		end else 
+		begin
+			If aItem[6].ID = 52 then 
+				A.GiveWares(0,0,10);
+			If aItem[6].ID = 53 then 
+				A.GiveWares(0,5,10);
+			If aItem[6].ID = 54 then 
+				A.GiveWares(0,1,10);
+			If aItem[6].ID = 55 then 
+				A.GiveWares(0,4,10);		
+		end;
+	end;
 end;
 
 

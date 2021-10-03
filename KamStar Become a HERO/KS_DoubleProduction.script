@@ -11,14 +11,26 @@ var Player,Random:Integer;
 begin
 	Player:=States.HouseOwner(aHouse);	
 	If Player = 0 then
-		If (States.HouseType(aHouse) = 5) and (GoldDoubleProduction = true) then 
-			If aHouse = HousesFirstBuilt[4].ID then
-			case aWare of 
-				4:	If (States.HouseResourceAmount(aHouse,aWare )<6) and (States.StatResourceProducedCount(Player,aWare) >= Produced[aWare]) then begin
-						Produced[aWare]:= States.StatResourceProducedCount(Player,aWare)+((ResourceCount[aWare])*2);
-						Actions.HouseAddWaresTo(aHouse,aWare,ResourceCount[aWare]);
-					end;
-			end;
+		begin
+			If (States.HouseType(aHouse) = 5) and (GoldDoubleProduction = true) then 
+				If aHouse = HousesFirstBuilt[4].ID then
+				case aWare of 
+					4:	If (States.HouseResourceAmount(aHouse,aWare )<6) and (States.StatResourceProducedCount(Player,aWare) >= Produced[aWare]) then 
+						begin
+							Produced[aWare]:= States.StatResourceProducedCount(Player,aWare)+((ResourceCount[aWare])*2);
+							Actions.HouseAddWaresTo(aHouse,aWare,ResourceCount[aWare]);
+						end;
+				end;
+			If  (ArmorDoubleProduction = true) and (States.HouseType(aHouse) = 10) then 
+				If aHouse = HousesFirstBuilt[4].ID then
+				case aWare of 
+					17,19:	If (States.HouseResourceAmount(aHouse,aWare )<6) and (States.StatResourceProducedCount(Player,aWare) >= Produced[aWare]) then 
+						begin
+								Produced[aWare]:= States.StatResourceProducedCount(Player,aWare)+((ResourceCount[aWare])*2);
+								Actions.HouseAddWaresTo(aHouse,aWare,ResourceCount[aWare]);
+						end;
+				end;
+		end;
 	If Player = 12 then 
 		If States.StatArmyCount(12) < 96 then 
 			If States.HouseType(aHouse) = 9 then 
