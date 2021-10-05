@@ -1,0 +1,5 @@
+2021.10.04 11:46:45.299   Script compile errors:
+
+[Error] Unknown identifier 'Hero'
+in 'D:\Remake\KaM Remake Beta r13651\Maps\KamStar Become a HERO\KS_Functions.script' at [25:25]
+

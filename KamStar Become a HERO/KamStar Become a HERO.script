@@ -5,6 +5,7 @@
 var	VillageVisited : array[0..5] of Boolean;
 	MainStoreHouse : array[0..17] of Integer;
 var aPlayersUType : array[0..5] of array of Integer;
+	aPlayersGType : array[4..13] of array of Integer;
 
 type KS_EmissaryType = (eNone,eNotArrived,eArrived,eKilled,eDenied,eAccepted,
 						eTalkStart,eTalkEnd,eAllied,eNotAllied,eWaiting, eAttacking,
@@ -34,7 +35,7 @@ end;
 
 const 
 	QT_MAX = 16;
-	NextQuestTime = 6000;
+	NextQuestTime = 1200;
 	
 	
 type KS_QuestTypeTime = record
@@ -92,6 +93,7 @@ type KS_PlayerAll = record
 end;
 
 type KS_VillageQuest = record
+	LastQuest : Boolean;//wares Deliverry
 	DTrue : Boolean;//wares Deliverry
 	DMan : Integer;//wares Deliverry
 	QGiver : Integer;
@@ -114,7 +116,7 @@ type KS_MultiMessages = record
 	GroupsToKill : array of Integer;
 end;
 type KS_UnitData = record
-	aType, aCount,ToPlayer : Integer;
+	aType, aCount,ToPlayer, aMod : Integer;
 	Added : Boolean;
 end;
 
@@ -128,7 +130,7 @@ var StartUnitCount : array[0..18] of KS_StartArmy;
 	Hero, Emissary1, Emissary4, Emissary5, Emissary6, PlayerBuildingsDestroyed, MeritonSword : Integer;
 	EmissaryStats : array[0..8] of KS_EmissaryType;
 	VisitedLastVillage, UnlimitedFishes, HeroNotHungry, HeroImmortal,
-	GoldDoubleProduction, ArmorDoubleProduction	: Boolean;
+	GoldDoubleProduction, ArmorDoubleProduction, CanSendArmy, Pl7CanEquipWarriors: Boolean;
 	PlayersAttacked : array[0..18] of KS_PlayerAll;
 	DefAttack : array[0..8] of boolean;
 	CavarlyGroup, FreeUnitsToEquip, duckIndex,
@@ -136,7 +138,7 @@ var StartUnitCount : array[0..18] of KS_StartArmy;
 	: Integer;
 	QuestNow : KS_QuestTypeTime;
 	PlayersFirstDefeated : array[0..3] of Integer;
-	QuestInteger :array[0..5] of integer;
+	QuestInteger :array[0..6] of integer;
 	Win : KS_WinSet;
 	TheChoice : array[0..3] of Integer;
 	TheLast : array[0..2] of Integer;
@@ -154,6 +156,8 @@ var StartUnitCount : array[0..18] of KS_StartArmy;
 	aHeroPos : TKMPoint;
 	BarbarainsStartPositions : array of TKMPoint;
 	BarrackVillageHelp : KS_UnitData;
+	GroupsToSend : array[14..27] of Integer;
+	TimeGroup,GDir,GPosX,GPosY : Integer;
 //event times variables
 var	AttacksTime : array[0..11] of Integer;
 	EmissaryTime : array[0..8] of integer;
@@ -190,7 +194,12 @@ var VillageQuestGiver : array[0..5] of KS_VillageQuest;
 	
 	DifficultyMultipiers : array[0..5] of Integer;
 	HouseDestroyedByScript : Boolean;
-
+//wares giving
+var Gracz: Integer;//array of integer; - zmienna ma w sobie zbiór liczb ca³kowitych, mo¿e byæ maksymalnie ileœ liczb w zale¿noœci co chesz zrobiæ                                            
+	Giving: boolean;
+	Stores:array of integer;
+	TimeG,TimeT, GroupID, Confirm:Integer;
+	
 {$I KS_Functions.script}
 {$I AIBuilding.script}
 {$I KS_Attacks.script}
@@ -206,13 +215,14 @@ Procedure EquipWarrior;
 var I :Integer;
 	aPos : TKMPoint;
 begin
-	If Player7TH > 0 then 
-		If States.HouseResourceAmount(Player7TH, 7) > 8 then 
-		begin
-			aPos := States.HousePosition(Player7TH);
-			A.GiveGroup(6,26,aPos.X,aPos.Y+1, 4,1,1);
-			A.HouseTakeWaresFrom(Player7TH,7,8)			
-		end;
+	If Pl7CanEquipWarriors then 
+		If Player7TH > 0 then 
+			If States.HouseResourceAmount(Player7TH, 7) > 8 then 
+			begin
+				aPos := States.HousePosition(Player7TH);
+				A.GiveGroup(6,26,aPos.X,aPos.Y+1, 4,1,1);
+				A.HouseTakeWaresFrom(Player7TH,7,8)			
+			end;
 	If States.HouseAt(THPos.X,THPos.Y) > 0 then
 		If States.HouseResourceAmount(States.HouseAt(THPos.X,THPos.Y), 7) > 8 then 
 			If (States.StatUnitTypeCount(1,16)+States.StatUnitTypeCount(1,26)) < StartUnitCount[1].Warr then
@@ -315,18 +325,6 @@ begin
 					A.HouseAddWaresTo(AllHouses[LEA],1,1);
 end;
 
-
-Procedure SetInvurnelabeUnits;
-var allUnits : array of Integer;
-	I,LEA:Integer;
-begin
-	for I := 11 to 14 do 
-	begin
-		allUnits := States.PlayerGetAllUnits(I)
-		for LEA := 0 to length(allUnits)-1 do
-			Actions.UnitHPSetInvulnerable(allUnits[LEA],true);
-	end;
-end;
 
 Procedure BuildOnDef61;
 begin
@@ -1182,9 +1180,9 @@ begin
 			begin
 				If VillageQuestGiver[4].QEventType = 2 then 
 					If States.GameTime > VillageQuestGiver[4].QEndTime then 
-						QuestInteger[4] := QuestInteger[4] + 1;
-				If QuestInteger[4] = 30 then 
-					QuestTasks[4][1] := true;
+						QuestInteger[6] := QuestInteger[6] + 1;
+				If QuestInteger[6] = 30 then 
+					QuestTasks[6][1] := true;
 			end;
 			Actions.PlanRemove(0,X,Y);
 			Actions.PlanAddRoad(6,X,Y);
@@ -1295,6 +1293,7 @@ Procedure OnBeacon(aPlayer,X,Y :Integer);
 begin
 	If not InCinematic then 
 		If States.GameTime > BeaconSetTime then 
+			If States.GroupAt(X,Y) <= 0 then 
 				If not States.UnitDead(Hero) then 
 					If States.UnitIdle(Hero) then 
 					begin
@@ -1348,8 +1347,8 @@ begin
 	
 	//MinersToTrain := 12;
 	//MinersKilled := 12;
-	//SetImmortality2(0,true);
-	//InstantKill[0] := true;
+	SetImmortality2(0,true);
+	InstantKill[0] := true;
 end;
 
 procedure OnTickTesting;
@@ -1370,6 +1369,10 @@ begin
 	OnTickRemoveAttacks;
 	OnTickVillages;
 	
+	If States.GameTime = TimeGroup + 1 then 
+		GiveFinGroup;
+		
+		
 	If States.GameTime mod 5 = 0 then 
 		If States.HouseRepair(MainStoreHouse[0]) and (ShowStatsOrPlayers[1] = 0) then 
 		begin
@@ -1420,7 +1423,7 @@ begin
 			end;
 	
 	If HeroInventory[0][SlotID[0]].Name = 'Woodcutter`s Axe' then  
-		If States.GameTime mod 600 = 0 then 
+		If States.GameTime mod 200 = 0 then 
 			If U.InRangeI(States.MapTileObject(aHeroPos.X,aHeroPos.Y), 88, 206) then
 			begin
 				A.MapTileObjectSet(aHeroPos.X,aHeroPos.Y,255);
@@ -1844,6 +1847,11 @@ begin
 	aPlayersUType[4] :=[14,19,17,27];//5
 	aPlayersUType[5] :=[14,19,17,21];//6
 	
+	aPlayersGType[4] :=[0,1,2];//6
+	aPlayersGType[5] :=[0,2];//6
+	aPlayersGType[6] :=[0,2,3];//6
+	aPlayersGType[13] :=[0,1,2,3];//6
+	
 	A.ShowMSG(0, '<$502>');
 	A.ShowMSG(0, '<$503>');
 	
@@ -1948,8 +1956,8 @@ begin
 			end;
 	end;
 	
-	AddPatroll(13,14,Point(62,114),Point(105,109));
-	AddPatroll(13,27,Point(68,129),Point(236,217));
-	AddPatroll(13,14,Point(41,75),Point(60,127));
-	AddPatroll(13,14,Point(71,119),Point(131,196));
+	AddPatroll(13,14,1,1,Point(62,114),Point(105,109));
+	AddPatroll(13,27,1,1,Point(68,129),Point(236,217));
+	AddPatroll(13,14,1,1,Point(41,75),Point(60,127));
+	AddPatroll(13,14,1,1,Point(71,119),Point(131,196));
 end;

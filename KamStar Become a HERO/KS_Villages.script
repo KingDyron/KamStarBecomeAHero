@@ -61,8 +61,15 @@ begin
 					end;
 			end;
 		5: Case aQVNow of
-				2: 	begin			
+				2:;
+				14: begin
+						CanSendArmy := true;
+						QuestInteger[0] := 0;
 					end;
+				17:	GroupHpInvulnerableSet(States.PlayerGetAllGroups(10),false);
+				//for I := 0 to high(Patrolls) do 
+					//	If States.GroupOwner(Patrolls[I].aID) = 10 then 
+					//		GroupHpInvulnerableSet([Patrolls[I].aID],false);
 			end;
 	end;
 	
@@ -102,7 +109,20 @@ begin
 					end;
 			end;
 		5: Case aQVNow of
-				2: 	begin			
+				14: begin	
+						CanSendArmy := false;		
+					end;
+				16:	begin
+						for I := 0 to high(Patrolls) do 
+							If States.GroupOwner(Patrolls[I].aID) = 10 then
+							begin
+								GroupHpInvulnerableSet([Patrolls[I].aID],false);
+								A.GroupKillAll(Patrolls[I].aID,true);
+							end;
+					
+						AddPatroll(10,22,6,3,Point(76,92),Point(180,92));
+						AddPatroll(10,22,6,3,Point(137,60),Point(132,147));
+						AddPatroll(10,22,4,2,Point(12,61),Point(56,74));
 					end;
 			end;
 	end;
@@ -540,8 +560,10 @@ begin
 end;
 
 Procedure OnTickBarracksVillage;
+var I : Integer;
 begin
-	If States.GameTime mod 6000 = 0 then 
+	
+	If States.GameTime mod BarrackVillageHelp.aMod = 0 then 
 		If BarrackVillageHelp.Added then 
 			begin
 				If BarrackVillageHelp.ToPlayer = 0 then 
@@ -551,7 +573,7 @@ begin
 					
 				A.GroupOrderWalk(A.GiveGroup(BarrackVillageHelp.ToPlayer, BarrackVillageHelp.aType, 61,125,0, BarrackVillageHelp.aCount, 3),81,170,4);
 			end;
-		
+	//check what happened with patrols
 	if VillageQuestGiver[5].QEventType = 1 then 
 		If States.GameTime = VillageQuestGiver[5].QTime + 10 then
 			SetNewMultiMessages([655,656,657,658, 601],70,[],[]);
@@ -560,10 +582,10 @@ begin
 	//first quest	
 	if VillageQuestGiver[5].QEventType = 2 then
 	begin
-		If States.GameTime mod 100 = 0 then 
-		begin
 		If States.GameTime = VillageQuestGiver[5].QTime + 100 then 
 			A.ShowMSG(0,'<$672>');
+		If States.GameTime mod 100 = 0 then 
+		begin
 			
 			If not QuestTasks[5][0] then 
 				If  PosInRadius(aHeroPos, Point(142,126), 1) then
@@ -590,12 +612,16 @@ begin
 					BarrackVillageHelp.aCount := 1;
 					BarrackVillageHelp.aType := 14;
 				end else
-					A.ShowMSG(0, '<$661>');			
+				If States.GameTime > MessageDelay then 
+				begin
+					MessageDelay := States.GameTime + 1200;
+					A.ShowMSG(0, '<$661>');	
+				end;		
 					
 		end;
 	end;
 	
-	//second
+	//just a conversation
 	if VillageQuestGiver[5].QEventType = 4 then
 		If States.GameTime = VillageQuestGiver[5].QTime + 10 then
 			SetNewMultiMessages([673, 601],70,[],[]);
@@ -611,11 +637,264 @@ begin
 			OnTaskCompleted(0,[],[],false);
 		end;	
 	end;
+	
 	if VillageQuestGiver[5].QEventType = 6 then
 		If States.GameTime = VillageQuestGiver[5].QTime + 800 then 
 			GiveHouseMultipleTimes(9,17, true,false,[Point(92,141),Point(100,153)],Point(0,0));
 	
+	//check garrisons
+	if VillageQuestGiver[5].QEventType = 7 then 
+			If States.GameTime = VillageQuestGiver[5].QTime + 10 then
+				SetNewMultiMessages([694, 601],70,[],[]);
+
+			
+	if VillageQuestGiver[5].QEventType = 8 then
+	begin
+		If States.GameTime = VillageQuestGiver[5].QTime + 100 then 
+				SetNewMultiMessages([695,696,697,698,699,700,701,702,703,704,705],70,[],[]);
+			
+		If States.GameTime mod 100 = 0 then 
+		begin			
+			If not QuestTasks[5][0] then 
+				If  PosInRadius(aHeroPos, Point(15,57), 3) then
+				begin
+					QuestTasks[5][0] := true;
+					SetNewMultiMessages([706,707],70,[57],[]);
+				end;
+			If QuestTasks[5][0] and not QuestTasks[5][1] then 
+				If  PosInRadius(aHeroPos, Point(200,15), 3) then
+				begin
+					QuestTasks[5][1] := true;	
+					SetNewMultiMessages([708],70,[],[]);
+					A.ShowMSG(0, '<$631>');		
+				end;
+				
+			If  PosInRadius(aHeroPos, VillageQuestGiver[5].QPos, 0) then
+				If QuestTasks[5][0] and QuestTasks[5][1] then 
+				begin
+					SetNewMultiMessages([709,710,711,712,713,714,715],70,[],[]);
+					
+					OnTaskCompleted(0,[],[],false);
+					
+					BarrackVillageHelp.aCount := 2;
+					BarrackVillageHelp.aType := 17;
+					BarrackVillageHelp.Added := true;
+					
+				end else
+				If States.GameTime > MessageDelay then 
+				begin
+					MessageDelay := States.GameTime + 1200;
+					A.ShowMSG(0, '<$661>');	
+				end;
+					
+		end;
+	end;
+	
+	//check way to prison
+	if VillageQuestGiver[5].QEventType = 10 then 
+			If States.GameTime = VillageQuestGiver[5].QTime + 10 then
+				SetNewMultiMessages([716, 601],70,[],[]);
+
+		
+	if VillageQuestGiver[5].QEventType = 11 then
+	begin
+		If States.GameTime = VillageQuestGiver[5].QTime + 100 then 
+			SetNewMultiMessages([717,718],70,[],[]);
+			
+		If States.GameTime mod 100 = 0 then 
+		begin
+			If not QuestTasks[5][0] then 
+				If  PosInRadius(aHeroPos, Point(114,53), 3) then
+				begin
+					QuestTasks[5][0] := true;
+					A.ShowMSG(0, '<$719>');	
+				end;
+			If QuestTasks[5][0] and not QuestTasks[5][1] then 
+				If  PosInRadius(aHeroPos, Point(113,45), 2) then
+				begin
+					QuestTasks[5][1] := true;	
+					A.ShowMSG(0, '<$720>');	
+					A.ShowMSG(0, '<$631>');		
+				end;
+				
+			If  PosInRadius(aHeroPos, VillageQuestGiver[5].QPos, 0) then
+				If QuestTasks[5][0] then 
+				begin
+					SetNewMultiMessages([721,722,723,724],70,[],[]);
+					
+					OnTaskCompleted(0,[],[],false);
+					
+					BarrackVillageHelp.aCount := 4;
+					BarrackVillageHelp.aType := 27;
+					GiveHouseMultipleTimes(9,17, true,false,[Point(94,148)],Point(0,0));
+					BarrackVillageHelp.aMod := 5000;
+					BarrackVillageHelp.Added := true;
+				end else
+				If States.GameTime > MessageDelay then 
+				begin
+					MessageDelay := States.GameTime + 1200;
+					A.ShowMSG(0, '<$661>');	
+				end;		
+					
+		end;
+	end;
+
+	//send army 
+	if VillageQuestGiver[5].QEventType = 13 then 
+			If States.GameTime = VillageQuestGiver[5].QTime + 10 then
+				SetNewMultiMessages([726, 601],70,[],[]);
+				
+	if VillageQuestGiver[5].QEventType = 14 then
+	begin
+		If States.GameTime = VillageQuestGiver[5].QTime + 100 then 
+			SetNewMultiMessages([727,728,729,730,731],70,[],[]);
+			
+		If States.GameTime mod 100 = 0 then 
+		begin
+			If  PosInRadius(aHeroPos, VillageQuestGiver[5].QPos, 0) then
+				If QuestTasks[5][0] then 
+				begin
+					SetNewMultiMessages([732,733,734,735],70,[],[]);
+					
+					OnTaskCompleted(0,[],[],false);
+					
+					BarrackVillageHelp.aCount := 6;
+					BarrackVillageHelp.aType := 21;
+					GiveHouseMultipleTimes(9,17, true,false,[Point(94,148)],Point(0,0));
+					
+					BarrackVillageHelp.aMod := 5000;
+					BarrackVillageHelp.Added := true;
+					
+					AddPatroll(10,22,16,4,Point(76,92),Point(180,92));
+					AddPatroll(10,22,12,4,Point(137,60),Point(132,147));
+					AddPatroll(10,22,9,2,Point(12,61),Point(56,74));
+					CanSendArmy := false;
+					
+				end else
+				If States.GameTime > MessageDelay then 
+				begin
+					MessageDelay := States.GameTime + 1200;
+					A.ShowMSG(0, '<$661>');	
+				end;		
+					
+		end;
+	end;	
+	//Kill patrols
+	if VillageQuestGiver[5].QEventType = 16 then 
+			If States.GameTime = VillageQuestGiver[5].QTime + 10 then
+				SetNewMultiMessages([736, 601],70,[],[]);
+				
+	if VillageQuestGiver[5].QEventType = 17 then
+	begin
+		If States.GameTime = VillageQuestGiver[5].QTime + 100 then 
+			SetNewMultiMessages([737,738,739,740,741],70,[],[]);
+			
+		If States.GameTime mod 100 = 0 then 
+		begin
+			If not QuestTasks[5][0] then 
+			begin
+				QuestTasks[5][0] := true;
+				for I := 0 to high(Patrolls) do	
+					If States.GroupOwner(Patrolls[I].aID) = 10 then 
+						If not States.GroupDead(Patrolls[I].aID) then 
+							QuestTasks[5][0] := false;
+				If QuestTasks[5][0] then 
+					A.ShowMSG(0, '<$631>');		
+					
+			end;
+			If  PosInRadius(aHeroPos, VillageQuestGiver[5].QPos, 0) then
+				If QuestTasks[5][0] then 
+				begin
+					SetNewMultiMessages([742,743,744],70,[],[]);
+					
+					OnTaskCompleted(0,[],[],false);
+					
+					BarrackVillageHelp.aCount := 6;
+					BarrackVillageHelp.aType := 20;
+					GiveHouseMultipleTimes(9,17, true,false,[Point(94,148)],Point(0,0));
+					
+					BarrackVillageHelp.aMod := 4500;
+					BarrackVillageHelp.Added := true;
+					
+					VillageQuestGiver[5].QEndTime := States.GameTime + 1200;
+
+					A.AIDefencePositionRemove(7,61,65);
+					A.AIDefencePositionRemove(7,77,64);
+					A.AIDefencePositionRemove(7,67,64);
+					A.AIDefencePositionRemove(7,79,54);
+					A.AIDefencePositionRemove(7,96,65);
+					A.AIDefencePositionRemove(7,83,65);
+					A.AIDefencePositionRemove(7,72,64);
+				end else
+				If States.GameTime > MessageDelay then 
+				begin
+					MessageDelay := States.GameTime + 1200;
+					A.ShowMSG(0, '<$661>');	
+				end;		
+					
+		end;
+	end;
+	//attack on the prison
+	if VillageQuestGiver[5].QEventType = 19 then 
+			If States.GameTime = VillageQuestGiver[5].QTime + 10 then
+				SetNewMultiMessages([745, 601],70,[],[]);
+				
+	if VillageQuestGiver[5].QEventType = 20 then
+	begin
+		If States.GameTime = VillageQuestGiver[5].QTime + 100 then 
+			SetNewMultiMessages([746,747],70,[],[]);
+			
+		If States.GameTime mod 100 = 0 then 
+		begin
+			If not QuestTasks[5][0] then 
+				If  PosInRadius(aHeroPos, Point(114,46), 10) then
+				begin
+					QuestTasks[5][0] := true;
+					A.ShowMSG(0, '<$719>');	
+				end;
+			If QuestTasks[5][0] and not QuestTasks[5][1] then 
+				If  PosInRadius(aHeroPos, Point(112,42), 2) then
+				begin
+					QuestTasks[5][1] := true;	
+					A.ShowMSG(0, 'You found them');	
+					A.ShowMSG(0, '<$631>');	
+					A.UnitOrderWalk(A.GiveUnit(13,0,112,41,4),27,128);
+					A.UnitOrderWalk(A.GiveUnit(13,0,112,40,4),27,128);
+					A.UnitOrderWalk(A.GiveUnit(13,0,113,41,4),27,128);
+					A.UnitOrderWalk(A.GiveUnit(13,0,113,40,4),27,128);
+					A.UnitOrderWalk(A.GiveUnit(13,0,114,40,4),27,128);
+					A.UnitOrderWalk(A.GiveUnit(13,0,114,41,4),27,128);
+					A.UnitOrderWalk(A.GiveUnit(13,0,112,39,4),27,128);
+					A.UnitOrderWalk(A.GiveUnit(13,0,113,39,4),27,128);
+					SetInvurnelabeUnits;
+				end;
+				
+			If  PosInRadius(aHeroPos, VillageQuestGiver[5].QPos, 1) then
+				If QuestTasks[5][0] then 
+				begin
+					SetNewMultiMessages([721,722,723,724],70,[],[]);
+					
+					OnTaskCompleted(0,[],[],false);
+					
+					BarrackVillageHelp.aCount := 8;
+					GiveHouseMultipleTimes(9,17, true,false,[Point(94,148)],Point(0,0));
+					
+					BarrackVillageHelp.aMod := 4000;
+					BarrackVillageHelp.Added := true;
+					
+				end else
+				If States.GameTime > MessageDelay then 
+				begin
+					MessageDelay := States.GameTime + 1200;
+					A.ShowMSG(0, '<$661>');	
+				end;		
+					
+		end;
+	end;
+	
+	
 end;
+
 Procedure OnTickPlayer7;
 begin
 		
@@ -857,7 +1136,8 @@ end;
 Procedure OnMissionStartVillages;
 var I : Integer;
 begin	
-	//VillageQuestGiver[2].QEventType := 6; 		
+	BarrackVillageHelp.aMod := 6000;
+	VillageQuestGiver[5].QEventType := 12; 		
 	for I := 0 to 5 do
 	begin
 		VillageQuestGiver[I].QEndTime := 9999999;

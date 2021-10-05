@@ -1,5 +1,34 @@
 {$EVENT evtTick:OnTickFunction}
 {$EVENT evtMissionStart:OnMissionStartSetAllItems}
+function Maximum(A,B : Integer) : integer;
+begin
+	If A > B then 
+		Result := B
+	else
+		Result := A;
+end;
+
+function Minimum(A,B : Integer) : integer;
+begin
+	If A < B then 
+		Result := B
+	else
+		Result := A;
+end;
+
+function InRange(A,B,C : Integer) : integer;
+begin
+	If A < B then 
+		Result := B 
+	else
+		Result := A;
+		
+	If A > C then 
+		Result := C
+	else
+		Result := A;
+end;
+
 procedure OnTickFunction;
 begin
 	If not States.UnitDead(Hero) then 
@@ -76,7 +105,7 @@ begin
 		SetKS_Item('Mustang',4,5,99,21,2, 41,7,40),
 		
 		// A class
-		SetKS_Item('Ion Spear',65,5,17,22,14, 42,0,999),//right arm
+		SetKS_Item('Ion Spear',47,5,17,22,14, 42,0,999),//right arm
 		SetKS_Item('Ion Shell',4,6,311,-1,0, 43,1,999),//left arm
 		SetKS_Item('Scanning Glasses',0,0,0,-1,1, 44,2,999),//helmet
 		SetKS_Item('Power Chest Belt',0,35,0,-1,1, 45,3,999),//chestplate
@@ -92,9 +121,91 @@ begin
 		SetKS_Item('Cart of Stone',0,0,0,-1,3, 53,6,96),
 		SetKS_Item('Cart of Gold',0,0,0,-1,3, 54,6,144),
 		
-		SetKS_Item('Meriton`s Sword',43,0,0,-1,3, 55,0,999)
+		SetKS_Item('Meriton`s Sword',43,0,0,-1,3, 55,0,999),
+		SetKS_Item('Stimulant Herbs',0,0,0,-1,-11, 56,6,99),
+		SetKS_Item('Valtarian Sword',30,0,0,-1, 6, 57,6,118)
 	];
 	
+end;
+
+
+Procedure SetInvurnelabeUnits;
+var allUnits : array of Integer;
+	I,LEA:Integer;
+begin
+	for I := 11 to 14 do 
+	begin
+		allUnits := States.PlayerGetAllUnits(I)
+		for LEA := 0 to length(allUnits)-1 do
+			Actions.UnitHPSetInvulnerable(allUnits[LEA],true);
+	end;
+end;
+
+Procedure GiveGroupAtGroup(aToPlayer,aGroup : Integer);
+var I, aType,aDir,aColumnCount : Integer;
+	aPos : TKMPoint;
+begin
+	for I := 14 to 27 do
+		GroupsToSend[I] := 0;
+		
+	aColumnCount := S.GroupColumnCount(aGroup);
+	GDir := States.UnitDirection(S.GroupMember(aGroup,0));
+	aPos := States.UnitPosition(S.GroupMember(aGroup,0));
+	for I := 0 to S.GroupMemberCount(aGroup) do
+	begin
+		aType := States.UnitType(S.GroupMember(aGroup,I));
+		If aType >= 14 then 
+			GroupsToSend[aType] := GroupsToSend[aType] + 1;
+			
+		If S.KamRandomI(100) > 80 then 
+			FreeUnitsToEquip := FreeUnitsToEquip + 1;
+			
+		If VillageQuestGiver[5].QEventType = 14 then 
+			If aToPlayer = 13 then 
+			begin
+				If not QuestTasks[5][0] then
+				begin
+					QuestInteger[0] := QuestInteger[0] + 1;
+					If QuestInteger[0] >= 25 then 
+					begin
+						QuestTasks[5][0] := true;
+						A.ShowMSG(0, '<$631>');	
+					end;
+				end;
+			end;
+		
+	end;
+	
+	GPosX := aPos.X;
+	GPosY := aPos.Y;
+	TimeGroup := States.GameTime + 4;
+	A.GroupKillAll(aGroup,true);
+end;
+
+procedure GiveFinGroupApply(aType : Integer);
+var ToPlayer : Integer;
+begin	
+	If Gracz = 13 then 
+		ToPlayer := 9
+	else	
+		ToPlayer := Gracz;
+		
+	If GroupsToSend[aType] > 0 then 
+		IF GroupsToSend[aType] > 0 then 
+			begin
+				A.GiveGroup(ToPlayer,aType,GPosX ,GPosY, GDir, Maximum(GroupsToSend[aType],9), 3);
+				GroupsToSend[aType] := GroupsToSend[aType] - 9;				
+			end;
+	If GroupsToSend[aType] > 0 then 
+		GiveFinGroupApply(aType);
+end;
+
+procedure GiveFinGroup;
+var I, K : Integer;
+begin	
+	for I := 14 to 27 do
+		If GroupsToSend[I] > 0 then 
+			GiveFinGroupApply(I);
 end;
 
 procedure GroupHpInvulnerableSet(aGroupID : array of Integer; aInvulnerable : Boolean);
@@ -385,7 +496,7 @@ begin
 				Actions.OverlayTextAppend(-1,'<$91> : [$00FF00]' +IntToStr(HeroStats[0].Health)+'[$FFFFFF] / [$0000FF]'+IntToStr(HPmax)+'[$FFFFFF]' + GetHeroStatDelta(0));
 				Actions.OverlayTextAppend(-1,'|<$92> : [$00FF00]' +IntToStr(HeroStats[0].Attack)+'[$FFFFFF]' + GetHeroStatDelta(1));
 				Actions.OverlayTextAppend(-1,'|<$93> : [$00FF00]' +IntToStr(HeroStats[0].Defense)+'[$FFFFFF]' + GetHeroStatDelta(2));
-				//Actions.OverlayTextAppend(-1,'|Position : ' +IntToStr(aPos2.X)+' : '+IntToStr(aPos2.Y) + '[$FFFFFF]');
+				//Actions.OverlayTextAppend(-1,'|Position : ' +IntToStr(aHeroPos.X)+' : '+IntToStr(aHeroPos.Y) + '[$FFFFFF]');
 				Actions.OverlayTextAppend(-1,'|<$94> : [$00FF00]' + IntToStr(HeroStats[0].Haste)+'[$FFFFFF]' + GetHeroStatDelta(3));	
 				Actions.OverlayTextAppend(-1,'[$00FF00]||Hero Inventory : [$FFFFFF]');
 			end else
@@ -393,7 +504,7 @@ begin
 				Actions.OverlayTextAppend(-1,'<$91> : [$00FF00]' +IntToStr(HeroStats[0].Health)+'[$FFFFFF] / [$0000FF]'+IntToStr(HPmax)+'[$FFFFFF]');
 				Actions.OverlayTextAppend(-1,'|<$92> : [$00FF00]' +IntToStr(HeroStats[0].Attack)+'[$FFFFFF]');
 				Actions.OverlayTextAppend(-1,'|<$93> : [$00FF00]' +IntToStr(HeroStats[0].Defense)+'[$FFFFFF]');
-				//Actions.OverlayTextAppend(-1,'|Position : ' +IntToStr(aPos2.X)+' : '+IntToStr(aPos2.Y) + '[$FFFFFF]');
+				//Actions.OverlayTextAppend(-1,'|Position : ' +IntToStr(aHeroPos.X)+' : '+IntToStr(aHeroPos.Y) + '[$FFFFFF]');
 				Actions.OverlayTextAppend(-1,'|<$94> : [$00FF00]' + IntToStr(HeroStats[0].Haste)+'[$FFFFFF]');	
 				Actions.OverlayTextAppend(-1,'[$00FF00]||Hero Inventory : [$FFFFFF]');
 			end;
@@ -453,12 +564,14 @@ begin
 		end;
 	end;
 	
+	If FreeUnitsToEquip > 0 then 
+		Actions.OverlayTextAppend(-1,'|<$172>' + IntToStr(FreeUnitsToEquip));
 	If MinersKilled > 0 then 
 		Actions.OverlayTextAppend(-1,'|<$635>' + IntToStr(12-MinersKilled));
 		
 	If States.GameTime > VillageQuestGiver[4].QEndTime then 
 		If VillageQuestGiver[4].QEventType = 2 then 
-				Actions.OverlayTextAppendFormatted(-1,'|<$632>',[30-QuestInteger[4]]);
+				Actions.OverlayTextAppendFormatted(-1,'|<$632>',[30-QuestInteger[6]]);
 	If not QuestTasks[2][1] then 			
 		If States.GameTime > VillageQuestGiver[2].QEndTime then 
 			If VillageQuestGiver[2].QEventType = 5 then
@@ -795,6 +908,8 @@ begin
 		If length(HeroInventory[I]) > 0 then
 			HeroStats[0].MultiHealth := HeroStats[0].MultiHealth + aItem[I].Health;
 		
+	If HeroStats[0].Haste <= 0 then 
+		HeroStats[0].Haste := 1;
 	HeroStats[0].MultiHealth := 50 + HeroStats[0].MultiHealth + HeroSpecialHPPoints;
 	
 	If States.GameTime < 10 then
@@ -1000,16 +1115,16 @@ begin
 	Result := false;
 	If U.InAreaI(aPos.X,aPos.Y,aPoint.X - aRadius,aPoint.Y - aRadius,aPoint.X + aRadius,aPoint.Y + aRadius) then
 		Result := true;
-
 end;
 
-procedure AddPatroll(aPlayer, aType : Integer; aPos1,aPos2 : TKMPoint);
+procedure AddPatroll(aPlayer, aType, aCount,aColumnCount : Integer; aPos1,aPos2 : TKMPoint);
 var I : Integer;
 begin
 	I := length(Patrolls);
 	SetLength(Patrolls, I + 1);
 	Patrolls[I].aPos1 := aPos1;
 	Patrolls[I].aPos2 := aPos2;
-	Patrolls[I].aID := A.GiveGroup(aPlayer,aType, aPos1.X,aPos1.Y,0,1,1);
+	Patrolls[I].aID := A.GiveGroup(aPlayer,aType, aPos1.X,aPos1.Y,0,aCount,aColumnCount);
 	A.GroupOrderWalk(Patrolls[I].aID, aPos2.X,aPos2.Y,0);
+	GroupHpInvulnerableSet([Patrolls[I].aID],true);
 end;

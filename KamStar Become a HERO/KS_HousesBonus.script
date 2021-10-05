@@ -53,7 +53,7 @@ begin
 			aIndex := I;
 			
 	Random := U.RandomRangeI(8, High(AllItems));
-	If U.ArrayHasElementI(Random, [10,11,12,13,14,15,25,42,43,44,45,46,47,48,55]) then 
+	If AllItems[Random].Cost = 999 then 
 	begin
 		SetRandomItems;
 		Exit;
@@ -78,6 +78,8 @@ begin
 	If aType2 <> 29 then 
 		Exit;
 	If not HousesFirstBuilt[5].Once then 
+		Exit;
+	If HousesFirstBuilt[5].Trading then 
 		Exit;
 		
 	If States.HouseOwner(aHouse) <> 0 then

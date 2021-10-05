@@ -273,6 +273,7 @@ Kolejna wiadomość:
 169:GAME: Odrzucono ofertę.
 170:GAME: Kupiłeś : 
 171:GAME: Za mało pieniędzy.
+172:Darmowe jednostki : 
 
 //emissary starting
 //_Emisariusz przed twierdzą:
@@ -826,5 +827,86 @@ Bohater: Możemy spróbować.
 690:GAME : Ostrzeżenie. Gra po trzech godzinach może zacząć lekko ścinać. Warto wtedy wyłączyć autozapis i zapisywać grę manualnie co kilka minut.
 
 691:Rolnik: Dzień dobry. Jest dobra pora na uprawę winogron, ale nie mamy nasion, ani budynków do ich przetworu. Pomógłbyś nam z ich budową?
-692:GAME : Do wykonania zadania musisz na terenie wioski wybudować 12 pól winogron + 2 winnice.
+692:GAME : Do wykonania zadania musisz na terenie wioski wybudować 12 pól winogron + 2 winnice (postaw plany winnic).
 693:Rolnik: Dziękuję ci. W zamian będę dostarczał do twojego miasta jedzenie. Wiem że przyda się twoim mieszkańcom.|| Nagroda : Dostawa chleba i wina.
+
+694:Rekrut: Kolejne patrole nie wróciły. Nie jestem pewien czy dobrze robię wysyłając je w stronę garnizonów. Może chcesz mi pomóc w zbieraniu informacji?
+
+695:Rekrut: Wysłałem zwiad pod bramy garnizonów i obydwa nie wróciły. Sądzę że jest to również sprawka Grotona.
+696:Bohater: Pewnie ich porwał i uwięził.
+697:Rekrut: Po co mu jeńcy skoro ma armię i twierdzę ciężką do zdobycia.
+698:Bohater: Może zbiera informacje. Chce dowiedzieć co knujemy.
+699:Rekrut: Moi żołnierze byli dobrze wyszkoleni. Tak łatwo się nie poddadzą.
+700:Bohater: Uwierz mi. Działania Grotona mogą być okrótne.
+701:Rekrut: Na razie jest to nie ważne. Podejdź jak najbliżej garnizonów się da i sprawdź jakie mają oddziały przy wejściu. Ze wschodnim może być ciężko. Król Herin nie przepuści kogoś do swego miasta tak łatwo.
+702:Bohater: Mam narażać własne życie, żeby wykonać nie mój obowiązek?
+703:Rekrut: Wiem kim jesteś bohaterze. Jako jeden z niewielu znamy twoją przeszłość. Swoimi umiejętnościami przewyższasz moich zwiadowców, może i nawet samego Grotona. Warto byłoby odzyskać honor, nieprawdaż.
+704:Bohater: Dobrze. Wykonam to dla ciebie.
+
+705:GAME: Sprawdź najpierw zachodzni garnizon a potem wschodni.
+
+706:Bohater: Brak śladów walki. Ten patrol nei za bardzo się starał.
+707:Bohater: No proszę. Jego miecz. Warto byłoby go zwrócić
+
+708:Bohater: Również brak walki. Przy bramie głównie pikinierzy i kusznicy. Ciężko będzie się przedrzeć.
+
+709:Rekrut: Jak wyglądają ich linie obrony?
+710:Bohater: Bez szans. Nie wejdziemy od tak do Garnizonów, są zbyt dobrze strzeżone.
+711:Rekrut: Niech to. Chciałem pójść na około, aby nie wzbudzić podejżeń, ale to też nie zadziała.
+712:Bohater: Moim zdaniem powinniśmy zaatakować od frontu.
+713:Rekrut: Tylko jak ktoś nas zobaczy, sprowadzi resztę i... możemy zginąć.
+714:Bohater: Po drodze znalazłem miecz, zapewne twojego człowieka. Proszę, powinien wrócić tam z kąd pochodzi.
+715:Rekrut: ... Zatrzymaj go. Tobie się lepiej przysłuży.
+
+716:Rekrut: Niech będzie twoi sposobem, ale to ty będziesz znowu ryzykował życiem. Nie chcę tracić kolejnego żołnierza.
+
+717:Rekrut: Jedź pod więzienie i sprawdź ich straże. Znajduje się na południu miasta Grotona. W cienkim wąwozie.
+718:Bohater: Nie ma problemu. Wrócę z dobrze opracowanym planem.
+
+719:Bohater: Dwa oddziały... Jeden zły ruch i nas zaatakują. Przyjżę się bliżej.
+
+720:Bohater: Przy samym więzieniu nic, ale za wąwozem stacjonują kolejne oddziały.
+
+721:Bohater: Samo wiezienie nie jest strzeżone. Wojska są przed wejściem i wyjściem z wąwozu.
+722:Rekrut: Czyli też nie damy rady.
+723:Bohater: Spokojnie, mam plan. Powiem go przy następnym spotkaniu. Muszę ruszać do miasta.
+724:Rekrut: Bywaj.
+
+725: Wieśniacy
+
+726:Rekrut: Więc jaki jest twój plan. Mam nadzieję, że w końcu mi o nim powiesz.
+
+727:Bohater: Potrzebujemy niewielkiego oddziału. Dobrze wyszkolonego
+728:Rekrut: Powinienem sobie z tym poradzić.
+729:Bohater: Wyślę do ciebie żołnierzy. Wyszkol ich jak najlepiej. Odwrócą uwagę strażników, a ja o ten czas wkradnę się do więzienia i uwolnię twojego zwiadowcę.
+730:Rekrut: Czyli i tak poświęcamy ludzi... żeby uratować ludzi.
+731:Bohater: Jeżeli twoi ludzie są tak dobrzy jak mówisz, to będzie to warte.
+
+732:Bohater: Oto są moi żołnierze. Wiesz co z nimi zrobić.
+733:Rekrut: Oczywiście. Już ja im dam lekcję.
+734:Rekrut: Jest mały problem. W trakcie kiedy poszedłeś po swoje wojsko... Groton wysłał patrole i krążą w okół jego miasta.
+735:Bohater: ... Dobrze. Coś wymyślę.
+
+736:Rekrut: Z patrolami nic się nie zmieniło. Ciągle krążą w okół miasta. Coś wymyśliłeś?
+
+737:Bohater: Patrole nie są największym problemem.
+738:Rekrut: Jesteś pewny?
+739:Bohater: Skoro są patrole to oznacza, że jest mniej żołnierzy w mieście, a może nawet przy samym garnizonie. Zaatakujmy je, zwabmy pod nasze wieże obronne, aby wiele nie stracić.
+740:Rekrut: Groton nie wyszkoli nowych żołnierzy za szybko, więc możemy szybko zaatakować więzienie.
+741:Bohater: Przygotuj żołnierzy. Po ataku na patrole, odbijemy zwiadowcę.
+
+742:Bohater: Patrole pokonane.
+743:Rekrut: Wszystko jest przygotowane. Jak tylko rozkażesz, wyruszymy.
+744:Bohater: Wyśmienicie.
+
+745:Rekrut: Atakujemy?
+
+
+746:Bohater: Ruszamy.
+747:Bohater: Macie zająć czymś strażników. Reszta należy do mnie.
+
+748:Bohater: Nie mówiłeś mi, że ten zwiadowca to kobieta.
+749:Rekrut: Musiałem pominąć tę część.
+750:Bohater: Więc kto to dokładnie jest?
+751:Rekrut: To najbardziej optymistyczny człowiek w naszym oddziale. Niestety ten optymizm zaczyna irytować, ale jest dobrą gwardzistką, dlatego wolałem ją uratować.
+750:Bohater: Mam nadzieję że było warto.

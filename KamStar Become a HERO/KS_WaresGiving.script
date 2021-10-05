@@ -8,24 +8,74 @@
 /////
 /////
 /////
-var Gracz: Integer;//array of integer; - zmienna ma w sobie zbiór liczb całkowitych, może być maksymalnie ileś liczb w zależności co chesz zrobić                                            
-	Giving: boolean;
-	Stores:array of integer;
-	TimeG,TimeT:Integer;
-	
 const 
 	WARES_TO_GIVE_COUNT = 5;
 	
 procedure OnBeaconPrzekazywanie(aPlayer,X,Y:Integer);
+var aOwner : Integer;
 begin
-	If States.FogRevealed(aPlayer,X,Y) then 
-		If States.MapTileOwner(X,Y)<>-1 then 
-			If States.MapTileOwner(X,Y) <> aPlayer then 
-			If U.ArrayHasElementI(States.MapTileOwner(X,Y),[4,5,6]) then 
-			begin    
-				Gracz:=States.MapTileOwner(X,Y);  
-				Actions.ShowMSGFormatted(aPlayer, '<$131>',[States.PlayerColorText(Gracz),'<$' + IntToStr(Gracz+96)+'>']);// to dodałem żeby sprawdzić czy wszystko działa, jak sprwdziłem to działa.
-			end;
+	If aPlayer = 0 then 
+		If States.FogRevealed(aPlayer,X,Y) then
+		begin
+			If States.MapTileOwner(X,Y)<>-1 then 
+				If States.MapTileOwner(X,Y) <> aPlayer then
+				begin
+					If U.ArrayHasElementI(States.MapTileOwner(X,Y),[4,5,6]) then 
+					begin    
+						Gracz:=States.MapTileOwner(X,Y);  
+						Actions.ShowMSGFormatted(aPlayer, '<$131>',[States.PlayerColorText(Gracz),'<$' + IntToStr(Gracz+96)+'>']);
+					end;
+					
+					If VillageQuestGiver[5].QEventType = 14	then
+					begin
+						If U.ArrayHasElementI(States.MapTileOwner(X,Y),[13]) then 
+						begin    
+							Gracz:=States.MapTileOwner(X,Y);  
+							Actions.ShowMSGFormatted(aPlayer, '<$131>',[States.PlayerColorText(Gracz),'<$725>']);
+						end;
+					end;
+				end;
+			If CanSendArmy then 
+				If States.GameTime > TimeGroup then 
+					If Gracz <> 0 then 
+					begin	
+						If (Confirm = 1) and (States.GroupAt(X,Y) <= 0) then 
+						begin
+							Confirm := 0;
+							GroupID := 0;
+							A.ShowMsg(0, 'Troops was not send.')
+						end;
+						If (Confirm = 1) and ((States.GroupAt(X,Y) > 0) and(States.GroupAt(X,Y) <> GroupID )) then 
+						begin
+							Confirm := 1;
+							GroupID := States.GroupAt(X,Y);
+							A.ShowMsg(0, 'Do you want to send these troops to another player?')
+						end;
+						If States.GroupAt(X,Y) > 0 then 
+						begin
+							If States.GroupOwner(States.GroupAt(X,Y)) = 0 then 
+								If U.ArrayHasElementI(States.GroupType(States.GroupAt(X,Y)), aPlayersGType[Gracz]) then 
+								begin
+									If Confirm = 0 then 
+									begin
+										Confirm := 1;
+										GroupID := States.GroupAt(X,Y);
+										A.ShowMsg(0, 'Do you want to send these troops to another player?')
+									end else
+									If Confirm = 1 then 
+									begin
+										Confirm := 0;
+										A.ShowMsg(0, 'troops sent');
+										GiveGroupAtGroup(Gracz,GroupID);
+										//GroupID := 0;
+									end;
+								end else
+								A.ShowMsg(0, 'Wrong group type to send');
+									
+						end;
+					end;
+				
+		end;
 end;
 
 procedure TowaryPrzekazywanie;
@@ -33,23 +83,23 @@ var	blenght,Wares:Integer;
 
 begin
 	Giving:=False;
-	if Gracz <> 0 then  //sprawdza czy nastąpiła zmiana adresata, jeżeli nadawca (czyli Players) zmieni za pomocą beacona na np. gracza 7, który jest... graczem towtedy przekazywanie nastąpi
+	if Gracz <> 0 then  
 		for blenght:= 0 to Length(Stores)-1 do 
 			If (States.HouseRepair(Stores[blenght]) = true) then 
 				for Wares := 0 to 27 do 
 					If (States.HouseWareBlockedTakeOut(Stores[blenght],Wares) = true) and (States.HouseResourceAmount(Stores[blenght],Wares) > WARES_TO_GIVE_COUNT) then
-					begin// zmieniłem ilość surowca żeby była większa od 4, żeby gra płynniej działała
+					begin
 						Actions.HouseTakeWaresFrom(Stores[blenght],Wares,5);
 						Giving:=True;
 						If States.GameTime > TimeG+300 then begin
 							TimeG:=States.GameTime
 							TimeT:=States.GameTime+50
 						end;
-						//i teraz przekazywanie broni i reszty.
-						If (States.StatHouseTypeCount(Gracz,21) > 0) and (Utils.InRangeI(Wares,16,26)) then //(States.StatHouseTypeCount(Players,21) > 0) - sprawdza czy gracz posiada warownie, 'and (Utils.InRangeI(Wares,16,26))' sprawdza czy zmienna 'Wares' mieści się w przedziale od 16 do 26(16 do 26 to są bronie). Jeżeli gracz ma warownie i 'Wares' mieści się w przedziale to adresat otrzyma bronie
-							Actions.GiveWeapons(Gracz,Wares,5)   //jak używasz fukcji 'else' to pamiętaj aby przed nią nie było średnika, np. jak wpiszesz to po 'end' to musi być samo 'end' bez średnika, zmieniłem ilość surowca na 4, żeby gra płynniej działała
-						else //ta funkcja odkąd się dowiedziałem o co w niej chodzi, bardzo często jej używam i jest bardzo pomocna. jeżeli warunki podane powyżej '(States.StatHouseTypeCount(Players,21) > 0) and (Utils.InRangeI(Wares,16,26))', nie zostaną spełnione, czyli gracz nie ma warowni i Wares nie mieści się w przedziale, to zrobi inną funkcję, w tym przypdaku adresat otrzyma surowce/bronie do spichrza
-							Actions.GiveWares(Gracz,Wares,5);//tutaj musi być średnik aby całośc była zamknięta, chyba że dalej chcesz używać funkcji else, zmieniłem ilość surowca na 4, żeby gra płynniej działała
+						
+						If (States.StatHouseTypeCount(Gracz,21) > 0) and (Utils.InRangeI(Wares,16,26)) then 
+							Actions.GiveWeapons(Gracz,Wares,5)   
+						else 
+							Actions.GiveWares(Gracz,Wares,5);
 					end;
 end;
 
@@ -75,11 +125,7 @@ begin
 	If Giving=True then
 		Actions.PlayWAV(0,'0przekazywanie',1);
 end;
-/////
-/////
-/////
-/////
-/////
+
 Procedure OnTickPrzekazywanie;
 begin
 	If States.GameTime mod 50 = 0 then

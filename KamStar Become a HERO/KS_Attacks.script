@@ -7,6 +7,11 @@ begin
 	AllGroups := States.PlayerGetAllUnits(aPlayer);
 	for LEA := 0 to length(AllGroups)-1 do
 		A.UnitHPSetInvulnerable(AllGroups[LEA],aImmortality);
+	If aPlayer = 0 then
+	begin
+		HeroImmortal := true;
+		HeroNotHungry := true;//
+	end;
 end;
 
 function GiveGroupWithDifficulty(aPlayer,aType,aX,aY,aDir,aCount,aColumn : Integer) : Integer;
